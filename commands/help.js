@@ -18,8 +18,8 @@ module.exports = {
 		\`${prefix}kick <@user | userID> [reason]\` Kicks the provided user from the server.
 		\`${prefix}ban <@user | userID> [reason]\` Bans the provided user from the server.
 		\`${prefix}unban <userID> [reason]\` Unbans the provided user from the server.
-		\`${prefix}mute <@user | userID> [reason]\` Mutes the provided user indefinitely.
-		\`${prefix}tempmute <@user | userID> <time> [reason]\` Tempmutes the provided user for the specified time.
+		\`${prefix}pmute <@user | userID> [reason]\` Mutes the provided user indefinitely.
+		\`${prefix}mute <@user | userID> <time> [reason]\` Tempmutes the provided user for the specified time.
 		\`${prefix}unmute <@user | userID> [reason]\` unmutes the provided user.
 		\`${prefix}history <@user | userID> [page]\` view previous offences of a user.
 		\`${prefix}rhistory <@user | userID> <offencenumber/all>\` remove all offences or a certain offence from a user.
