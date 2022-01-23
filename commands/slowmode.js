@@ -11,6 +11,7 @@ module.exports = {
 	async execute(bot, message, args, prefix) {
         if (!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
 		//if(message.author.id != config.ownerID) return;
+            message.delete()
             let time = args[0]
             if(!time) return;
             if(time.endsWith("s")) time = time.slice(0, -1);
@@ -21,7 +22,7 @@ module.exports = {
             await message.channel.setRateLimitPerUser(time).catch(error =>{
                 console.log(error)
             })
-                message.channel.send(`:white_check_mark: Channel slowmode set to \`${args[0]}\``).then(message => {
+                message.channel.send(`<a:completed:934404118754263050> Channel slowmode set to \`${args[0]}\``).then(message => {
 									message.delete({timeout:5000})
 								});
 
