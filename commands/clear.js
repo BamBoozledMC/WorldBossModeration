@@ -14,11 +14,11 @@ module.exports = {
     if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
 		  if(!args[0] || isNaN(args[0])) return message.lineReply("Invalid number.");
 			if(args[0] > 100) return message.lineReply("You can't delete more then 100 messages at once.");
-		  message.delete()
+		  await message.delete()
 		  await message.channel.bulkDelete(args[0], true)
 		  //let msg = await message.channel.send(`<a:loading:735109207547707523> Clearing **${args[0]}** messages...`)
 		  //  msg.edit(`<a:completed:735703067605073951> Successfully Cleared **${args[0]}** messages`)
-		 message.channel.send(`:white_check_mark: Successfully Cleared **${args[0]}** messages`)
+		 message.channel.send(`<a:completed:934404118754263050> Successfully Cleared **${args[0]}** messages`)
 		  .then(message => {
 			  message.delete({timeout:5000})
 		  });
