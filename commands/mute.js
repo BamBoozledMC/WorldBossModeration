@@ -1,13 +1,14 @@
 const Discord = require ("discord.js");
 const ms = require("ms");
-const config = require('../config.json');
 const db = require('quick.db');
+const config = require('../config.json');
 
 module.exports = {
 	name: 'mute',
   descrption: 'Mutes mentioned user in the server',
+  aliases: ['tmute', 'tempmute'],
 	usage: '',
-	args: true,
+	args: false,
 	async execute(bot, message, args, prefix) {
     //!mute @user 1s/m/h/d
   try {
@@ -74,8 +75,16 @@ module.exports = {
   }
 
   if(member.roles.cache.has(muterole.id)) return message.channel.send("This user is already muted!");
+  let mutetime = args[1];
+	if(!mutetime) return message.lineReply("You must provide the amount of time.")
+  if(mutetime.endsWith("s")) mutetime = mutetime.slice(0, -1);
+  else if(mutetime.endsWith("m")) mutetime = mutetime.slice(0, -1) * 60;
+  else if(mutetime.endsWith("h")) mutetime = mutetime.slice(0, -1) * 3600;
+  else if(mutetime.endsWith("d")) mutetime = mutetime.slice(0, -1) * 3600 * 24;
 
-  let reason = args.slice(1).join(" ");
+  if(!mutetime || isNaN(mutetime)) return message.channel.send("Please include a valid time!");
+
+  let reason = args.slice(2).join(" ");
 		if(!reason) {
 		  res = "No reason given";
 		}
@@ -90,16 +99,16 @@ module.exports = {
     }
   let muteembed = new Discord.MessageEmbed()
 		  .setColor("#d90053")
-		  .setTitle(`Mute | ${member.user.tag}`)
+		  .setTitle(`Tempmute | ${member.user.tag}`)
 		  .addField("User", member, true)
       .addField("Moderator", message.author, true)
-		  .addField("Reason", res)
+      .addField("Time", args[1])
+		  .addField("Reason", res, true)
 		  .setTimestamp()
 		  .setFooter(member.id)
-
   bot.channels.cache.get(config.logsID).send(muteembed);
   try {
-  member.send(`You have been muted in **${message.guild.name}** for the reason: **${res}**`)
+  member.send(`You have been tempmuted in **${message.guild.name}** for \`${args[1]}\` with the reason: **${res}**`)
 }catch(e){
   console.log(e.stack);
 }
@@ -118,19 +127,73 @@ let dbgetuser = db.get(`moderation.punishments.${member.id}`)
 
 if(!dbgetuser) {
 	db.add(`moderation.punishments.${member.id}.offenceno`, 1)
-	db.set(`moderation.punishments.${member.id}.1`, { date: formatteddate, reason: res, punisher: message.author.tag, type: 'Mute' })
+	db.set(`moderation.punishments.${member.id}.1`, { date: formatteddate, reason: `${args[1]} Mute time - ${res}`, punisher: message.author.tag, type: 'Tempmute' })
 	db.set(`moderation.punishments.${member.id}.muted`, 'true')
 } else {
 	let addoffence = dbgetuser.offenceno + 1
 	db.add(`moderation.punishments.${member.id}.offenceno`, 1)
-	db.set(`moderation.punishments.${member.id}.${addoffence}`, { date: formatteddate, reason: res, punisher: message.author.tag, type: 'Mute' })
+	db.set(`moderation.punishments.${member.id}.${addoffence}`, { date: formatteddate, reason: `${args[1]} Mute time - ${res}`, punisher: message.author.tag, type: 'Tempmute' })
 	db.set(`moderation.punishments.${member.id}.muted`, 'true')
 }
-message.channel.send(`**${member.user.tag}** was muted.`)
+message.channel.send(`**${member.user.tag}** was tempmuted.`)
+
+let timer = setInterval(async function() {
+    mutetime = mutetime - 1;
+    db.set(`tempmute.${message.guild.id}.${member.user.id}.time`, mutetime);
+    db.set(`tempmute.${message.guild.id}.${member.user.id}.channel`, message.channel.id);
+
+    if(mutetime == 0) {
+        clearInterval(timer);
+
+        let unmuteembed = new Discord.MessageEmbed()
+    .setColor("#d90053")
+		  .setTitle(`Unmute | ${member.user.tag}`)
+		  .addField("User", member, true)
+      .addField("Moderator", bot.user, true)
+		  .addField("Reason", "Auto Unmute")
+		  .setTimestamp()
+		  .setFooter(member.id)
+    member.roles.remove(muterole.id);
+    db.delete(`tempmute.${message.guild.id}.${member.user.id}.time`);
+    db.delete(`tempmute.${message.guild.id}.${member.user.id}.channel`);
+    try {
+    member.send(`You have been unmuted in **${message.guild.name}** | Auto Unmute`)
+  }catch(e){
+    console.log(e.stack);
+  }
+	bot.channels.cache.get(config.logsID).send(unmuteembed)
+
+	let ts = Date.now();
+
+	let date_ob = new Date(ts);
+	let date = date_ob.getDate();
+	let month = date_ob.getMonth() + 1;
+	let year = date_ob.getFullYear();
+
+	// prints date & time in YYYY-MM-DD format
+	let formatteddate = year + "-" + month + "-" + date
+
+	let dbgetuser = db.get(`moderation.punishments.${member.user.id}`)
+
+	if(!dbgetuser) {
+		 db.add(`moderation.punishments.${member.user.id}.offenceno`, 1)
+			db.set(`moderation.punishments.${member.user.id}.1`, { date: formatteddate, reason: 'Automatic unmute', punisher: bot.user.tag, type: 'Unmute' })
+			 db.delete(`moderation.punishments.${member.user.id}.muted`)
+		 } else {
+				let addoffence = dbgetuser.offenceno + 1
+				 db.add(`moderation.punishments.${member.user.id}.offenceno`, 1)
+					db.set(`moderation.punishments.${member.user.id}.${addoffence}`, { date: formatteddate, reason: 'Automatic unmute', punisher: bot.user.tag, type: 'Unmute' })
+					 db.delete(`moderation.punishments.${member.user.id}.muted`)
+				 }
+
+    }
+}, 1000);
+
 
   message.delete();
       }catch(e){
         console.log(e.stack);
+        if(!message.guild.me.hasPermission("MANAGE_ROLES" || "MANAGE_MESSAGES")) return message.channel.send(":x: I do not have enough permissions to do this!\nPlease make sure i have the \"MANAGE_ROLES\" and \"MANAGE_MESSAGES\" permissions.")
         }
     }
 }
