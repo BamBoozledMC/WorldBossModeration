@@ -9,6 +9,7 @@
   "author": "BamBoozled",
   "license": "ISC",
   "dependencies": {
+    "5": "0.0.1",
     "beautify": "0.0.8",
     "discord-reply": "^0.1.2",
     "discord.js": "^12.5.3",
