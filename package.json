@@ -1,0 +1,18 @@
+{
+  "name": "worldbossmoderation",
+  "version": "1.0.0",
+  "description": "Moderation Bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "author": "BamBoozled",
+  "license": "ISC",
+  "dependencies": {
+    "beautify": "0.0.8",
+    "discord-reply": "^0.1.2",
+    "discord.js": "^12.5.3",
+    "nodemon": "^2.0.15",
+    "quick.db": "^7.1.3"
+  }
+}
