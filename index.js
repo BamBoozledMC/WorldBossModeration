@@ -3,6 +3,7 @@ const Discord = require ("discord.js");
 require('discord-reply');
 const bot = new Discord.Client ({ partials: ["MESSAGE", "CHANNEL", "REACTION"]});
 const db = require('quick.db');
+const cooldowns = new Map();
 
 const fs = require('fs');
 bot.commands = new Discord.Collection();
@@ -155,7 +156,32 @@ const [, matchedPrefix] = message.content.match(prefixRegex);
 
 
 	const command = bot.commands.get(commandName) || bot.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-	if (!command) return;
+
+  if(!cooldowns.has(command.name)){
+        cooldowns.set(command.name, new Discord.Collection());
+    }
+
+    const current_time = Date.now();
+    const time_stamps = cooldowns.get(command.name);
+    const cooldown_amount = (command.cooldown) * 1000;
+
+    //If time_stamps has a key with the author's id then check the expiration time to send a message to a user.
+    if(time_stamps.has(message.author.id)){
+        const expiration_time = time_stamps.get(message.author.id) + cooldown_amount;
+
+        if(current_time < expiration_time){
+            const time_left = (expiration_time - current_time) / 1000;
+
+            return message.lineReply(`Please wait \`${time_left.toFixed(1)}\` second(s) before using that command again.`);
+        }
+    }
+
+    //If the author's id is not in time_stamps then add them with the current time.
+    time_stamps.set(message.author.id, current_time);
+    //Delete the user's id once the cooldown is over.
+    setTimeout(() => time_stamps.delete(message.author.id), cooldown_amount);
+
+  if (!command) return;
 	if (message.channel.type == "dm") return;
   try {
 		command.execute(bot, message, args, prefix);

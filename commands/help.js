@@ -28,7 +28,8 @@ module.exports = {
 
 		.addField("Misc", ` \`${prefix}ping\` Checks the bot's ping.
 		\`${prefix}uptime\` Checks the bot's uptime.
-		\`${prefix}avatar [@user]\` Sends mentioned user's avatar (pfp).`)
+		\`${prefix}avatar [@user]\` Sends mentioned user's avatar (pfp).
+		\`${prefix}suggest <suggestion>\` Suggest something!`)
 
 		.setDescription(`Here you can find info on every command!\n${message.guild.name}'s Current prefix is \`${prefix}\`\nUse ${prefix}prefix reset to reset your server's prefix to default.\n\n[] = Optional **|** <> = Required\n`)
 		.setThumbnail('https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg')
@@ -47,7 +48,8 @@ module.exports = {
 
 .addField("Misc", ` \`${prefix}ping\` Checks the bot's ping.
 \`${prefix}uptime\` Checks the bot's uptime.
-\`${prefix}avatar [@user]\` Sends mentioned user's avatar (pfp).`)
+\`${prefix}avatar [@user]\` Sends mentioned user's avatar (pfp).
+\`${prefix}suggest <suggestion>\` Suggest something!`)
 
 .setDescription(`Here you can find info on the commands available to you.\n${message.guild.name}'s Current prefix is \`${prefix}\`\n\n[] = Optional **|** <> = Required\n`)
 .setThumbnail('https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg')
