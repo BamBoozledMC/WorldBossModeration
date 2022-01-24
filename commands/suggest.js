@@ -25,6 +25,7 @@ module.exports = {
 		.setDescription(msgtosend)
 		.setColor("GREEN")
 		.setTitle("New suggestion:")
+		.setFooter('To suggest something use !suggest')
 
 		var Sentembed = await message.guild.channels.cache.get("929941845260255278").send(embed)
 
