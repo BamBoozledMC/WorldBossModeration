@@ -31,7 +31,9 @@ module.exports = {
 
         Sentembed.react('<:Upvote:934930260070371389>').then(() => Sentembed.react('<:Downvote:934930252713586688>'));
 
-				message.channel.send("Your suggestion has been submit!")
+				message.channel.send("Your suggestion has been submit!").then(message => {
+					message.delete({timeout:5000})
+				});
 
 		message.delete().catch(error =>{
 		})
