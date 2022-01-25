@@ -200,10 +200,35 @@ bot.on('guildMemberAdd', member => {
       let muterole = member.guild.roles.cache.find(r => r.name === "Muted")
       member.roles.add(muterole.id);
 
+	  if(member.guild.id == "929941845004415046") {
+		let joinLog = member.guild.channels.cache.get(config.joinleavelogsID)
+		let joinlogembed = new Discord.MessageEmbed()
+		.setTitle('User Joined')
+		.addField("User:", `${member.user.tag}\n${member}`)
+		.addField("Discord Account created at:", member.createdAt)
+		.setTimestamp()
+		.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+		.setFooter(member.user.id)
+		.setColor('GREEN')
+		joinLog.send(joinlogembed)
+		}
+
 });
 
 bot.on('guildMemberRemove', member => {
-
+	if(member.guild.id == "929941845004415046") {
+		let leaveLog = member.guild.channels.cache.get(config.joinleavelogsID)
+		let leavelogembed = new Discord.MessageEmbed()
+		.setTitle('User Left')
+		.addField("User:", `${member.user.tag}\n${member}`)
+		.addField("Discord Account created at:", member.createdAt)
+		.addField('Joined Server at:', `${member.joinedAt}`)
+		.setTimestamp()
+		.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+		.setFooter(member.user.id)
+		.setColor('RED')
+		leaveLog.send(leavelogembed)
+		}
 });
 
 bot.snipes = new Map()
