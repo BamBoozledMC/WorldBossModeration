@@ -28,6 +28,7 @@ module.exports = {
             if(isNaN(time) || time > 21600) return message.channel.send('Please include a valid time!')
             await message.channel.setRateLimitPerUser(time).catch(error =>{
                 console.log(error)
+                return message.channel.send(error)
             })
                 message.channel.send(`<a:completed:934404118754263050> Channel slowmode set to \`${args[0]}\``).then(message => {
 									message.delete({timeout:5000})
