@@ -192,6 +192,24 @@ const [, matchedPrefix] = message.content.match(prefixRegex);
 
 
 bot.on('guildMemberAdd', member => {
+
+	if(member.guild.id == "929941845004415046") {
+
+		let welcomeChannel = member.guild.channels.cache.get(config.welcomeID)
+		welcomeChannel.send(`Welcome to the **Official World Boss Discord** ${member}!\nPlease make sure to read the <#929941845260255273> and don't forget to check out the <#932748202397028383>.`); 
+
+		let joinLog = member.guild.channels.cache.get(config.joinleavelogsID)
+		let joinlogembed = new Discord.MessageEmbed()
+		.setTitle('User Joined')
+		.addField("User:", `${member.user.tag}\n${member}`)
+		.addField("Discord Account created at:", `${member.user.createdAt}`)
+		.setTimestamp()
+		.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+		.setFooter(member.user.id)
+		.setColor('GREEN')
+		joinLog.send(joinlogembed)
+		}
+
     let dbgetuser = db.get(`moderation.punishments.${member.user.id}`)
 
     if(!dbgetuser) return;
@@ -199,19 +217,6 @@ bot.on('guildMemberAdd', member => {
     else if(dbgetuser.muted != 'true') return;
       let muterole = member.guild.roles.cache.find(r => r.name === "Muted")
       member.roles.add(muterole.id);
-
-	  if(member.guild.id == "929941845004415046") {
-		let joinLog = member.guild.channels.cache.get(config.joinleavelogsID)
-		let joinlogembed = new Discord.MessageEmbed()
-		.setTitle('User Joined')
-		.addField("User:", `${member.user.tag}\n${member}`)
-		.addField("Discord Account created at:", member.createdAt)
-		.setTimestamp()
-		.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
-		.setFooter(member.user.id)
-		.setColor('GREEN')
-		joinLog.send(joinlogembed)
-		}
 
 });
 
@@ -221,7 +226,7 @@ bot.on('guildMemberRemove', member => {
 		let leavelogembed = new Discord.MessageEmbed()
 		.setTitle('User Left')
 		.addField("User:", `${member.user.tag}\n${member}`)
-		.addField("Discord Account created at:", member.createdAt)
+		.addField("Discord Account created at:", `${member.user.createdAt}`)
 		.addField('Joined Server at:', `${member.joinedAt}`)
 		.setTimestamp()
 		.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
