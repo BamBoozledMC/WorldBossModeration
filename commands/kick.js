@@ -59,7 +59,7 @@ module.exports = {
       res = `${reason}`
     }
 
-  	await member.send(`You have been kicked from **${message.guild.name}** for the reason: **${res}**`)
+  	await member.send(`You have been kicked from **${message.guild.name}** for the reason: **${res}**`).catch(error => message.reply(`This user was not notified of their kick because they have blocked me or have DMs turned off.`));
     await member.kick(reason)
       .catch(error => message.reply(`Sorry, I couldn't kick because of : ${error}`));
 

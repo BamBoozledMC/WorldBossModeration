@@ -58,7 +58,7 @@ module.exports = {
 		  res = `${reason}\n\nIf you wish to submit a ban appeal, please fill out this form: https://forms.gle/5JksXxC9dCqDCob5A`
 		}
 
-	  await member.send(`You have been banned from **${message.guild.name}** for the reason: **${res}**`)
+	  await member.send(`You have been banned from **${message.guild.name}** for the reason: **${res}**`).catch(error => message.reply(`This user was not notified of their ban because they have blocked me or have DMs turned off.`));
 		await member.ban()
 		  .catch(error => message.reply(`Sorry, I couldn't ban because of : ${error}`));
 
