@@ -110,6 +110,17 @@ bot.on('message', async message => {
     if (message.member.roles.cache.some(role => role.id === '932108051924783104')) return;
     message.lineReply("Hey! Please don't ping the WorldBoss's. Make sure you read the <#929941845260255273>.\n**Repeated attempts will result in moderator action.**")
   }
+  // if (message.content.includes("<:baguette1:934681856111181844> ")) {
+  //   message.delete()
+  // } else if (message.content.includes("<:baguette2:934681864482996224>")) {
+  //   message.delete()
+  // } else if (message.content.includes("<:baguette3:934681859936366653>")) {
+  //   message.delete()
+  // } else if (message.content.includes("�")) {
+  //   message.delete()
+  // } else if (message.content.includes("�")) {
+  //   message.delete()
+  // }
 
 	let pref = message.guild && db.get(`prefix.${message.guild.id}`)
 	let prefix;
@@ -196,7 +207,9 @@ bot.on('guildMemberAdd', member => {
 	if(member.guild.id == "929941845004415046") {
 
 		let welcomeChannel = member.guild.channels.cache.get(config.welcomeID)
-		welcomeChannel.send(`Welcome to the **Official World Boss Discord** ${member}!\nPlease make sure to read the <#929941845260255273> and don't forget to check out the <#932748202397028383>.`); 
+		welcomeChannel.send(`Welcome to the **Official World Boss Discord** ${member}**!**`).then(message => {
+			message.delete({timeout:30000})
+		});
 
 		let joinLog = member.guild.channels.cache.get(config.joinleavelogsID)
 		let joinlogembed = new Discord.MessageEmbed()
