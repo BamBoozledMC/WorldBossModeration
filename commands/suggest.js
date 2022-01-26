@@ -17,7 +17,7 @@ module.exports = {
 		if (!msgtosend) {
 			let errMSG = await message.lineReply('Please include a suggestion!').catch(error =>{
 			})
-			return errMSG.delete({timeout:3000});
+			return errMSG.delete({timeout:5000});
 		}
 		let embed = new Discord.MessageEmbed()
 		.setTimestamp()
