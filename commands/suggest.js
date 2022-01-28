@@ -5,6 +5,7 @@ module.exports = {
 	name: 'suggest',
   descrption: 'Returns your message',
 	cooldown: 30,
+  aliases: ["suggestion"],
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
