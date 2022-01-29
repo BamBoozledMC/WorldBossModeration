@@ -1,1 +1,1 @@
-nodemon
+nodemon --delay 5
