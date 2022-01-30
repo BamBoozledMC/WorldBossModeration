@@ -9,7 +9,9 @@ module.exports = {
     usage: '',
 	args: true,
 	async execute(bot, message, args, prefix) {
-		if(message.channel.id == config.generalID) return;
+		if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
+			if(message.channel.id == config.generalID) return;
+		}
         if (args[0]) {
         let member;
         if(args[0]) {
