@@ -3,6 +3,7 @@ const Discord = require ("discord.js");
 require('discord-reply');
 const bot = new Discord.Client ({ partials: ["MESSAGE", "CHANNEL", "REACTION"]});
 const db = require('quick.db');
+const fetch = require('node-fetch');
 const cooldowns = new Map();
 
 const fs = require('fs');
@@ -167,6 +168,7 @@ const [, matchedPrefix] = message.content.match(prefixRegex);
 
 
 	const command = bot.commands.get(commandName) || bot.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+  if (!command) return;
 
   if(!cooldowns.has(command.name)){
         cooldowns.set(command.name, new Discord.Collection());
@@ -192,7 +194,6 @@ const [, matchedPrefix] = message.content.match(prefixRegex);
     //Delete the user's id once the cooldown is over.
     setTimeout(() => time_stamps.delete(message.author.id), cooldown_amount);
 
-  if (!command) return;
 	if (message.channel.type == "dm") return;
   try {
 		command.execute(bot, message, args, prefix);
