@@ -91,7 +91,7 @@ console.log(`Watching ${bot.users.cache.size} Users!`)
 let i = 0;
 let activities;
 setInterval(() => {
-    activities = [ `General chat`, `World Boss`, `The mods`, `!help` ];
+    activities = [ `General chat`, `World Boss`, `The mods`, `!help`, 'The devs', 'Playside Studios', 'Patreon' ];
     bot.user.setActivity(`${activities[i++ % activities.length]}`, { type: "WATCHING"});
 }, 15000)
 
