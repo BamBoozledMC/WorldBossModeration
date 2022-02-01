@@ -26,7 +26,8 @@ module.exports = {
 		\`${prefix}snipe\` Snipes the last deleted message in your channel.
 		\`${prefix}say <message>\` Returns your message.`)
 
-		.addField("Fun", ` 🔓 \`${prefix}coinflip\` Flip a coin! Heads/Tails.
+		.addField("Fun", ` \`${prefix}fact\` Sends a random fact.
+		🔓 \`${prefix}coinflip\` Flip a coin! Heads/Tails.
 		🔓 \`${prefix}dadjoke\` Sends a dadjoke.`)
 
 		.addField("Misc", ` \`${prefix}ping\` Checks the bot's ping.
@@ -50,7 +51,8 @@ module.exports = {
 	let embed = new Discord.MessageEmbed()
 .setTitle('Help Page')
 
-.addField("Fun", ` 🔓 \`${prefix}coinflip\` Flip a coin! Heads/Tails.
+.addField("Fun", ` \`${prefix}fact\` Sends a random fact.
+🔓 \`${prefix}coinflip\` Flip a coin! Heads/Tails.
 🔓 \`${prefix}dadjoke\` Sends a dadjoke.`)
 
 .addField("Misc", ` \`${prefix}ping\` Checks the bot's ping.
@@ -74,7 +76,8 @@ message.reply(`:x: An Error occurred whilst messaging you! Please make sure your
 	let embed = new Discord.MessageEmbed()
 .setTitle('Help Page')
 
-.addField("Fun", ` 🔒 ~~\`${prefix}coinflip\` Flip a coin! Heads/Tails.~~
+.addField("Fun", ` \`${prefix}fact\` Sends a random fact.
+🔒 ~~\`${prefix}coinflip\` Flip a coin! Heads/Tails.~~
 🔒 ~~\`${prefix}dadjoke\` Sends a dadjoke.~~`)
 
 .addField("Misc", ` \`${prefix}ping\` Checks the bot's ping.
