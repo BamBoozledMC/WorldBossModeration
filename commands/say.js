@@ -3,7 +3,7 @@ const Discord = require ("discord.js");
 
 module.exports = {
 	name: 'say',
-    descrption: 'Returns your message',
+  descrption: 'Returns your message',
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
