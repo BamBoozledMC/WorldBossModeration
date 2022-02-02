@@ -261,6 +261,12 @@ bot.on('messageDelete', function(message, channel) {
 	})
 });
 
+bot.on('win', data => {
+
+});
+bot.on('tie', data => {
+
+});
 
 
 bot.login(config.token)
