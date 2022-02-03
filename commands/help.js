@@ -27,6 +27,7 @@ module.exports = {
 		\`${prefix}say <message>\` Returns your message.`)
 
 		.addField("Fun", ` \`${prefix}fact\` Sends a random fact.
+		\`${prefix}tictactoe\` Play tic tac toe against other poeple or challenge the unbeatable AI.
 		🔓 \`${prefix}coinflip\` Flip a coin! Heads/Tails.
 		🔓 \`${prefix}dadjoke\` Sends a dadjoke.`)
 
@@ -52,6 +53,7 @@ module.exports = {
 .setTitle('Help Page')
 
 .addField("Fun", ` \`${prefix}fact\` Sends a random fact.
+\`${prefix}tictactoe\` Play tic tac toe against other poeple or challenge the unbeatable AI.
 🔓 \`${prefix}coinflip\` Flip a coin! Heads/Tails.
 🔓 \`${prefix}dadjoke\` Sends a dadjoke.`)
 
@@ -77,6 +79,7 @@ message.reply(`:x: An Error occurred whilst messaging you! Please make sure your
 .setTitle('Help Page')
 
 .addField("Fun", ` \`${prefix}fact\` Sends a random fact.
+\`${prefix}tictactoe\` Play tic tac toe against other poeple or challenge the unbeatable AI.
 🔒 ~~\`${prefix}coinflip\` Flip a coin! Heads/Tails.~~
 🔒 ~~\`${prefix}dadjoke\` Sends a dadjoke.~~`)
 
