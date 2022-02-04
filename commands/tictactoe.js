@@ -2,7 +2,7 @@ const config = require('../config.json');
 const Discord = require ("discord.js");
 const db = require('quick.db');
 const TicTacToe = require('discord-tictactoe');
-const game = new TicTacToe({ language: 'en', simultaneousGames: true, requestExpireTime: 30 })
+const game = new TicTacToe({ language: 'en', simultaneousGames: true, requestExpireTime: 45, gameExpireTime: 45, })
 
 module.exports = {
 	name: 'tictactoe',
