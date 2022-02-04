@@ -25,10 +25,12 @@ module.exports = {
 		\`${prefix}history <@user | userID> [page]\` view previous offences of a user.
 		\`${prefix}rhistory <@user | userID> <offencenumber/all>\` remove all offences or a certain offence from a user.
 		\`${prefix}snipe\` Snipes the last deleted message in your channel.
-		\`${prefix}say <message>\` Returns your message.`)
+		\`${prefix}say <message>\` Returns your message.
+		\`${prefix}rule <rulenumber>\` Sends specified rule in chat.`)
 
 		.addField("Fun", ` \`${prefix}fact\` Sends a random fact.
 		\`${prefix}tictactoe [@user]\` Play tic tac toe against other poeple or challenge the unbeatable AI.
+		\`${prefix}stats [@user]\` Check your tic tac toe stats or view someone elses.
 		🔓 \`${prefix}coinflip\` Flip a coin! Heads/Tails.
 		🔓 \`${prefix}dadjoke\` Sends a dadjoke.`)
 
@@ -55,6 +57,7 @@ module.exports = {
 
 .addField("Fun", ` \`${prefix}fact\` Sends a random fact.
 \`${prefix}tictactoe [@user]\` Play tic tac toe against other poeple or challenge the unbeatable AI.
+\`${prefix}stats [@user]\` Check your tic tac toe stats or view someone elses.
 🔓 \`${prefix}coinflip\` Flip a coin! Heads/Tails.
 🔓 \`${prefix}dadjoke\` Sends a dadjoke.`)
 
@@ -81,6 +84,7 @@ message.reply(`:x: An Error occurred whilst messaging you! Please make sure your
 
 .addField("Fun", ` \`${prefix}fact\` Sends a random fact.
 \`${prefix}tictactoe [@user]\` Play tic tac toe against other poeple or challenge the unbeatable AI.
+\`${prefix}stats [@user]\` Check your tic tac toe stats or view someone elses.
 🔒 ~~\`${prefix}coinflip\` Flip a coin! Heads/Tails.~~
 🔒 ~~\`${prefix}dadjoke\` Sends a dadjoke.~~`)
 
