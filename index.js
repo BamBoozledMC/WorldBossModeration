@@ -50,7 +50,8 @@ bot.on("ready", async () => {
 		  			.setTimestamp()
 					.setFooter(member.id)
 					let muterole = guild.roles.cache.find(r => r.name === "Muted")
-					member.roles.remove(muterole.id);
+					member.roles.remove(muterole.id).catch(error =>{
+					})
 					db.delete(`tempmute.${guild.id}.${member.user.id}.time`);
 					db.delete(`tempmute.${guild.id}.${member.user.id}.channel`);
     				try {

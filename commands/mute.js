@@ -153,7 +153,8 @@ let timer = setInterval(async function() {
 		  .addField("Reason", "Auto Unmute")
 		  .setTimestamp()
 		  .setFooter(member.id)
-    member.roles.remove(muterole.id);
+    member.roles.remove(muterole.id).catch(error =>{
+		})
     db.delete(`tempmute.${message.guild.id}.${member.user.id}.time`);
     db.delete(`tempmute.${message.guild.id}.${member.user.id}.channel`);
     try {
