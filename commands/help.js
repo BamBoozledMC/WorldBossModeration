@@ -3,7 +3,8 @@ const config = require('../config.json');
 
 module.exports = {
 	name: 'help',
-    descrption: 'Help Page',
+	descrption: 'Help Page',
+	aliases: ['cmds', 'commands'],
 	usage: '',
 	args: false,
 	async execute(bot, message, args, prefix) {
