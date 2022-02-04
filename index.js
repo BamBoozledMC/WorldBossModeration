@@ -4,7 +4,9 @@ require('discord-reply');
 const bot = new Discord.Client ({ partials: ["MESSAGE", "CHANNEL", "REACTION"]});
 const db = require('quick.db');
 const fetch = require('node-fetch');
-const ytdl = require('ytdl-core');
+const ytdl = require('ytdl-core-discord');
+const TicTacToe = require('discord-tictactoe');
+const game = new TicTacToe({ language: 'en' });
 const cooldowns = new Map();
 
 const fs = require('fs');
@@ -262,12 +264,15 @@ bot.on('messageDelete', function(message, channel) {
 	})
 });
 
-bot.on('win', data => {
-
-});
-bot.on('tie', data => {
-
-});
+// game.on('win', data => {
+// db.add(`games.tictactoe.${data.winner.id}.wins`, 1)
+// db.add(`games.tictactoe.${data.loser.id}.losses`, 1)
+// });
+// game.on('tie', data => {
+//   console.log(data);
+// db.add(`games.tictactoe.${data.players[0].id}.ties`, 1)
+// db.add(`games.tictactoe.${data.players[1].id}.ties`, 1)
+// });
 
 
 bot.login(config.token)
