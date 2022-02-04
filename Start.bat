@@ -1,1 +1,6 @@
-nodemon --delay 5
+@echo off
+:a
+node .
+TIMEOUT 5
+goto:a
+PAUSE
