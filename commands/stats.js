@@ -57,7 +57,7 @@ module.exports = {
 		if (db.get(`games.tictactoe.${member.user.id}.wins`)) {
 			otherswins = db.get(`games.tictactoe.${member.user.id}.wins`)
 		} else {
-			otherwins = '0'
+			otherswins = '0'
 		}
 		if (db.get(`games.tictactoe.${member.user.id}.losses`)) {
 			otherslosses = db.get(`games.tictactoe.${member.user.id}.losses`)
@@ -72,7 +72,7 @@ module.exports = {
     let mentionedavatar = new Discord.MessageEmbed()
 .setTitle(`${member.user.username}'s Tic Tac Toe stats`)
 .setThumbnail(`${member.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
-.addField("Wins", otherwins, true)
+.addField("Wins", otherswins, true)
 .addField("Losses", otherslosses, true)
 .addField("Ties", othersties)
 .setColor('#d90053')
