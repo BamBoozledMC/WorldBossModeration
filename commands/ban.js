@@ -45,10 +45,9 @@ module.exports = {
 	  else member = message.guild.members.cache.get(member.id);
 	  if (!member) return;
 
-		if(!member.bannable)
-		  return message.channel.send("I cannot ban this user!");
+		if(!member.bannable) return message.channel.send("I cannot ban this user!");
 
-
+		let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
 
           let reason = args.slice(1).join(" ");
 		if(!reason) {
@@ -93,7 +92,8 @@ module.exports = {
 				db.add(`moderation.punishments.${member.id}.offenceno`, 1)
 				db.set(`moderation.punishments.${member.id}.${addoffence}`, { date: formatteddate, reason: res, punisher: message.author.tag, type: 'Ban' })
 			}
-			message.channel.send(`**${member.user.tag}** was banned.`)
+			message.channel.send(`<:shieldtick:939667770184966186> **${member.user.tag}** was banned.`)
+			loading.delete()
 
 		  message.delete()
     }

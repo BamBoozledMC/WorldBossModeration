@@ -11,7 +11,7 @@ module.exports = {
     try{
 if (!message.member.hasPermission("BAN_MEMBERS") && message.author.id != config.ownerID) return message.channel.send("Sorry, you don't have permissions to use this!");
 
-        if (!args[0]) return message.channel.send(xdemb)
+        if (!args[0]) return;
 
         let bannedMemberInfo = await message.guild.fetchBans()
 
@@ -19,6 +19,7 @@ if (!message.member.hasPermission("BAN_MEMBERS") && message.author.id != config.
         bannedMember = bannedMemberInfo.find(b => b.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || bannedMemberInfo.get(args[0]) || bannedMemberInfo.find(bm => bm.user.tag.toLowerCase() === args[0].toLocaleLowerCase());
         if (isNaN(args[0])) return message.channel.send("Please provide a valid user ID")
         if (!bannedMember) return message.channel.send("Couldn't find the user!\nUser not banned?\nPlease provide a valid user ID")
+				let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
 
         let reason = args.slice(1).join(" ")
 
@@ -61,7 +62,8 @@ if (!message.member.hasPermission("BAN_MEMBERS") && message.author.id != config.
 						db.add(`moderation.punishments.${bannedMember.user.id}.offenceno`, 1)
 						db.set(`moderation.punishments.${bannedMember.user.id}.${addoffence}`, { date: formatteddate, reason: res, punisher: message.author.tag, type: 'Unban' })
 					}
-					message.channel.send(`**${bannedMember.user.tag}** was unbanned.`)
+					message.channel.send(`<:shieldtick:939667770184966186> **${bannedMember.user.tag}** was unbanned.`)
+					loading.delete()
 
     }catch(e){
       console.log(e.stack);

@@ -36,19 +36,23 @@ module.exports = {
 
                 member = bot.users.cache.get(mention);
 
-            }  else return message.channel.send(xdemb);
-        }  else return message.channel.send(xdemb);
+            }  else return;
+        }  else return;
 
-    } else return message.channel.send(xdemb);
+    } else return;
 
-    if (!member) return message.channel.send(xdemb);
+    if (!member) return;
     else member = message.guild.members.cache.get(member.id);
-    if (!member) return message.channel.send(xdemb);
-        if(!member) return message.channel.send(xdemb);
-
+    if (!member) return;
+        if(!member) return;
+				let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
         let role = message.guild.roles.cache.find(r => r.name === "Muted")
 
-        if(!role || !member.roles.cache.has(role.id)) return message.channel.send("This user is not muted!");
+        if(!role || !member.roles.cache.has(role.id)) {
+					message.channel.send("This user is not muted!");
+					loading.delete()
+					return;
+				}
 
         let reason = args.slice(1).join(" ");
 		if(!reason) {
@@ -61,6 +65,7 @@ module.exports = {
     try {
         await member.roles.remove(role);
     } catch(e) {
+			loading.delete()
       return;
     }
         let unmuteembed = new Discord.MessageEmbed()
@@ -102,8 +107,8 @@ module.exports = {
 				db.set(`moderation.punishments.${member.id}.${addoffence}`, { date: formatteddate, reason: res, punisher: message.author.tag, type: 'Unmute' })
 				db.delete(`moderation.punishments.${member.id}.muted`)
 			}
-			message.channel.send(`**${member.user.tag}** was unmuted.`)
-
+			message.channel.send(`<:shieldtick:939667770184966186> **${member.user.tag}** was unmuted.`)
+			loading.delete()
         message.delete();
 
      }

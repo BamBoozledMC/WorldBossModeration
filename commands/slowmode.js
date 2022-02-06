@@ -15,7 +15,7 @@ module.exports = {
         let time = args[0]
         if(!time) {
             let dbget = db.get(`moderation.slowmode.${message.channel.id}`)
-            
+
             if(!dbget) return;
             else {
                 return message.channel.send(`The current slowmode is \`${dbget}\``);
@@ -30,7 +30,7 @@ module.exports = {
                 console.log(error)
                 return message.channel.send(error)
             })
-                message.channel.send(`<a:completed:934404118754263050> Channel slowmode set to \`${args[0]}\``).then(message => {
+                message.channel.send(`<:shieldtick:939667770184966186> Channel slowmode set to \`${args[0]}\``).then(message => {
 									message.delete({timeout:5000})
 								});
                 db.set(`moderation.slowmode.${message.channel.id}`, args[0])

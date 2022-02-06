@@ -50,6 +50,7 @@ module.exports = {
     if(!member.kickable)
       return message.channel.send("I cannot kick this user!");
 
+			let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
 
       let reason = args.slice(1).join(" ");
     if(!reason) {
@@ -94,8 +95,8 @@ module.exports = {
 				db.add(`moderation.punishments.${member.id}.offenceno`, 1)
 				db.set(`moderation.punishments.${member.id}.${addoffence}`, { date: formatteddate, reason: res, punisher: message.author.tag, type: 'Kick' })
 			}
-			message.channel.send(`**${member.user.tag}** was kicked.`)
-
+			message.channel.send(`<:shieldtick:939667770184966186> **${member.user.tag}** was kicked.`)
+			loading.delete()
     message.delete()
     }
 }

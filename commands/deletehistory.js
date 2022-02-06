@@ -53,11 +53,11 @@ module.exports = {
     let tryget = db.get(`moderation.punishments.${member.id}.${args[1]}`)
 		if(!tryget) return message.lineReply('Invalid offence number,\nPlease provide the number of an offence you wish to remove or "all" to clear all offences');
 		await db.delete(`moderation.punishments.${member.id}.${args[1]}`)
-		message.lineReply(`Deleted **${member.user.tag}'s** ${args[1]} Offence.`)
+		message.lineReply(`<:shieldtick:939667770184966186> Deleted **${member.user.tag}'s** ${args[1]} Offence.`)
 	} else if(args[1].toLowerCase = "all") {
 		await db.delete(`moderation.punishments.${member.id}`)
 		db.delete(`moderation.punishments.${member.id}.offenceno`)
-		message.lineReply(`Deleted all of **${member.user.tag}'s** Offences.`)
+		message.lineReply(`<:shieldtick:939667770184966186> Deleted all of **${member.user.tag}'s** Offences.`)
 	}
 
     // for(i = 1; i <= dbgetuser.offenceno; i++) {

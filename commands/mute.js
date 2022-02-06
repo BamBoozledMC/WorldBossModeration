@@ -39,16 +39,17 @@ module.exports = {
 
                         member = bot.users.cache.get(mention);
 
-                    }  else return message.channel.send(xdemb);
-                }  else return message.channel.send(xdemb);
+                    }  else return;
+                }  else return;
 
-            } else return message.channel.send(xdemb);
+            } else return;
 
-            if (!member) return message.channel.send(xdemb);
+            if (!member) return;
             else member = message.guild.members.cache.get(member.id);
-            if (!member) return message.channel.send(xdemb);
+            if (!member) return;
   if (member.id === message.author.id) return message.channel.send("You cannot mute yourself!");
   if(member.hasPermission("ADMINISTRATOR")) return message.channel.send("I cant mute this user");
+	let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
   let muterole = message.guild.roles.cache.find(r => r.name === "Muted");
 
   if(!muterole){
@@ -74,15 +75,27 @@ module.exports = {
     }
   }
 
-  if(member.roles.cache.has(muterole.id)) return message.channel.send("This user is already muted!");
+  if(member.roles.cache.has(muterole.id)) {
+		message.channel.send("This user is already muted!");
+		loading.delete()
+		return;
+	}
   let mutetime = args[1];
-	if(!mutetime) return message.lineReply("You must provide the amount of time.")
+	if(!mutetime) {
+		message.lineReply("You must provide the amount of time.")
+		loading.delete()
+		return;
+}
   if(mutetime.endsWith("s")) mutetime = mutetime.slice(0, -1);
   else if(mutetime.endsWith("m")) mutetime = mutetime.slice(0, -1) * 60;
   else if(mutetime.endsWith("h")) mutetime = mutetime.slice(0, -1) * 3600;
   else if(mutetime.endsWith("d")) mutetime = mutetime.slice(0, -1) * 3600 * 24;
 
-  if(!mutetime || isNaN(mutetime)) return message.channel.send("Please include a valid time!");
+  if(!mutetime || isNaN(mutetime)) {
+		message.channel.send("Please include a valid time!");
+		loading.delete()
+		return;
+}
 
   let reason = args.slice(2).join(" ");
 		if(!reason) {
@@ -95,6 +108,7 @@ module.exports = {
     try {
   await(member.roles.add(muterole.id));
     } catch(e) {
+			loading.delete()
       return;
     }
   let muteembed = new Discord.MessageEmbed()
@@ -135,7 +149,7 @@ if(!dbgetuser) {
 	db.set(`moderation.punishments.${member.id}.${addoffence}`, { date: formatteddate, reason: `${args[1]} Mute time - ${res}`, punisher: message.author.tag, type: 'Tempmute' })
 	db.set(`moderation.punishments.${member.id}.muted`, 'true')
 }
-message.channel.send(`**${member.user.tag}** was tempmuted.`)
+message.channel.send(`<:shieldtick:939667770184966186> **${member.user.tag}** was tempmuted.`)
 
 let timer = setInterval(async function() {
     mutetime = mutetime - 1;

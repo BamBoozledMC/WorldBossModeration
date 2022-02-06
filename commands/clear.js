@@ -18,7 +18,7 @@ module.exports = {
 		  await message.channel.bulkDelete(args[0], true)
 		  //let msg = await message.channel.send(`<a:loading:735109207547707523> Clearing **${args[0]}** messages...`)
 		  //  msg.edit(`<a:completed:735703067605073951> Successfully Cleared **${args[0]}** messages`)
-		 message.channel.send(`<a:completed:934404118754263050> Successfully Cleared **${args[0]}** messages`)
+		 message.channel.send(`<:shieldtick:939667770184966186> Successfully Cleared **${args[0]}** messages`)
 		  .then(message => {
 			  message.delete({timeout:5000})
 		  });
