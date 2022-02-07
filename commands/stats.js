@@ -5,13 +5,45 @@ const db = require('quick.db');
 module.exports = {
 	name: 'stats',
     descrption: 'gets users avatar',
-    aliases: ['stat'],
+    aliases: ['stat', 'statsai', 'aistats', 'aistat'],
     usage: '',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName) {
 		if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
 			if(message.channel.id == config.generalID) return;
 		}
+		const ai_stats = () => {
+			let otherswins;
+			let otherslosses;
+			let othersties;
+
+			if (db.get(`games.tictactoe.AI.wins`)) {
+				otherswins = db.get(`games.tictactoe.AI.wins`)
+			} else {
+				otherswins = '0'
+			}
+			if (db.get(`games.tictactoe.AI.losses`)) {
+				otherslosses = db.get(`games.tictactoe.AI.losses`)
+			} else {
+				otherslosses = '0'
+			}
+			if (db.get(`games.tictactoe.AI.ties`)) {
+				othersties = db.get(`games.tictactoe.AI.ties`)
+			} else {
+				othersties = '0'
+			}
+			let mentionedavatar = new Discord.MessageEmbed()
+	.setTitle(`AI's Tic Tac Toe stats`)
+	.setThumbnail(`https://cs.anu.edu.au/courses/comp3620/ai-main-img.jpg`)
+	.addField("Wins", otherswins, true)
+	.addField("Losses", otherslosses, true)
+	.addField("Ties", othersties)
+	.setColor('#d90053')
+	    return message.channel.send(mentionedavatar)
+	}
+		if(commandName == 'aistats' || commandName == 'aistat') return ai_stats();
+		if(commandName == 'statsai') return ai_stats();
+
         if (args[0]) {
         let member;
         if(args[0]) {
