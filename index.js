@@ -5,6 +5,7 @@ const bot = new Discord.Client ({ partials: ["MESSAGE", "CHANNEL", "REACTION"]})
 const db = require('quick.db');
 const fetch = require('node-fetch');
 const ytdl = require('ytdl-core-discord');
+const ping = require('ping');
 const TicTacToe = require('discord-tictactoe');
 const game = new TicTacToe({ language: 'en' });
 const cooldowns = new Map();

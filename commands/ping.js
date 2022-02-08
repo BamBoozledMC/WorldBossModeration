@@ -1,5 +1,6 @@
 const Discord = require ("discord.js");
 const config = require('../config.json');
+const ping = require('ping');
 
 module.exports = {
 	name: 'ping',
@@ -10,6 +11,9 @@ module.exports = {
 		if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
 			if(message.channel.id == config.generalID) return;
 		}
+		let localping = await ping.promise.probe('127.0.0.1', {
+           timeout: 5,
+       });
 		try {
         const pingMsg =  await message.channel.send('Pinging...');
 		return pingMsg.edit(`
@@ -17,6 +21,8 @@ module.exports = {
 				(pingMsg.editedTimestamp || pingMsg.createdTimestamp) - (message.editedTimestamp || message.createdTimestamp)
 			}ms.** | __API__: **${
 				bot.ws.ping
+			}ms** | __INTERNAL__: **${
+				localping.time
 			}ms**
 		`);
 	}catch(e){}
