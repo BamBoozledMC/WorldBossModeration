@@ -106,6 +106,7 @@ module.exports = {
   bot.channels.cache.get(config.logsID).send(muteembed);
   try {
   member.send(`You have been muted in **${message.guild.name}** for the reason: **${res}**`)
+	loading.delete()
 }catch(e){
   console.log(e.stack);
 }
