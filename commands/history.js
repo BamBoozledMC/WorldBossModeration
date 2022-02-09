@@ -5,7 +5,7 @@ const db = require('quick.db');
 module.exports = {
 	name: 'history',
   descrption: 'gets punishment history',
-  aliases: ['punishments', 'warns', 'offences', 'warnings', 'logs'],
+  aliases: ['punishments', 'warns', 'offences', 'warnings', 'logs', 'modlogs'],
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
