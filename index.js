@@ -116,6 +116,12 @@ bot.on('message', async message => {
     if (message.member.roles.cache.some(role => role.id === '932108051924783104')) return;
     message.lineReply("Hey! Please don't ping the WorldBoss's. Make sure you read the <#929941845260255273>.\n**Repeated attempts will result in moderator action.**")
   }
+  let checkiflurk = db.get(`lurking.${message.author.id}`)
+
+  if(checkiflurk) {
+    message.channel.send(`**${message.author.tag}** is no longer lurking.`)
+    db.delete(`lurking.${message.author.id}`)
+  }
   // if (message.content.includes("<:baguette1:934681856111181844> ")) {
   //   message.delete()
   // } else if (message.content.includes("<:baguette2:934681864482996224>")) {
