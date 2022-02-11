@@ -217,15 +217,22 @@ const [, matchedPrefix] = message.content.match(prefixRegex);
 bot.on('guildMemberAdd', member => {
 
 	if(member.guild.id == "929941845004415046") {
-
+    let botCount = member.guild.members.cache.filter(m => m.user.bot).size;
+    let memberCount = `${member.guild.memberCount - botCount}`
+    if(memberCount.endsWith("1")) memberCount = memberCount + "st";
+    else if(memberCount.endsWith("2")) memberCount = memberCount + "nd";
+    else if(memberCount.endsWith("3")) memberCount = memberCount + "rd";
+    else memberCount = memberCount + "th";
 		let welcomeChannel = member.guild.channels.cache.get(config.welcomeID)
-		welcomeChannel.send(`Welcome to the **Official World Boss Discord** ${member}**!**`).then(message => {
+		welcomeChannel.send(`Welcome to the **Official World Boss Discord** ${member}**!**\nYou are the **${memberCount}** member!`).then(message => {
 			message.delete({timeout:30000})
 		});
+
 
 		let joinLog = member.guild.channels.cache.get(config.joinleavelogsID)
 		let joinlogembed = new Discord.MessageEmbed()
 		.setTitle('User Joined')
+    .setDescription(`They are the **${memberCount}** member!`)
 		.addField("User:", `${member.user.tag}\n${member}`)
 		.addField("Discord Account created at:", `${member.user.createdAt}`)
 		.setTimestamp()
