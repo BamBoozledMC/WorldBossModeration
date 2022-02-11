@@ -38,7 +38,9 @@ module.exports = {
 		\`${prefix}uptime\` Checks the bot's uptime.
 		\`${prefix}avatar [@user]\` Sends mentioned user's avatar (pfp).
 		\`${prefix}suggest <suggestion>\` Suggest something!
-		\`${prefix}patrons\` Lists all current patrons helping to support this bot!`)
+		\`${prefix}patrons\` Lists all current patrons helping to support this bot!
+		\`${prefix}lurk\` :eyes: Lurk in chat. (Automatically unlurks on next message sent)
+		\`${prefix}membercount\` Displays the current amount of members and bots.`)
 
 		.setDescription(`Here you can find info on every command!\nSince you are a staff member you have access to supporter-only commands. (Marked as 🔓)\n${message.guild.name}'s Current prefix is \`${prefix}\`\nUse ${prefix}prefix reset to reset your server's prefix to default.\nCommands marked as 🔒 are supporter-only commands and can be unlocked by supporting the bot at [patreon.com/bamboozledlw](https://www.patreon.com/bamboozledlw/)\n\n[] = Optional **|** <> = Required\n`)
 		.setThumbnail('https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg')
@@ -65,7 +67,9 @@ module.exports = {
 \`${prefix}uptime\` Checks the bot's uptime.
 \`${prefix}avatar [@user]\` Sends mentioned user's avatar (pfp).
 \`${prefix}suggest <suggestion>\` Suggest something!
-\`${prefix}patrons\` Lists all current patrons helping to support this bot!`)
+\`${prefix}patrons\` Lists all current patrons helping to support this bot!
+\`${prefix}lurk\` :eyes: Lurk in chat. (Automatically unlurks on next message sent)
+\`${prefix}membercount\` Displays the current amount of members and bots.`)
 
 .setDescription(`Here you can find info on the commands available to you.\nSince you are a supporter on Patreon, you get access to **EXCLUSIVE** commands! (Marked as 🔓) \n${message.guild.name}'s Current prefix is \`${prefix}\`\nCommands marked as 🔒 are supporter-only commands and can be unlocked by supporting the bot at [patreon.com/bamboozledlw](https://www.patreon.com/bamboozledlw/)\n\n[] = Optional **|** <> = Required\n`)
 .setThumbnail('https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg')
@@ -92,7 +96,9 @@ message.reply(`:x: An Error occurred whilst messaging you! Please make sure your
 \`${prefix}uptime\` Checks the bot's uptime.
 \`${prefix}avatar [@user]\` Sends mentioned user's avatar (pfp).
 \`${prefix}suggest <suggestion>\` Suggest something!
-\`${prefix}patrons\` Lists all current patrons helping to support this bot!`)
+\`${prefix}patrons\` Lists all current patrons helping to support this bot!
+\`${prefix}lurk\` :eyes: Lurk in chat. (Automatically unlurks on next message sent)
+\`${prefix}membercount\` Displays the current amount of members and bots.`)
 
 .setDescription(`Here you can find info on the commands available to you.\n${message.guild.name}'s Current prefix is \`${prefix}\`\nCommands marked as 🔒 are supporter-only commands and can be unlocked by supporting the bot at [patreon.com/bamboozledlw](https://www.patreon.com/bamboozledlw/)\n\n[] = Optional **|** <> = Required\n`)
 .setThumbnail('https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg')
