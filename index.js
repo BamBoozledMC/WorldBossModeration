@@ -6,6 +6,7 @@ const db = require('quick.db');
 const fetch = require('node-fetch');
 const ytdl = require('ytdl-core-discord');
 const ping = require('ping');
+const talkedRecently = new Set();
 const TicTacToe = require('discord-tictactoe');
 const game = new TicTacToe({ language: 'en' });
 const cooldowns = new Map();
@@ -100,22 +101,180 @@ setInterval(() => {
     bot.user.setActivity(`${activities[i++ % activities.length]}`, { type: "WATCHING"});
 }, 15000)
 
+
+
 });
 bot.on('message', async message => {
 	if (message.channel.type == "dm") return;
+
+  const auto_mute = async (message) => {
+
+      db.delete(`pingwarn.${message.author.id}`)
+      let muterole = message.guild.roles.cache.find(r => r.name === "Muted");
+      try {
+    await(message.member.roles.add(muterole.id));
+      } catch(e) {
+        console.log(e);
+        return;
+      }
+    let muteembed = new Discord.MessageEmbed()
+        .setColor("#d90053")
+        .setTitle(`Tempmute | ${message.author.tag}`)
+        .addField("User", message.author, true)
+        .addField("Moderator", bot.user, true)
+        .addField("Time", "24h")
+        .addField("Reason", "Pinging Fresh/Lazarbeam multiple times", true)
+        .setTimestamp()
+        .setFooter(message.author.id)
+    bot.channels.cache.get(config.logsID).send(muteembed);
+    try {
+    message.author.send(`You have been tempmuted in **${message.guild.name}** for \`24h\` with the reason: **Pinging Fresh/Lazarbeam multiple times**`)
+  }catch(e){
+    console.log(e.stack);
+  }
+  let ts = Date.now();
+
+  let date_ob = new Date(ts);
+  let date = date_ob.getDate();
+  let month = date_ob.getMonth() + 1;
+  let year = date_ob.getFullYear();
+
+  // prints date & time in YYYY-MM-DD format
+  let formatteddate = year + "-" + month + "-" + date
+
+  let dbgetuser = db.get(`moderation.punishments.${message.author.id}`)
+
+  if(!dbgetuser) {
+    db.add(`moderation.punishments.${message.author.id}.offenceno`, 1)
+    db.set(`moderation.punishments.${message.author.id}.1`, { date: formatteddate, reason: `24h Mute time - Pinging Fresh/Lazarbeam multiple times`, punisher: bot.user.tag, type: 'Tempmute' })
+    db.set(`moderation.punishments.${message.author.id}.muted`, 'true')
+  } else {
+    let addoffence = dbgetuser.offenceno + 1
+    db.add(`moderation.punishments.${message.author.id}.offenceno`, 1)
+    db.set(`moderation.punishments.${message.author.id}.${addoffence}`, { date: formatteddate, reason: `24h Mute time - Pinging Fresh/Lazarbeam multiple times`, punisher: bot.user.tag, type: 'Tempmute' })
+    db.set(`moderation.punishments.${message.author.id}.muted`, 'true')
+  }
+  message.channel.send(`<:shieldtick:939667770184966186> **${message.author.tag}** was automatically tempmuted.`)
+  let mutetime = 86400
+  let timer = setInterval(async function() {
+      mutetime = mutetime - 1;
+      db.set(`tempmute.${message.guild.id}.${message.author.id}.time`, mutetime);
+      db.set(`tempmute.${message.guild.id}.${message.author.id}.channel`, message.channel.id);
+
+      if(mutetime == 0) {
+          clearInterval(timer);
+
+          let unmuteembed = new Discord.MessageEmbed()
+      .setColor("#d90053")
+        .setTitle(`Unmute | ${message.author.tag}`)
+        .addField("User", message.author, true)
+        .addField("Moderator", bot.user, true)
+        .addField("Reason", "Auto Unmute")
+        .setTimestamp()
+        .setFooter(message.author.id)
+      message.member.roles.remove(muterole.id).catch(error =>{
+      })
+      db.delete(`tempmute.${message.guild.id}.${message.author.id}.time`);
+      db.delete(`tempmute.${message.guild.id}.${message.author.id}.channel`);
+      try {
+      message.author.send(`You have been unmuted in **${message.guild.name}** | Auto Unmute`)
+    }catch(e){
+      console.log(e.stack);
+    }
+    bot.channels.cache.get(config.logsID).send(unmuteembed)
+
+    let ts = Date.now();
+
+    let date_ob = new Date(ts);
+    let date = date_ob.getDate();
+    let month = date_ob.getMonth() + 1;
+    let year = date_ob.getFullYear();
+
+    // prints date & time in YYYY-MM-DD format
+    let formatteddate = year + "-" + month + "-" + date
+
+    let dbgetuser = db.get(`moderation.punishments.${message.author.id}`)
+
+    if(!dbgetuser) {
+       db.add(`moderation.punishments.${message.author.id}.offenceno`, 1)
+        db.set(`moderation.punishments.${message.author.id}.1`, { date: formatteddate, reason: 'Automatic unmute', punisher: bot.user.tag, type: 'Unmute' })
+         db.delete(`moderation.punishments.${message.author.id}.muted`)
+       } else {
+          let addoffence = dbgetuser.offenceno + 1
+           db.add(`moderation.punishments.${message.author.id}.offenceno`, 1)
+            db.set(`moderation.punishments.${message.author.id}.${addoffence}`, { date: formatteddate, reason: 'Automatic unmute', punisher: bot.user.tag, type: 'Unmute' })
+             db.delete(`moderation.punishments.${message.author.id}.muted`)
+           }
+
+      }
+  }, 1000);
+      return;
+  }
 
   if(message.mentions.has("199087471215116288")) {
     if (message.author.bot) return;
     if (message.member.roles.cache.some(role => role.id === '929941845004415049')) return;
     if (message.member.roles.cache.some(role => role.id === '934314188858355782')) return;
+    if (message.member.roles.cache.some(role => role.id === '929941845004415049')) return;
+    if (message.member.roles.cache.some(role => role.id === '932108051924783104')) return;
+    if (db.get(`pingwarn.${message.author.id}`) == '3') {
+      auto_mute(message);
+      return;
+    }
+    if (talkedRecently.has(message.author.id)) {
+      db.add(`pingwarn.${message.author.id}`, 1)
+    } else {
+      db.add(`pingwarn.${message.author.id}`, 1)
+      talkedRecently.add(message.author.id);
+    setTimeout(() => {
+        talkedRecently.delete(message.author.id);
+        db.delete(`pingwarn.${message.author.id}`)
+    }, 21000);
+    }
     message.lineReply("Hey! Please don't ping the WorldBoss's. Make sure you read the <#929941845260255273>.\n**Repeated attempts will result in moderator action.**")
   }
   if(message.mentions.has("218345611802574848")) {
     if (message.author.bot) return;
     if (message.member.roles.cache.some(role => role.id === '929941845004415049')) return;
     if (message.member.roles.cache.some(role => role.id === '932108051924783104')) return;
+    if (message.member.roles.cache.some(role => role.id === '929941845004415049')) return;
+    if (message.member.roles.cache.some(role => role.id === '932108051924783104')) return;
+    if (db.get(`pingwarn.${message.author.id}`) == '3') {
+      auto_mute(message);
+      return;
+    }
+    if (talkedRecently.has(message.author.id)) {
+      db.add(`pingwarn.${message.author.id}`, 1)
+    } else {
+      db.add(`pingwarn.${message.author.id}`, 1)
+      talkedRecently.add(message.author.id);
+    setTimeout(() => {
+        talkedRecently.delete(message.author.id);
+        db.delete(`pingwarn.${message.author.id}`)
+    }, 21000);
+    }
     message.lineReply("Hey! Please don't ping the WorldBoss's. Make sure you read the <#929941845260255273>.\n**Repeated attempts will result in moderator action.**")
   }
+  // if(message.mentions.has("562382703190867972")) {
+  //   if (message.author.bot) return;
+  //   if (message.member.roles.cache.some(role => role.id === '929941845004415049')) return;
+  //   if (message.member.roles.cache.some(role => role.id === '932108051924783104')) return;
+  //   if (db.get(`pingwarn.${message.author.id}`) == '3') {
+  //     auto_mute(message);
+  //     return;
+  //   }
+  //   if (talkedRecently.has(message.author.id)) {
+  //     db.add(`pingwarn.${message.author.id}`, 1)
+  //   } else {
+  //     db.add(`pingwarn.${message.author.id}`, 1)
+  //     talkedRecently.add(message.author.id);
+  //   setTimeout(() => {
+  //       talkedRecently.delete(message.author.id);
+  //       db.delete(`pingwarn.${message.author.id}`)
+  //   }, 21000);
+  //   }
+  //   message.lineReply("Hey! Please don't ping the WorldBoss's. Make sure you read the <#929941845260255273>.\n**Repeated attempts will result in moderator action.**")
+  // }
   let checkiflurk = db.get(`lurking.${message.author.id}`)
 
   if(checkiflurk) {
