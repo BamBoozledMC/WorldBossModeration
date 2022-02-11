@@ -17,10 +17,10 @@ module.exports = {
 			})
 			return errMSG.delete({timeout:3000});
 		}
+		message.delete().catch(error =>{
+		})
 
 		message.channel.send(msgtosend).catch(error =>{
-		})
-		message.delete().catch(error =>{
 		})
     }
 }

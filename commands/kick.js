@@ -46,7 +46,7 @@ module.exports = {
             else member = message.guild.members.cache.get(member.id);
             if (!member) return;
 
-
+			message.delete()
     if(!member.kickable)
       return message.channel.send("I cannot kick this user!");
 
@@ -97,6 +97,5 @@ module.exports = {
 			}
 			message.channel.send(`<:shieldtick:939667770184966186> **${member.user.tag}** was kicked.`)
 			loading.delete()
-    message.delete()
     }
 }

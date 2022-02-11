@@ -47,6 +47,7 @@ module.exports = {
             if (!member) return;
             else member = message.guild.members.cache.get(member.id);
             if (!member) return;
+						message.delete()
   if (member.id === message.author.id) return message.channel.send("You cannot mute yourself!");
   if(member.hasPermission("ADMINISTRATOR")) return message.channel.send("I cant mute this user");
 	let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
@@ -206,7 +207,6 @@ let timer = setInterval(async function() {
 }, 1000);
 
 
-  message.delete();
       }catch(e){
         console.log(e.stack);
         if(!message.guild.me.hasPermission("MANAGE_ROLES" || "MANAGE_MESSAGES")) return message.channel.send(":x: I do not have enough permissions to do this!\nPlease make sure i have the \"MANAGE_ROLES\" and \"MANAGE_MESSAGES\" permissions.")

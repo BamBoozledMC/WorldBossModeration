@@ -44,7 +44,7 @@ module.exports = {
 	  if (!member) return;
 	  else member = message.guild.members.cache.get(member.id);
 	  if (!member) return;
-
+		message.delete()
 		if(!member.bannable) return message.channel.send("I cannot ban this user!");
 
 		let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
@@ -94,7 +94,5 @@ module.exports = {
 			}
 			message.channel.send(`<:shieldtick:939667770184966186> **${member.user.tag}** was banned.`)
 			loading.delete()
-
-		  message.delete()
     }
 }

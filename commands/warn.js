@@ -46,10 +46,10 @@ module.exports = {
             else member = message.guild.members.cache.get(member.id);
             if (!member) return;
   if (!reason) return message.lineReply('Please provide a reason.');
+	message.delete()
 let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
   member.send(`You have been warned in **${message.guild.name}** for the reason: **${reason}**`);
 
-  message.delete();
 
   let warn = new Discord.MessageEmbed()
   .setColor("#d90053")

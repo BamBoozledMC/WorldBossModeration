@@ -19,6 +19,7 @@ if (!message.member.hasPermission("BAN_MEMBERS") && message.author.id != config.
         bannedMember = bannedMemberInfo.find(b => b.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || bannedMemberInfo.get(args[0]) || bannedMemberInfo.find(bm => bm.user.tag.toLowerCase() === args[0].toLocaleLowerCase());
         if (isNaN(args[0])) return message.channel.send("Please provide a valid user ID")
         if (!bannedMember) return message.channel.send("Couldn't find the user!\nUser not banned?\nPlease provide a valid user ID")
+				message.delete()
 				let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
 
         let reason = args.slice(1).join(" ")
@@ -30,7 +31,6 @@ if (!message.member.hasPermission("BAN_MEMBERS") && message.author.id != config.
             res = `${reason}`
           }
 
-					message.delete()
             await message.guild.members.unban(bannedMember.user.id, reason)
                 let bean = new Discord.MessageEmbed()
 		  .setColor("#d90053")

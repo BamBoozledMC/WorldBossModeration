@@ -45,6 +45,7 @@ module.exports = {
     else member = message.guild.members.cache.get(member.id);
     if (!member) return;
         if(!member) return;
+				message.delete()
 				let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
         let role = message.guild.roles.cache.find(r => r.name === "Muted")
 
@@ -109,7 +110,6 @@ module.exports = {
 			}
 			message.channel.send(`<:shieldtick:939667770184966186> **${member.user.tag}** was unmuted.`)
 			loading.delete()
-        message.delete();
 
      }
     }
