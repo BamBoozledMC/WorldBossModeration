@@ -229,7 +229,7 @@ bot.on('message', async message => {
     setTimeout(() => {
         talkedRecently.delete(message.author.id);
         db.delete(`pingwarn.${message.author.id}`)
-    }, 21000);
+    }, 60000);
     }
     message.lineReply("Hey! Please don't ping the WorldBoss's. Make sure you read the <#929941845260255273>.\n**Repeated attempts will result in moderator action.**")
   }
@@ -251,7 +251,7 @@ bot.on('message', async message => {
     setTimeout(() => {
         talkedRecently.delete(message.author.id);
         db.delete(`pingwarn.${message.author.id}`)
-    }, 21000);
+    }, 60000);
     }
     message.lineReply("Hey! Please don't ping the WorldBoss's. Make sure you read the <#929941845260255273>.\n**Repeated attempts will result in moderator action.**")
   }
@@ -271,7 +271,7 @@ bot.on('message', async message => {
   //   setTimeout(() => {
   //       talkedRecently.delete(message.author.id);
   //       db.delete(`pingwarn.${message.author.id}`)
-  //   }, 21000);
+  //   }, 60000);
   //   }
   //   message.lineReply("Hey! Please don't ping the WorldBoss's. Make sure you read the <#929941845260255273>.\n**Repeated attempts will result in moderator action.**")
   // }
