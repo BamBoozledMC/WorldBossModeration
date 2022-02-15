@@ -12,8 +12,18 @@ module.exports = {
 
 		if(checkiflurk) return message.lineReply("You are already lurking!");
 		else {
-			message.channel.send(`**${message.author.tag}** is now lurking.`)
-			db.set(`lurking.${message.author.id}`, message.author.id)
+			let reason = args.join(" ");
+				if(!reason) {
+				  lurkreason = "No reason specified";
+				}
+				else {
+				  lurkreason = `${reason}`
+				}
+
+				gettimenow = new Date().toString()
+
+			message.channel.send(`**${message.author}** is now lurking.`)
+			db.set(`lurking.${message.author.id}`, { reason: lurkreason, startedAT: gettimenow, userID: message.author.id })
 		}
 		}
 }

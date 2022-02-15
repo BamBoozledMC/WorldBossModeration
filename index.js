@@ -215,8 +215,6 @@ bot.on('message', async message => {
     if (message.author.bot) return;
     if (message.member.roles.cache.some(role => role.id === '929941845004415049')) return;
     if (message.member.roles.cache.some(role => role.id === '934314188858355782')) return;
-    if (message.member.roles.cache.some(role => role.id === '929941845004415049')) return;
-    if (message.member.roles.cache.some(role => role.id === '932108051924783104')) return;
     if (db.get(`pingwarn.${message.author.id}`) == '3') {
       auto_mute(message);
       return;
@@ -235,8 +233,6 @@ bot.on('message', async message => {
   }
   if(message.mentions.has("218345611802574848")) {
     if (message.author.bot) return;
-    if (message.member.roles.cache.some(role => role.id === '929941845004415049')) return;
-    if (message.member.roles.cache.some(role => role.id === '932108051924783104')) return;
     if (message.member.roles.cache.some(role => role.id === '929941845004415049')) return;
     if (message.member.roles.cache.some(role => role.id === '932108051924783104')) return;
     if (db.get(`pingwarn.${message.author.id}`) == '3') {
@@ -273,13 +269,27 @@ bot.on('message', async message => {
   //       db.delete(`pingwarn.${message.author.id}`)
   //   }, 60000);
   //   }
-  //   message.lineReply("Hey! Please don't ping the WorldBoss's. Make sure you read the <#929941845260255273>.\n**Repeated attempts will result in moderator action.**")
+  //   message.lineReply("Please refrain from pinging Bam.")
   // }
   let checkiflurk = db.get(`lurking.${message.author.id}`)
 
   if(checkiflurk) {
-    message.channel.send(`**${message.author.tag}** is no longer lurking.`)
+    message.channel.send(`**${message.author}** is no longer lurking.`)
     db.delete(`lurking.${message.author.id}`)
+  }
+
+  if(message.mentions.members.first()) {
+    if(message.author.bot) return;
+    let mentionlurk = db.get(`lurking.${message.mentions.members.first().user.id}`)
+    if(mentionlurk) {
+      let userislurking = new Discord.MessageEmbed()
+      .setTitle(`${message.mentions.members.first().user.tag} is Lurking!`)
+      .setDescription(`They have been lurking since **${mentionlurk.startedAT}**`)
+      .addField(`Reason`, mentionlurk.reason)
+      .setColor("#d90053")
+      .setTimestamp()
+      message.channel.send(userislurking)
+    }
   }
   // if (message.content.includes("<:baguette1:934681856111181844> ")) {
   //   message.delete()
