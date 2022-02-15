@@ -40,6 +40,7 @@ bot.on("ready", async () => {
 			let channel = guild.channels.cache.get(db.get(`tempmute.${guild.id}.${member.user.id}.channel`));
 			let timer = setInterval(async function() {
 				mutetime = mutetime - 1;
+        db.set(`tempmute.${guild.id}.${member.user.id}.time`, mutetime);
 				if(mutetime == 0) {
 					clearInterval(timer);
 
