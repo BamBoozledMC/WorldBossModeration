@@ -274,7 +274,9 @@ bot.on('message', async message => {
   let checkiflurk = db.get(`lurking.${message.author.id}`)
 
   if(checkiflurk) {
-    message.channel.send(`**${message.author}** is no longer lurking.`)
+    message.channel.send(`**${message.author}** is no longer lurking.`).then(message => {
+      message.delete({timeout:10000})
+    });
     db.delete(`lurking.${message.author.id}`)
   }
 
@@ -288,7 +290,9 @@ bot.on('message', async message => {
       .addField(`Reason`, mentionlurk.reason)
       .setColor("#d90053")
       .setTimestamp()
-      message.channel.send(userislurking)
+      message.channel.send(userislurking).then(message => {
+  			message.delete({timeout:10000})
+  		});
     }
   }
   // if (message.content.includes("<:baguette1:934681856111181844> ")) {
