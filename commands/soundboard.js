@@ -36,7 +36,7 @@ module.exports = {
 			allsfx = allsfx.join("\n")
 			let invalidsfx = new Discord.MessageEmbed()
 			.setTitle(`Invalid Sound!`)
-			.setDescription(`The sound effect name you provided is **Invald** or does not **exist**\nUsage: ${prefix}soundboard sound_effect_name\nAliases: \`${prefix}sb | ${prefix}sfx\`\n**Available Sound Effects:**\n${allsfx}`)
+			.setDescription(`The sound effect name you provided is **Invald** or does not **exist**\nUsage: ${prefix}soundboard sound_effect_name\nAliases: \`${prefix}sb | ${prefix}sfx\`\n**Available Sound Effects:**\n${allsfx}\n**Total: ${sfxs.size}**`)
 			.setColor('#d90053')
 			.setFooter("Developed by BamBoozled#0882")
 			message.lineReply(invalidsfx)
@@ -45,7 +45,6 @@ module.exports = {
 		if (message.guild.me.voice.channel) return message.channel.send("I am busy in another voice channel! Please try again soon.")
 
             if (message.member.voice.channel) {
-                message.delete()
                 const connection = await message.member.voice.channel.join();
             const dispatcher = connection.play(thesfx)
                 message.channel.send(`🔊 Playing the **${thearg}** sound effect in your voice channel`)
