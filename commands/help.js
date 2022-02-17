@@ -32,7 +32,8 @@ module.exports = {
 		\`${prefix}tictactoe [@user]\` Play tic tac toe against other poeple or challenge the unbeatable AI.
 		\`${prefix}stats [@user]\` Check your tic tac toe stats or view someone elses.
 		🔓 \`${prefix}coinflip\` Flip a coin! Heads/Tails.
-		🔓 \`${prefix}dadjoke\` Sends a dadjoke.`)
+		🔓 \`${prefix}dadjoke\` Sends a dadjoke.
+		🔓 \`${prefix}soundboard\` Play sound effects in your voice channel!`)
 
 		.addField("Misc", ` \`${prefix}ping\` Checks the bot's ping.
 		\`${prefix}uptime\` Checks the bot's uptime.
@@ -61,7 +62,8 @@ module.exports = {
 \`${prefix}tictactoe [@user]\` Play tic tac toe against other poeple or challenge the unbeatable AI.
 \`${prefix}stats [@user]\` Check your tic tac toe stats or view someone elses.
 🔓 \`${prefix}coinflip\` Flip a coin! Heads/Tails.
-🔓 \`${prefix}dadjoke\` Sends a dadjoke.`)
+🔓 \`${prefix}dadjoke\` Sends a dadjoke.
+🔓 \`${prefix}soundboard\` Play sound effects in your voice channel!`)
 
 .addField("Misc", ` \`${prefix}ping\` Checks the bot's ping.
 \`${prefix}uptime\` Checks the bot's uptime.
@@ -90,7 +92,8 @@ message.reply(`:x: An Error occurred whilst messaging you! Please make sure your
 \`${prefix}tictactoe [@user]\` Play tic tac toe against other poeple or challenge the unbeatable AI.
 \`${prefix}stats [@user]\` Check your tic tac toe stats or view someone elses.
 🔒 ~~\`${prefix}coinflip\` Flip a coin! Heads/Tails.~~
-🔒 ~~\`${prefix}dadjoke\` Sends a dadjoke.~~`)
+🔒 ~~\`${prefix}dadjoke\` Sends a dadjoke.~~
+🔒 ~~\`${prefix}soundboard\` Play sound effects in your voice channel!~~`)
 
 .addField("Misc", ` \`${prefix}ping\` Checks the bot's ping.
 \`${prefix}uptime\` Checks the bot's uptime.
