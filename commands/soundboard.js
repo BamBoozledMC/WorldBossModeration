@@ -49,7 +49,7 @@ module.exports = {
             const dispatcher = connection.play(thesfx)
                 message.channel.send(`🔊 Playing the **${thearg}** sound effect in your voice channel`)
                 dispatcher.on('finish', () => {
-                    message.member.voice.channel.leave();
+                    message.guild.me.voice.channel.leave()
                   });
 
               } else {
