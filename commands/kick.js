@@ -95,7 +95,6 @@ module.exports = {
 				db.add(`moderation.punishments.${member.id}.offenceno`, 1)
 				db.set(`moderation.punishments.${member.id}.${addoffence}`, { date: formatteddate, reason: res, punisher: message.author.tag, type: 'Kick' })
 			}
-			message.channel.send(`<:shieldtick:939667770184966186> **${member.user.tag}** was kicked.`)
-			loading.delete()
+			loading.edit(`<:shieldtick:939667770184966186> **${member.user.tag}** was kicked.`)
     }
 }

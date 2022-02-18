@@ -77,8 +77,7 @@ module.exports = {
   }
 
   if(member.roles.cache.has(muterole.id)) {
-		message.channel.send("This user is already muted!");
-		loading.delete()
+		loading.edit("This user is already muted!")
 		return;
 }
   let reason = args.slice(1).join(" ");
@@ -107,7 +106,6 @@ module.exports = {
   bot.channels.cache.get(config.logsID).send(muteembed);
   try {
   member.send(`You have been muted in **${message.guild.name}** for the reason: **${res}**`)
-	loading.delete()
 }catch(e){
   console.log(e.stack);
 }
@@ -134,7 +132,7 @@ if(!dbgetuser) {
 	db.set(`moderation.punishments.${member.id}.${addoffence}`, { date: formatteddate, reason: res, punisher: message.author.tag, type: 'Mute' })
 	db.set(`moderation.punishments.${member.id}.muted`, 'true')
 }
-message.channel.send(`<:shieldtick:939667770184966186> **${member.user.tag}** was muted.`)
+loading.edit(`<:shieldtick:939667770184966186> **${member.user.tag}** was muted.`)
 
       }catch(e){
         console.log(e.stack);

@@ -77,14 +77,12 @@ module.exports = {
   }
 
   if(member.roles.cache.has(muterole.id)) {
-		message.channel.send("This user is already muted!");
-		loading.delete()
+		loading.edit("This user is already muted!")
 		return;
 	}
   let mutetime = args[1];
 	if(!mutetime) {
-		message.lineReply("You must provide the amount of time.")
-		loading.delete()
+		loading.edit("You must provide the amount of time.")
 		return;
 }
   if(mutetime.endsWith("s")) mutetime = mutetime.slice(0, -1);
@@ -93,8 +91,7 @@ module.exports = {
   else if(mutetime.endsWith("d")) mutetime = mutetime.slice(0, -1) * 3600 * 24;
 
   if(!mutetime || isNaN(mutetime)) {
-		message.channel.send("Please include a valid time!");
-		loading.delete()
+		loading.edit("Please include a valid time!")
 		return;
 }
 
@@ -124,7 +121,6 @@ module.exports = {
   bot.channels.cache.get(config.logsID).send(muteembed);
   try {
   member.send(`You have been tempmuted in **${message.guild.name}** for \`${args[1]}\` with the reason: **${res}**`)
-	loading.delete()
 }catch(e){
   console.log(e.stack);
 }
@@ -151,7 +147,7 @@ if(!dbgetuser) {
 	db.set(`moderation.punishments.${member.id}.${addoffence}`, { date: formatteddate, reason: `${args[1]} Mute time - ${res}`, punisher: message.author.tag, type: 'Tempmute' })
 	db.set(`moderation.punishments.${member.id}.muted`, 'true')
 }
-message.channel.send(`<:shieldtick:939667770184966186> **${member.user.tag}** was tempmuted.`)
+loading.edit(`<:shieldtick:939667770184966186> **${member.user.tag}** was tempmuted.`)
 
 let timer = setInterval(async function() {
     mutetime = mutetime - 1;

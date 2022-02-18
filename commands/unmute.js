@@ -50,8 +50,7 @@ module.exports = {
         let role = message.guild.roles.cache.find(r => r.name === "Muted")
 
         if(!role || !member.roles.cache.has(role.id)) {
-					message.channel.send("This user is not muted!");
-					loading.delete()
+					loading.edit("This user is not muted!");
 					return;
 				}
 
@@ -108,8 +107,7 @@ module.exports = {
 				db.set(`moderation.punishments.${member.id}.${addoffence}`, { date: formatteddate, reason: res, punisher: message.author.tag, type: 'Unmute' })
 				db.delete(`moderation.punishments.${member.id}.muted`)
 			}
-			message.channel.send(`<:shieldtick:939667770184966186> **${member.user.tag}** was unmuted.`)
-			loading.delete()
+			loading.edit(`<:shieldtick:939667770184966186> **${member.user.tag}** was unmuted.`)
 
      }
     }

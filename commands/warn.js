@@ -82,8 +82,7 @@ let loading = await message.channel.send("<a:loading:939665977728176168> Give me
 			db.add(`moderation.punishments.${member.id}.offenceno`, 1)
 			db.set(`moderation.punishments.${member.id}.${addoffence}`, { date: formatteddate, reason: reason, punisher: message.author.tag, type: 'Warn' })
 		}
-		message.channel.send(`<:shieldtick:939667770184966186> **${member.user.tag}** was warned.`)
-		loading.delete()
+		loading.edit(`<:shieldtick:939667770184966186> **${member.user.tag}** was warned.`)
 
 }
 }

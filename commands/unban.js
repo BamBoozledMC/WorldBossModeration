@@ -62,8 +62,7 @@ if (!message.member.hasPermission("BAN_MEMBERS") && message.author.id != config.
 						db.add(`moderation.punishments.${bannedMember.user.id}.offenceno`, 1)
 						db.set(`moderation.punishments.${bannedMember.user.id}.${addoffence}`, { date: formatteddate, reason: res, punisher: message.author.tag, type: 'Unban' })
 					}
-					message.channel.send(`<:shieldtick:939667770184966186> **${bannedMember.user.tag}** was unbanned.`)
-					loading.delete()
+					loading.edit(`<:shieldtick:939667770184966186> **${bannedMember.user.tag}** was unbanned.`)
 
     }catch(e){
       console.log(e.stack);
