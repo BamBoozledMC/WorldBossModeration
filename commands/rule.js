@@ -31,7 +31,9 @@ module.exports = {
 		} else if (num == '7') {
 		message.channel.send("7️⃣ Do not bypass the filter that is in place. If your message is deleted as soon as you send it, that means it contained a blacklisted word.")
 		} else if (num == '8') {
-		message.channel.send("8️⃣ Staff Members have the final say. Do not argue with them.")
+		message.channel.send("8️⃣ Currently, this server only supports the English language. Other languages can not be moderated so please refrain from speaking them.")
+		} else if (num == '9') {
+		message.channel.send("9️⃣ Staff Members have the final say. Do not argue with them")
 		}
 
     }
