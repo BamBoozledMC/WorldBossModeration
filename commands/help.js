@@ -13,7 +13,7 @@ module.exports = {
 		.setTitle('Help Page')
 		.addField("Configuration", `\`${prefix}prefix\` Change the server's prefix`)
 
-		.addField("Moderation", ` \`${prefix}clear <amount>\` Deletes given amount of messages. (Limited to 100 due to discord)
+		.addField("Moderation", ` \`${prefix}clear [@user] <amount>\` Deletes given amount of messages from a specific user or everyone. (Limited to 100 due to discord)
 		\`${prefix}slowmode <time>\` Sets the channel's slowmode to the provided time.
 		\`${prefix}warn <@user | userID> [reason]\` Warns the provided user for your reason.
 		\`${prefix}kick <@user | userID> [reason]\` Kicks the provided user from the server.
@@ -25,7 +25,6 @@ module.exports = {
 		\`${prefix}history <@user | userID> [page]\` view previous offences of a user.
 		\`${prefix}rhistory <@user | userID> <offencenumber/all>\` remove all offences or a certain offence from a user.
 		\`${prefix}snipe\` Snipes the last deleted message in your channel.
-		\`${prefix}say <message>\` Returns your message.
 		\`${prefix}rule <rulenumber>\` Sends specified rule in chat.`)
 
 		.addField("Fun", ` \`${prefix}fact\` Sends a random fact.
@@ -38,6 +37,7 @@ module.exports = {
 		.addField("Misc", ` \`${prefix}ping\` Checks the bot's ping.
 		\`${prefix}uptime\` Checks the bot's uptime.
 		\`${prefix}avatar [@user]\` Sends mentioned user's avatar (pfp).
+		\`${prefix}say <message>\` Returns your message.
 		\`${prefix}suggest <suggestion>\` Suggest something!
 		\`${prefix}patrons\` Lists all current patrons helping to support this bot!
 		\`${prefix}lurk [reason]\` :eyes: Lurk in chat. (Automatically unlurks on next message sent)
@@ -53,6 +53,7 @@ module.exports = {
 		})
 	} catch(e){
 		message.reply(`:x: An Error occurred whilst messaging you! Please make sure your DMs are open so I can message you.`)
+		console.log(e)
 	}
 } else if(message.member.roles.cache.some(role => role.id === '937561741334814810')) {
 	let embed = new Discord.MessageEmbed()
