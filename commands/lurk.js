@@ -24,7 +24,7 @@ module.exports = {
 				}
 
 				gettimenow = new Date().toString()
-
+			message.delete()
 			message.channel.send(`**${message.author}** is now lurking - **${lurkreason}**`).then(message => {
   			message.delete({timeout:10000})
   		});
