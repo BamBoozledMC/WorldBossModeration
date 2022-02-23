@@ -24,8 +24,7 @@ module.exports = {
 		\`${prefix}unmute <@user | userID> [reason]\` unmutes the provided user.
 		\`${prefix}history <@user | userID> [page]\` view previous offences of a user.
 		\`${prefix}rhistory <@user | userID> <offencenumber/all>\` remove all offences or a certain offence from a user.
-		\`${prefix}snipe\` Snipes the last deleted message in your channel.
-		\`${prefix}rule <rulenumber>\` Sends specified rule in chat.`)
+		\`${prefix}nick <@user | userID> [nickname]\` Get or set the nickname for a specific user.`)
 
 		.addField("Fun", ` \`${prefix}fact\` Sends a random fact.
 		\`${prefix}tictactoe [@user]\` Play tic tac toe against other poeple or challenge the unbeatable AI.
@@ -41,7 +40,9 @@ module.exports = {
 		\`${prefix}suggest <suggestion>\` Suggest something!
 		\`${prefix}patrons\` Lists all current patrons helping to support this bot!
 		\`${prefix}lurk [reason]\` :eyes: Lurk in chat. (Automatically unlurks on next message sent)
-		\`${prefix}membercount\` Displays the current amount of members and bots.`)
+		\`${prefix}membercount\` Displays the current amount of members and bots.
+		\`${prefix}snipe\` Snipes the last deleted message in your channel.
+		\`${prefix}rule <rulenumber>\` Sends specified rule in chat.`)
 
 		.setDescription(`Here you can find info on every command!\nSince you are a staff member you have access to supporter-only commands. (Marked as 🔓)\n${message.guild.name}'s Current prefix is \`${prefix}\`\nUse ${prefix}prefix reset to reset your server's prefix to default.\nCommands marked as 🔒 are supporter-only commands and can be unlocked by supporting the bot at [patreon.com/bamboozledlw](https://www.patreon.com/bamboozledlw/)\n\n[] = Optional **|** <> = Required\n`)
 		.setThumbnail('https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg')
