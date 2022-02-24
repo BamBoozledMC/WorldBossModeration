@@ -54,16 +54,24 @@ module.exports = {
 let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
 let checknick;
 let notemsg;
+let resetorset;
 if(nick.length > 32) {
 	checknick = nick.substring(0, 32)
 	notemsg = "\n‼️ Nicknames can't be longer then **32** charactors, the nickname you specified may have been cut off."
+	resetorset = "set to:"
+} else if(nick.toLowerCase() == "off" || nick.toLowerCase() == "reset") {
+	checknick = ""
+	notemsg = ""
+	resetorset = "**reset**"
 } else {
 	checknick = nick
 	notemsg = ""
+	resetorset = "set to:"
 }
+
 await member.setNickname(checknick)
 
-		loading.edit(`<:shieldtick:939667770184966186> **${member.user.tag}**'s nickname has been set to: **${checknick}** ${notemsg}`)
+		loading.edit(`<:shieldtick:939667770184966186> **${member.user.tag}**'s nickname has been ${resetorset} ${checknick ? `**${checknick}**` : ""} ${notemsg}`)
 
 }
 }
