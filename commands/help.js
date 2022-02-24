@@ -24,7 +24,7 @@ module.exports = {
 		\`${prefix}unmute <@user | userID> [reason]\` unmutes the provided user.
 		\`${prefix}history <@user | userID> [page]\` view previous offences of a user.
 		\`${prefix}rhistory <@user | userID> <offencenumber/all>\` remove all offences or a certain offence from a user.
-		\`${prefix}nick <@user | userID> [nickname]\` Get or set the nickname for a specific user.`)
+		\`${prefix}nick <@user | userID> [nickname | "reset"]\` Get or set the nickname for a specific user.`)
 
 		.addField("Fun", ` \`${prefix}fact\` Sends a random fact.
 		\`${prefix}tictactoe [@user]\` Play tic tac toe against other poeple or challenge the unbeatable AI.
