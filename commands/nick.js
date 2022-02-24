@@ -69,7 +69,18 @@ if(nick.length > 32) {
 	resetorset = "set to:"
 }
 
-await member.setNickname(checknick)
+	await member.setNickname(checknick)
+
+	let nickembed = new Discord.MessageEmbed()
+  .setColor("#d90053")
+  .setTitle(`Nickname changed | ${member.user.tag}`)
+  .addField("User", member, true)
+  .addField("Moderator", message.author, true)
+  .addField(`New nickname`, `${checknick ? `**${checknick}**` : `Nickname was **reset** to default.`}`)
+  .setTimestamp()
+  .setFooter(member.id)
+
+    bot.channels.cache.get(config.logsID).send(nickembed)
 
 		loading.edit(`<:shieldtick:939667770184966186> **${member.user.tag}**'s nickname has been ${resetorset} ${checknick ? `**${checknick}**` : ""} ${notemsg}`)
 
