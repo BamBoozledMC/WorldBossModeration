@@ -6,6 +6,7 @@ const db = require('quick.db');
 const fetch = require('node-fetch');
 const ytdl = require('ytdl-core-discord');
 const ping = require('ping');
+const emojiRegex = require("emoji-regex");
 const talkedRecently = new Set();
 const TicTacToe = require('discord-tictactoe');
 const game = new TicTacToe({ language: 'en' });
@@ -215,6 +216,16 @@ bot.on('message', async message => {
   if(message.content.includes("🍑")) {
     message.delete().catch(error =>{
 		})
+  }
+  const emotes = (str) => str.match(/<a?:.+?:\d{18}>|\p{Extended_Pictographic}/gu);
+  let getemojis = emotes(message.content)
+  if (getemojis) {
+    if (getemojis.length > 5) {
+      if (message.author.bot) return;
+      if (message.member.roles.cache.some(role => role.id === '929941845004415049')) return;
+      if (message.member.roles.cache.some(role => role.id === '932108051924783104')) return;
+      message.delete()
+    }
   }
   // if(message.mentions.has("562382703190867972")) {
   //   if (message.author.bot) return;
