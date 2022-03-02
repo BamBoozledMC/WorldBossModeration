@@ -62,6 +62,9 @@ if (!message.member.hasPermission("BAN_MEMBERS") && message.author.id != config.
 						db.add(`moderation.punishments.${bannedMember.user.id}.offenceno`, 1)
 						db.set(`moderation.punishments.${bannedMember.user.id}.${addoffence}`, { date: formatteddate, reason: res, punisher: message.author.tag, type: 'Unban' })
 					}
+
+					db.add(`moderation.modstats.${message.author.id}.unbans`, 1)
+
 					loading.edit(`<:shieldtick:939667770184966186> **${bannedMember.user.tag}** was unbanned.`)
 
     }catch(e){

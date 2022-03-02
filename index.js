@@ -63,29 +63,7 @@ bot.on("ready", async () => {
     				console.log(e.stack);
 					  }
 					  bot.channels.cache.get(config.logsID).send(unmuteembed)
-
-            let ts = Date.now();
-
-            let date_ob = new Date(ts);
-            let date = date_ob.getDate();
-            let month = date_ob.getMonth() + 1;
-            let year = date_ob.getFullYear();
-
-            // prints date & time in YYYY-MM-DD format
-            let formatteddate = year + "-" + month + "-" + date
-
-            let dbgetuser = db.get(`moderation.punishments.${member.user.id}`)
-
-            if(!dbgetuser) {
-	             db.add(`moderation.punishments.${member.user.id}.offenceno`, 1)
-	              db.set(`moderation.punishments.${member.user.id}.1`, { date: formatteddate, reason: 'Automatic unmute', punisher: bot.user.tag, type: 'Unmute' })
-	               db.delete(`moderation.punishments.${member.user.id}.muted`)
-               } else {
-	                let addoffence = dbgetuser.offenceno + 1
-	                 db.add(`moderation.punishments.${member.user.id}.offenceno`, 1)
-	                  db.set(`moderation.punishments.${member.user.id}.${addoffence}`, { date: formatteddate, reason: 'Automatic unmute', punisher: bot.user.tag, type: 'Unmute' })
-	                   db.delete(`moderation.punishments.${member.user.id}.muted`)
-                   }
+            db.delete(`moderation.punishments.${message.author.id}.muted`)
 
 				}
 			}, 1000)
@@ -183,29 +161,7 @@ bot.on('message', async message => {
       console.log(e.stack);
     }
     bot.channels.cache.get(config.logsID).send(unmuteembed)
-
-    let ts = Date.now();
-
-    let date_ob = new Date(ts);
-    let date = date_ob.getDate();
-    let month = date_ob.getMonth() + 1;
-    let year = date_ob.getFullYear();
-
-    // prints date & time in YYYY-MM-DD format
-    let formatteddate = year + "-" + month + "-" + date
-
-    let dbgetuser = db.get(`moderation.punishments.${message.author.id}`)
-
-    if(!dbgetuser) {
-       db.add(`moderation.punishments.${message.author.id}.offenceno`, 1)
-        db.set(`moderation.punishments.${message.author.id}.1`, { date: formatteddate, reason: 'Automatic unmute', punisher: bot.user.tag, type: 'Unmute' })
-         db.delete(`moderation.punishments.${message.author.id}.muted`)
-       } else {
-          let addoffence = dbgetuser.offenceno + 1
-           db.add(`moderation.punishments.${message.author.id}.offenceno`, 1)
-            db.set(`moderation.punishments.${message.author.id}.${addoffence}`, { date: formatteddate, reason: 'Automatic unmute', punisher: bot.user.tag, type: 'Unmute' })
-             db.delete(`moderation.punishments.${message.author.id}.muted`)
-           }
+    db.delete(`moderation.punishments.${message.author.id}.muted`)
 
       }
   }, 1000);
@@ -251,6 +207,14 @@ bot.on('message', async message => {
     }, 300000);
     }
     message.lineReply("Hey! Please don't ping the WorldBoss's. Make sure you read the <#929941845260255273>.\n**Repeated attempts will result in moderator action.**")
+  }
+  if(message.content.includes("🍆")) {
+    message.delete().catch(error =>{
+		})
+  }
+  if(message.content.includes("🍑")) {
+    message.delete().catch(error =>{
+		})
   }
   // if(message.mentions.has("562382703190867972")) {
   //   if (message.author.bot) return;

@@ -107,6 +107,9 @@ module.exports = {
 				db.set(`moderation.punishments.${member.id}.${addoffence}`, { date: formatteddate, reason: res, punisher: message.author.tag, type: 'Unmute' })
 				db.delete(`moderation.punishments.${member.id}.muted`)
 			}
+
+			db.add(`moderation.modstats.${message.author.id}.unmutes`, 1)
+
 			loading.edit(`<:shieldtick:939667770184966186> **${member.user.tag}** was unmuted.`)
 
      }

@@ -132,6 +132,9 @@ if(!dbgetuser) {
 	db.set(`moderation.punishments.${member.id}.${addoffence}`, { date: formatteddate, reason: res, punisher: message.author.tag, type: 'Mute' })
 	db.set(`moderation.punishments.${member.id}.muted`, 'true')
 }
+
+db.add(`moderation.modstats.${message.author.id}.mutes`, 1)
+
 loading.edit(`<:shieldtick:939667770184966186> **${member.user.tag}** was muted.`)
 
       }catch(e){

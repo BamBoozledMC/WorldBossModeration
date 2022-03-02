@@ -147,6 +147,9 @@ if(!dbgetuser) {
 	db.set(`moderation.punishments.${member.id}.${addoffence}`, { date: formatteddate, reason: `${args[1]} Mute time - ${res}`, punisher: message.author.tag, type: 'Tempmute' })
 	db.set(`moderation.punishments.${member.id}.muted`, 'true')
 }
+
+db.add(`moderation.modstats.${message.author.id}.mutes`, 1)
+
 loading.edit(`<:shieldtick:939667770184966186> **${member.user.tag}** was tempmuted.`)
 
 let timer = setInterval(async function() {
@@ -175,30 +178,7 @@ let timer = setInterval(async function() {
     console.log(e.stack);
   }
 	bot.channels.cache.get(config.logsID).send(unmuteembed)
-
-	let ts = Date.now();
-
-	let date_ob = new Date(ts);
-	let date = date_ob.getDate();
-	let month = date_ob.getMonth() + 1;
-	let year = date_ob.getFullYear();
-
-	// prints date & time in YYYY-MM-DD format
-	let formatteddate = year + "-" + month + "-" + date
-
-	let dbgetuser = db.get(`moderation.punishments.${member.user.id}`)
-
-	if(!dbgetuser) {
-		 db.add(`moderation.punishments.${member.user.id}.offenceno`, 1)
-			db.set(`moderation.punishments.${member.user.id}.1`, { date: formatteddate, reason: 'Automatic unmute', punisher: bot.user.tag, type: 'Unmute' })
-			 db.delete(`moderation.punishments.${member.user.id}.muted`)
-		 } else {
-				let addoffence = dbgetuser.offenceno + 1
-				 db.add(`moderation.punishments.${member.user.id}.offenceno`, 1)
-					db.set(`moderation.punishments.${member.user.id}.${addoffence}`, { date: formatteddate, reason: 'Automatic unmute', punisher: bot.user.tag, type: 'Unmute' })
-					 db.delete(`moderation.punishments.${member.user.id}.muted`)
-				 }
-
+	db.delete(`moderation.punishments.${message.author.id}.muted`)
     }
 }, 1000);
 

@@ -92,6 +92,9 @@ module.exports = {
 				db.add(`moderation.punishments.${member.id}.offenceno`, 1)
 				db.set(`moderation.punishments.${member.id}.${addoffence}`, { date: formatteddate, reason: res, punisher: message.author.tag, type: 'Ban' })
 			}
+
+			db.add(`moderation.modstats.${message.author.id}.bans`, 1)
+
 			loading.edit(`<:shieldtick:939667770184966186> **${member.user.tag}** was banned.`)
     }
 }
