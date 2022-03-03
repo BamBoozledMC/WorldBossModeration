@@ -217,6 +217,10 @@ bot.on('message', async message => {
     message.delete().catch(error =>{
 		})
   }
+  if(message.content.includes("ඞ")) {
+    message.delete().catch(error =>{
+		})
+  }
   const emotes = (str) => str.match(/<a?:.+?:\d{18}>|\p{Extended_Pictographic}/gu);
   let getemojis = emotes(message.content)
   if (getemojis) {
