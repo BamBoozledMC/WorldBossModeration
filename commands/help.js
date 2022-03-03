@@ -58,7 +58,7 @@ module.exports = {
 			embed.addField("Level exclusive commands - Challenger", `\`${prefix}slap <@user | userID>\` Slap someone.\n\`${prefix}jail <@user | userID>\` Put someone in jail.`)
 		}
 		if(message.member.roles.cache.some(role => role.id === '932808823020879872')) {
-			embed.addField("Level exclusive commands - Contender", `\`${prefix}kiss <@user | userID>\` Kiss someone... :flushed:`)
+			embed.addField("Level exclusive commands - Contender", `\`${prefix}kiss <@user | userID>\` Kiss someone... :flushed:\n\`${prefix}delete <@user | userID>\` Delete someone.`)
 		}
 		try {
 		await message.author.send(embed)
@@ -101,7 +101,7 @@ if(message.member.roles.cache.some(role => role.id === '932808652350435349')) {
 	embed.addField("Level exclusive commands - Challenger", `\`${prefix}slap <@user | userID>\` Slap someone.\n\`${prefix}jail <@user | userID>\` Put someone in jail.`)
 }
 if(message.member.roles.cache.some(role => role.id === '932808823020879872')) {
-	embed.addField("Level exclusive commands - Contender", `\`${prefix}kiss <@user | userID>\` Kiss someone... :flushed:`)
+	embed.addField("Level exclusive commands - Contender", `\`${prefix}kiss <@user | userID>\` Kiss someone... :flushed:\n\`${prefix}delete <@user | userID>\` Delete someone.`)
 }
 
 if(message.member.roles.cache.some(role => role.id === '937561741334814810')) {

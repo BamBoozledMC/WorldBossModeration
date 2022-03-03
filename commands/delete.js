@@ -3,14 +3,14 @@ const {Discord, MessageAttachment} = require ("discord.js");
 const canvacord = require("canvacord");
 
 module.exports = {
-	name: 'trash',
+	name: 'delete',
   descrption: 'Returns your message',
 	cooldown: 30,
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
 		if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
-			if(!message.member.roles.cache.some(role => role.id === '932808652350435349')) return message.lineReply(`You require the **Challenger** rank to use this command!\nCheck your current rank by using \`?rank\` in <#932828142094123009>.`);
+			if(!message.member.roles.cache.some(role => role.id === '932808823020879872')) return message.lineReply(`You require the **Contender** rank to use this command!\nCheck your current rank by using \`?rank\` in <#932828142094123009>.`);
 		}
 		let member;
 	            if(args[0]) {
@@ -47,8 +47,8 @@ module.exports = {
 	            else member = message.guild.members.cache.get(member.id);
 	            if (!member) return;
 							message.channel.startTyping()
-			let image = await canvacord.Canvas.trash(member.user.displayAvatarURL({ dynamic: true, format: "jpg" }), true)
-			await message.channel.send(`${message.author} trash ${member} `, new MessageAttachment(image, "image.png"))
+			let image = await canvacord.Canvas.delete(member.user.displayAvatarURL({ dynamic: true, format: "jpg" }), true)
+			await message.channel.send(`${message.author} deleted ${member} <:trash:948880311796764692>`, new MessageAttachment(image, "image.png"))
 			message.channel.stopTyping()
 
     }
