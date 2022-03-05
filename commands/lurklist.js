@@ -23,9 +23,11 @@ module.exports = {
 		let getreason = declarearray.reason
 		let getID = declarearray.userID
 		let getTag = bot.users.cache.get(getID);
-		lurklist.addField(`${getTag.tag}`, `Reason: ${getreason}`).catch(error =>{
+		try {
+		lurklist.addField(`${getTag.tag}`, `Reason: ${getreason}`)
+	} catch(e){
 			return message.channel.send("error, check console for info")
-		})
+		}
     numofusers++
 });
 lurklist.setDescription(`There are **${numofusers}** lurkers`)
