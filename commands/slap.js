@@ -46,6 +46,7 @@ module.exports = {
 	            if (!member) return;
 	            else member = message.guild.members.cache.get(member.id);
 	            if (!member) return;
+							if(member.id == message.author.id) return message.lineReply("You can't slap yourself!")
 							message.channel.startTyping()
 			let image = await canvacord.Canvas.slap(message.author.displayAvatarURL({ dynamic: true, format: "jpg" }), member.user.displayAvatarURL({ dynamic: true, format: "jpg" }))
 			await message.channel.send(`${message.author} slapped ${member} <:ayo:934399652655165490>`, new MessageAttachment(image, "image.png"))

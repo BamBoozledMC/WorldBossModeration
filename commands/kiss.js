@@ -46,7 +46,7 @@ module.exports = {
 	            if (!member) return;
 	            else member = message.guild.members.cache.get(member.id);
 	            if (!member) return;
-
+							if(member.id == message.author.id) return message.lineReply("You can't kiss yourself!")
 							let askkiss = await message.lineReply(`${member.user}, ${message.author} would like to kiss you.\n⬇️ **Accept** / **Deny** ⬇️`)
 							askkiss.react('✅').then(() => askkiss.react('❌'));
 

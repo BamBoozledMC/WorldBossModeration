@@ -46,6 +46,7 @@ module.exports = {
 	            if (!member) return;
 	            else member = message.guild.members.cache.get(member.id);
 	            if (!member) return;
+							if(member.id == message.author.id) return message.lineReply("You can't hug yourself!")
 			await message.channel.send(`${message.author} hugged ${member}! <:pandahug:948789130626752562>`)
 
     }
