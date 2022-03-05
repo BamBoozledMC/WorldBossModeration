@@ -275,6 +275,7 @@ bot.on('message', async message => {
   		});
     }
   }
+
   // if (message.content.includes("<:baguette1:934681856111181844> ")) {
   //   message.delete()
   // } else if (message.content.includes("<:baguette2:934681864482996224>")) {
@@ -295,6 +296,20 @@ bot.on('message', async message => {
 	} else {
 		prefix = pref;
 	}
+
+  //delete messages from suggestion channel that is not a suggestion
+  if (message.channel.id == "929941845260255278") {
+    if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
+      if(!message.content.toLowerCase().startsWith(`${prefix}suggest`) && !message.content.toLowerCase().startsWith(`${prefix}suggestion`)) {
+      message.delete().catch(error =>{
+			})
+			message.reply(`Use **${prefix}suggest *your suggestion*** if you wish to suggest something\nMisuing this command will lead to punishments.`).then(message => {
+        message.delete({timeout:6000})
+      });
+    }
+		}
+  }
+
 
 	const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const prefixRegex = new RegExp(`^(<@!?${bot.user.id}>|${escapeRegex(prefix)})\\s*`);
@@ -364,6 +379,10 @@ const [, matchedPrefix] = message.content.match(prefixRegex);
 	} catch (error) {
 		console.error(error);
 	}
+
+
+
+
 });
 
 
