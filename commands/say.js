@@ -8,6 +8,7 @@ module.exports = {
 	args: true,
 	async execute(bot, message, args, prefix) {
 		if (!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
+		if (message.member.roles.cache.some(role => role.id === '947756109932937246')) return;
 		if (message.author.bot) return;
 		if (message.content.includes("@everyone"))  return;
 		if (message.content.includes("@here")) return;
