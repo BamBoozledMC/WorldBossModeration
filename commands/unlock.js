@@ -13,11 +13,13 @@ module.exports = {
 		if (message.channel.permissionsFor(message.guild.roles.everyone).has('SEND_MESSAGES')) {
 			 return message.channel.send(`**${message.channel}** is not locked!`)
 		}
+		let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
 		try {
 		await message.channel.updateOverwrite(message.channel.guild.roles.everyone, { SEND_MESSAGES: null })
+		loading.edit(`<:shieldtick:939667770184966186> **${message.channel}** was unlocked.`)
 	} catch(e) {
 		console.log(e);
-		return message.channel.send(`There was an error: **${e}**`);
+		return loading.edit(`There was an error: **${e}**`);
 	}
 		// const category = await message.guild.channels.cache.get("929941845260255275"); // You can use `find` instead of `get` to fetch the category using a name: `find(cat => cat.name === 'test')
 		// category.children.forEach(channel => {
