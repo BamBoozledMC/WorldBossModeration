@@ -91,7 +91,44 @@ setInterval(() => {
     bot.user.setActivity(`${activities[i++ % activities.length]}`, { type: "WATCHING"});
 }, 15000)
 
+  bot.api.applications(bot.user.id).commands.post({
+          data: {
+              name: "ping",
+              description: "Checks the bot's ping."
+              // possible options here e.g. options: [{...}]
+          }
+      });
 
+
+    bot.ws.on('INTERACTION_CREATE', async interaction => {
+            let command = interaction.data.name.toLowerCase();
+            let args = interaction.data.options;
+
+            if (command === 'ping'){
+              let localping = await ping.promise.probe('127.0.0.1', {
+                timeout: 5,
+            });
+         let isp_dns = await ping.promise.probe('1.1.1.1', {
+                 timeout: 5,
+             });
+           let pingembed = new Discord.MessageEmbed()
+           .setTitle("Pong! 🏓")
+           .addField("📥 Roundtrip:", `**${(interaction.data.editedTimestamp || interaction.data.createdTimestamp) - (interaction.data.editedTimestamp || interaction.data.createdTimestamp)}ms**`)
+           .addField("📤 API:", `**${bot.ws.ping}ms**`)
+           .addField("<:server:948743195309768746> ISP/DNS:", `**${isp_dns.time}ms**`)
+           .addField("🖥️ INTERNAL:", `**${localping.time}ms**`)
+           .setColor("#d90053")
+           .setTimestamp()
+                bot.api.interactions(interaction.id, interaction.token).callback.post({
+                    data: {
+                        type: 4,
+                        data: {
+                          embeds: [ pingembed ]
+                        }
+                    }
+                })
+            }
+        });
 
 });
 
