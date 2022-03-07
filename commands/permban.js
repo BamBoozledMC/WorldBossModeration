@@ -52,10 +52,10 @@ module.exports = {
 
           let reason = args.slice(1).join(" ");
 		if(!reason) {
-		  res = "No reason given\n\nThis ban is __**permanent**__ and can not be appealed.";
+		  res = "No reason given\n\nThis ban is __permanent__ and can not be appealed.";
 		}
 		else {
-		  res = `${reason}\n\nThis ban is __**permanent**__ and can not be appealed.`
+		  res = `${reason}\n\nThis ban is __permanent__ and can not be appealed.`
 		}
 
 	  await member.send(`You have been permanently banned from **${message.guild.name}** for the reason: **${res}**`).catch(error => message.reply(`This user was not notified of their ban because they have blocked me or have DMs turned off.`));
