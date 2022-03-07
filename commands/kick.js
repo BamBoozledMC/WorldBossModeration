@@ -45,7 +45,7 @@ module.exports = {
             if (!member) return;
             else member = message.guild.members.cache.get(member.id);
             if (!member) return;
-
+			if(member.id == message.author.id) return message.lineReply("You can't kick yourself!")
 			message.delete()
     if(!member.kickable)
       return message.channel.send("I cannot kick this user!");

@@ -46,7 +46,7 @@ module.exports = {
 	  if (!member) return;
 		message.delete()
 		if(!member.bannable) return message.channel.send("I cannot ban this user!");
-
+		if(member.id == message.author.id) return message.lineReply("You can't ban yourself!")
 		let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
 
           let reason = args.slice(1).join(" ");
@@ -95,6 +95,6 @@ module.exports = {
 
 			db.add(`moderation.modstats.${message.author.id}.bans`, 1)
 
-			loading.edit(`<:shieldtick:939667770184966186> **${member.user.tag}** was banned.`)
+			loading.edit(`<:shieldtick:939667770184966186> **${member.user.tag}** was banned. (Appealable)`)
     }
 }
