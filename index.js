@@ -7,6 +7,7 @@ const fetch = require('node-fetch');
 const ytdl = require('ytdl-core-discord');
 const ping = require('ping');
 const emojiRegex = require("emoji-regex");
+const express = require('express');
 const talkedRecently = new Set();
 const TicTacToe = require('discord-tictactoe');
 const game = new TicTacToe({ language: 'en' });
@@ -32,6 +33,14 @@ console.log(`Loading ${commandFiles.length} commands...`)
 commandFiles.forEach((f, i) => {
 	console.log(`Successfully loaded ${i + 1}: ${f}!`)
 })
+
+const app = express();
+app.get('/', (request, response) => {
+	return response.sendFile('index.html', { root: '.' });
+});
+
+app.listen(config.port, () => console.log(`Web server listening at http://localhost:${config.port}`));
+
 
 bot.on("ready", async () => {
 	bot.guilds.cache.forEach( guild => {

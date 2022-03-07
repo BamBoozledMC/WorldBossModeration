@@ -20,6 +20,7 @@
     "discord-tictactoe": "^2.2.0",
     "discord.js": "^12.5.3",
     "emoji-regex": "^10.0.0",
+    "express": "^4.17.3",
     "fast-api-speedtest": "^0.0.6",
     "fast-speedtest-api": "^0.3.2",
     "ffmpeg": "0.0.4",
