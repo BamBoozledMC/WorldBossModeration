@@ -44,9 +44,9 @@ module.exports = {
 	  if (!member) return;
 	  else member = message.guild.members.cache.get(member.id);
 	  if (!member) return;
+		if(member.id == message.author.id) return message.lineReply("You can't ban yourself!")
 		message.delete()
 		if(!member.bannable) return message.channel.send("I cannot ban this user!");
-		if(member.id == message.author.id) return message.lineReply("You can't ban yourself!")
 		let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
 
           let reason = args.slice(1).join(" ");

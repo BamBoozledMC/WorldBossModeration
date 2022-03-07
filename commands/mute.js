@@ -47,8 +47,8 @@ module.exports = {
             if (!member) return;
             else member = message.guild.members.cache.get(member.id);
             if (!member) return;
+						if (member.id === message.author.id) return message.channel.send("You cannot mute yourself!");
 						message.delete()
-  if (member.id === message.author.id) return message.channel.send("You cannot mute yourself!");
   if(member.hasPermission("ADMINISTRATOR")) return message.channel.send("I cant mute this user");
 	let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
   let muterole = message.guild.roles.cache.find(r => r.name === "Muted");
