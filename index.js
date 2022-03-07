@@ -12,6 +12,7 @@ const talkedRecently = new Set();
 const TicTacToe = require('discord-tictactoe');
 const game = new TicTacToe({ language: 'en' });
 const cooldowns = new Map();
+//const slashCommands = require("./slashcommands.js");
 
 const fs = require('fs');
 bot.commands = new Discord.Collection();
@@ -93,8 +94,13 @@ setInterval(() => {
 
 
 });
+
+
+//bot.on('command', (data) => slashCommands()(data, bot));
+
 bot.on('message', async message => {
 	if (message.channel.type == "dm") return;
+
 
   const auto_mute = async (message) => {
 
