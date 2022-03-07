@@ -3,7 +3,7 @@ const config = require('../config.json');
 const db = require('quick.db');
 
 module.exports = {
-	name: 'ban',
+	name: 'permban',
   descrption: 'bans mentioned user from the server',
 	aliases: ['pban'],
 	usage: '<message>',
