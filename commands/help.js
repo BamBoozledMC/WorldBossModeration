@@ -18,16 +18,17 @@ module.exports = {
 		\`${prefix}warn <@user | userID> [reason]\` Warns the provided user for your reason.
 		\`${prefix}kick <@user | userID> [reason]\` Kicks the provided user from the server.
 		\`${prefix}ban <@user | userID> [reason]\` Bans the provided user from the server.
+		\`${prefix}pban <@user | userID> [reason]\` Permanently bans the provided user from the server.
 		\`${prefix}unban <userID> [reason]\` Unbans the provided user from the server.
-		\`${prefix}pmute <@user | userID> [reason]\` Mutes the provided user indefinitely.
 		\`${prefix}mute <@user | userID> <time> [reason]\` Tempmutes the provided user for the specified time.
+		\`${prefix}pmute <@user | userID> [reason]\` Mutes the provided user indefinitely.
 		\`${prefix}unmute <@user | userID> [reason]\` unmutes the provided user.
 		\`${prefix}history <@user | userID> [page]\` view previous offences of a user.
-		\`${prefix}rhistory <@user | userID> <offencenumber/all>\` remove all offences or a certain offence from a user.
-		\`${prefix}nick <@user | userID> [nickname | "reset"]\` Get or set the nickname for a specific user.`)
+		\`${prefix}rhistory <@user | userID> <offencenumber/all>\` remove all offences or a certain offence from a user.`)
 
 		.addField("Moderation - Misc", ` \`${prefix}snipe\` Snipes the last deleted message in your channel.
 		\`${prefix}rule <rulenumber>\` Sends specified rule in chat.
+		\`${prefix}nick <@user | userID> [nickname | "reset"]\` Get or set the nickname for a specific user.
 		\`${prefix}modstats <@user | userID>\` Get a user's moderation stats.`)
 
 		.addField("Fun", ` \`${prefix}fact\` Sends a random fact.
