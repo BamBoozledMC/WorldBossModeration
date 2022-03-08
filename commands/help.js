@@ -29,7 +29,8 @@ module.exports = {
 		.addField("Moderation - Misc", ` \`${prefix}snipe\` Snipes the last deleted message in your channel.
 		\`${prefix}rule <rulenumber>\` Sends specified rule in chat.
 		\`${prefix}nick <@user | userID> [nickname | "reset"]\` Get or set the nickname for a specific user.
-		\`${prefix}modstats <@user | userID>\` Get a user's moderation stats.`)
+		\`${prefix}modstats <@user | userID>\` Get a user's moderation stats.
+		\`${prefix}suggestions <30_days | all_time>\` View top 10 upvoted suggestions from all time or from the past 30 days.`)
 
 		.addField("Fun", ` \`${prefix}fact\` Sends a random fact.
 		\`${prefix}tictactoe [@user]\` Play tic tac toe against other poeple or challenge the unbeatable AI.

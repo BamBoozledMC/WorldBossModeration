@@ -1,5 +1,6 @@
 const config = require('../config.json');
 const Discord = require ("discord.js");
+const db = require('quick.db');
 
 module.exports = {
 	name: 'suggest',
@@ -30,10 +31,11 @@ module.exports = {
 		.setTitle("New suggestion:")
 		.setFooter('To suggest something use !suggest')
 
-		var Sentembed = await message.guild.channels.cache.get("929941845260255278").send(embed)
+		var sentembed = await message.guild.channels.cache.get(config.suggestionID).send(embed)
 
-        Sentembed.react('<:Upvote:934930260070371389>').then(() => Sentembed.react('<:Downvote:934930252713586688>'));
+        sentembed.react('<:Upvote:934930260070371389>').then(() => sentembed.react('<:Downvote:934930252713586688>'));
 
+				db.set(`suggestions.${sentembed.id}`, { msgID: sentembed.id, msgURL: sentembed.url, submitter: message.author.tag, submitterID: message.author.id, time: Math.round(Date.now() / 1000), suggestion: msgtosend })
 				message.channel.send("<a:completed:934404118754263050> Your suggestion has been submit!").then(message => {
 					message.delete({timeout:5000})
 				});

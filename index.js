@@ -12,7 +12,8 @@ const talkedRecently = new Set();
 const TicTacToe = require('discord-tictactoe');
 const game = new TicTacToe({ language: 'en' });
 const cooldowns = new Map();
-//const slashCommands = require("./slashcommands.js");
+const reactionAddEvent = require("./messagereaction-add.js");
+const reactionRemoveEvent = require("./messagereaction-remove.js");
 
 const fs = require('fs');
 bot.commands = new Discord.Collection();
@@ -44,6 +45,11 @@ app.listen(config.port, () => console.log(`Web server listening at http://localh
 
 
 bot.on("ready", async () => {
+  const getguild = await bot.guilds.fetch(config.serverID);
+  const getchannel = getguild.channels.cache.get(config.suggestionID);
+  const getmessages = getchannel.messages.fetch()
+
+
 	bot.guilds.cache.forEach( guild => {
 		guild.members.cache.forEach( member => {
 			let mutetime = db.get(`tempmute.${guild.id}.${member.user.id}.time`);
@@ -133,7 +139,8 @@ setInterval(() => {
 });
 
 
-//bot.on('command', (data) => slashCommands()(data, bot));
+bot.on('messageReactionAdd', (reaction, user) => reactionAddEvent(reaction, user, bot));
+bot.on('messageReactionRemove', (reaction, user) => reactionRemoveEvent(reaction, user, bot));
 
 bot.on('message', async message => {
 	if (message.channel.type == "dm") return;
