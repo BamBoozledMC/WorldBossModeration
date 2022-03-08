@@ -178,7 +178,7 @@ let timer = setInterval(async function() {
     console.log(e.stack);
   }
 	bot.channels.cache.get(config.logsID).send(unmuteembed)
-	db.delete(`moderation.punishments.${message.author.id}.muted`)
+	db.delete(`moderation.punishments.${member.user.id}.muted`)
     }
 }, 1000);
 
