@@ -37,7 +37,8 @@ module.exports = {
 			}
 		 message.channel.send(`<:shieldtick:939667770184966186> Successfully Purged ${successmsg}`)
 		  .then(message => {
-			  message.delete({timeout:5000})
+			  message.delete({timeout:5000}).catch(error =>{
+				})
 		  });
 
 
