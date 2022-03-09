@@ -360,11 +360,13 @@ bot.on('message', async message => {
   if (message.channel.id == "929941845260255278") {
     if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
       if(!message.content.toLowerCase().startsWith(`${prefix}suggest`) && !message.content.toLowerCase().startsWith(`${prefix}suggestion`)) {
-      message.delete().catch(error =>{
-			})
-			message.reply(`Use **${prefix}suggest *your suggestion*** if you wish to suggest something\nMisuing this command will lead to punishments.`).then(message => {
-        message.delete({timeout:6000})
-      });
+        if(!message.content.toLowerCase().startsWith(`${prefix}editsuggestion`) && !message.content.toLowerCase().startsWith(`${prefix}editlastsuggestion`)) {
+          message.delete().catch(error =>{
+			    })
+			    message.reply(`Use **${prefix}suggest *your suggestion*** if you wish to suggest something __or__\nUse **${prefix}editsuggestion *your edited suggestion*** to edit your last suggestion.\nMisuing this command will lead to punishments.`).then(message => {
+            message.delete({timeout:10000})
+          });
+      }
     }
 		}
   }
@@ -423,7 +425,9 @@ const [, matchedPrefix] = message.content.match(prefixRegex);
         if(current_time < expiration_time){
             const time_left = (expiration_time - current_time) / 1000;
 
-            return message.lineReply(`Please wait \`${time_left.toFixed(1)}\` second(s) before using that command again.`);
+            return message.lineReply(`Please wait \`${time_left.toFixed(1)}\` second(s) before using that command again.`).then(message => {
+    					message.delete({timeout:3000})
+    				});
         }
     }
 
@@ -501,6 +505,12 @@ bot.on('guildMemberRemove', member => {
 
 bot.snipes = new Map()
 bot.on('messageDelete', function(message, channel) {
+  let checkifsuggestion = db.get(`suggestions.${message.id}`)
+  if (checkifsuggestion) {
+    db.delete(`suggestions.${message.id}`)
+    console.log(message.id);
+  }
+
 	if(!message.author || !message.content && !message.attachments.size > 0 ) return;
 	bot.snipes.set(message.channel.id, {
 		content:message.content,

@@ -35,7 +35,7 @@ module.exports = {
 
         sentembed.react('<:Upvote:934930260070371389>').then(() => sentembed.react('<:Downvote:934930252713586688>'));
 
-				db.set(`suggestions.${sentembed.id}`, { msgID: sentembed.id, msgURL: sentembed.url, submitter: message.author.tag, submitterID: message.author.id, time: Math.round(Date.now() / 1000), suggestion: msgtosend })
+				db.set(`suggestions.${sentembed.id}`, { msgID: sentembed.id, msgURL: sentembed.url, submitter: message.author.tag, submitterID: message.author.id, time: Math.round(Date.now() / 1000), suggestion: msgtosend, edited: false })
 				message.channel.send("<a:completed:934404118754263050> Your suggestion has been submit!").then(message => {
 					message.delete({timeout:5000})
 				});

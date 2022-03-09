@@ -15,6 +15,7 @@ module.exports = {
 		if (!displaytype) return message.lineReply(`Please provide the limit of days you wish to be displayed.\n**Available:** \`30_days\`, \`all_time\`\n**Usage:** \`${prefix}suggestions <30_days | all_time>\``);
 
 		if (displaytype.toLowerCase() == "30days" || displaytype.toLowerCase() == "30_days") {
+			let loading = await message.channel.send("<a:loading:939665977728176168> Collecting data...")
 		var today = new Date();
 		var priordate = new Date(new Date().setDate(today.getDate()-30));
 
@@ -56,13 +57,14 @@ sortedupvotes = Object.assign(                      // collect all objects into 
 let icounter = 1
 for (const property in sortedupvotes) {
 	let getinfo = db.get(`suggestions.${property}`)
-	top10suggestions.addField(`Top suggestion ${icounter}`, `**Submitter:** ${getinfo.submitter} - <@${getinfo.submitterID}>\n**Suggestion:** ${getinfo.suggestion}\n**Submitted:** <t:${getinfo.time}:F>\n<:Upvote:934930260070371389> Upvotes: **${getinfo.upvotes}** - <:Downvote:934930252713586688> Downvotes: **${getinfo.downvotes}**\n[Jump to message](${getinfo.msgURL})`)
+	top10suggestions.addField(`Top suggestion ${icounter}`, `**Submitter:** ${getinfo.submitter} - <@${getinfo.submitterID}>\n**Suggestion:** ${getinfo.suggestion}\n**Edited:** ${getinfo.edited ? "Yes" : "No"}\n**Submitted:** <t:${getinfo.time}:F>\n<:Upvote:934930260070371389> Upvotes: **${getinfo.upvotes}** - <:Downvote:934930252713586688> Downvotes: **${getinfo.downvotes}**\n[Jump to message](${getinfo.msgURL})`)
 	icounter++
 }
 
-message.channel.send(top10suggestions)
+loading.edit("", top10suggestions)
 
 } else if (displaytype.toLowerCase() == "alltime" || displaytype.toLowerCase() == "all_time") {
+	let loading = await message.channel.send("<a:loading:939665977728176168> Collecting data...")
 
 	let top10suggestions = new Discord.MessageEmbed()
 	.setTitle(`Top 10 suggestions`)
@@ -95,11 +97,11 @@ sortedupvotes = Object.assign(                      // collect all objects into 
 let icounter = 1
 for (const property in sortedupvotes) {
 let getinfo = db.get(`suggestions.${property}`)
-top10suggestions.addField(`Top suggestion ${icounter}`, `**Submitter:** ${getinfo.submitter} - <@${getinfo.submitterID}>\n**Suggestion:** ${getinfo.suggestion}\n**Submitted:** <t:${getinfo.time}:F>\n<:Upvote:934930260070371389> Upvotes: **${getinfo.upvotes}** - <:Downvote:934930252713586688> Downvotes: **${getinfo.downvotes}**\n[Jump to message](${getinfo.msgURL})`)
+top10suggestions.addField(`Top suggestion ${icounter}`, `**Submitter:** ${getinfo.submitter} - <@${getinfo.submitterID}>\n**Suggestion:** ${getinfo.suggestion}\n**Edited:** ${getinfo.edited ? "Yes" : "No"}\n**Submitted:** <t:${getinfo.time}:F>\n<:Upvote:934930260070371389> Upvotes: **${getinfo.upvotes}** - <:Downvote:934930252713586688> Downvotes: **${getinfo.downvotes}**\n[Jump to message](${getinfo.msgURL})`)
 icounter++
 }
 
-message.channel.send(top10suggestions)
+loading.edit("", top10suggestions)
 } else {
 	return message.lineReply(`Please provide the limit of days you wish to be displayed.\n**Available:** \`30_days\`, \`all_time\`\n**Usage:** \`${prefix}suggestions <30_days | all_time>\``);
 }

@@ -44,6 +44,7 @@ module.exports = {
 		\`${prefix}avatar [@user]\` Sends mentioned user's avatar (pfp).
 		\`${prefix}say <message>\` Returns your message.
 		\`${prefix}suggest <suggestion>\` Suggest something!
+		\`${prefix}editsuggestion <edited suggestion>\` Edit your last (most recent) suggestion!
 		\`${prefix}patrons\` Lists all current patrons helping to support this bot!
 		\`${prefix}lurk [reason]\` :eyes: Lurk in chat. (Automatically unlurks on next message sent)
 		\`${prefix}membercount\` Displays the current amount of members and bots.`)
@@ -92,6 +93,7 @@ embed.addField("Misc", ` \`${prefix}ping\` Checks the bot's ping.
 \`${prefix}uptime\` Checks the bot's uptime.
 \`${prefix}avatar [@user]\` Sends mentioned user's avatar (pfp).
 \`${prefix}suggest <suggestion>\` Suggest something!
+\`${prefix}editsuggestion <edited suggestion>\` Edit your last (most recent) suggestion!
 \`${prefix}patrons\` Lists all current patrons helping to support this bot!
 \`${prefix}lurk [reason]\` :eyes: Lurk in chat. (Automatically unlurks on next message sent)
 \`${prefix}membercount\` Displays the current amount of members and bots.`)
