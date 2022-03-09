@@ -88,10 +88,8 @@ module.exports = {
   if(mutetime.endsWith("s")) mutetime = mutetime.slice(0, -1);
   else if(mutetime.endsWith("m")) mutetime = mutetime.slice(0, -1) * 60;
   else if(mutetime.endsWith("h")) mutetime = mutetime.slice(0, -1) * 3600;
-  else if(mutetime.endsWith("hr")) mutetime = mutetime.slice(0, -1) * 3600;
-  else if(mutetime.endsWith("hrs")) mutetime = mutetime.slice(0, -1) * 3600;
+  else if(mutetime.endsWith("hr")) mutetime = mutetime.slice(0, -2) * 3600;
   else if(mutetime.endsWith("d")) mutetime = mutetime.slice(0, -1) * 3600 * 24;
-
   if(!mutetime || isNaN(mutetime)) {
 		loading.edit("Please include a valid time!")
 		return;
