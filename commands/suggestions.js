@@ -21,7 +21,7 @@ module.exports = {
 
     let top10suggestions = new Discord.MessageEmbed()
     .setTitle(`Top 10 suggestions`)
-		.setDescription(`Showing result from last **30** days.\nThere are **${getsuggestions.length - 10 ? getsuggestions.length - 10 : "0"}** more suggestions not displayed in this table.\nThere is a __total__ of **${getsuggestions.length}** suggestions ever submitted.`)
+		.setDescription(`Showing result from last **30** days.\nThere are **${gettotalsuggestionsoffset(10)}** more suggestions not displayed in this table.\nThere is a __total__ of **${gettotalsuggestions()}** suggestions ever submitted.`)
     .setTimestamp()
     .setColor("#d90053")
 		.setFooter(`Developed by BamBoozled#0882`)
@@ -68,7 +68,7 @@ loading.edit("", top10suggestions)
 
 	let top10suggestions = new Discord.MessageEmbed()
 	.setTitle(`Top 10 suggestions`)
-	.setDescription(`Showing result from **all time**\nThere are **${getsuggestions.length - 10 ? getsuggestions.length - 10 : "0"}** more suggestions not displayed in this table.\nThere is a __total__ of **${getsuggestions.length}** suggestions ever submitted.`)
+	.setDescription(`Showing result from **all time**\nThere are **${gettotalsuggestionsoffset(10)}** more suggestions not displayed in this table.\nThere is a __total__ of **${gettotalsuggestions()}** suggestions ever submitted.`)
 	.setTimestamp()
 	.setColor("#d90053")
 	.setFooter(`Developed by BamBoozled#0882`)
@@ -104,6 +104,27 @@ icounter++
 loading.edit("", top10suggestions)
 } else {
 	return message.lineReply(`Please provide the limit of days you wish to be displayed.\n**Available:** \`30_days\`, \`all_time\`\n**Usage:** \`${prefix}suggestions <30_days | all_time>\``);
+}
+
+
+function gettotalsuggestionsoffset(offsetnum) {
+	let getsug = db.get(`suggestions`)
+
+	var totalcounter = 1
+	Object.keys(getsug).forEach( function () {
+		totalcounter++
+	});
+	let numoffset = totalcounter - offsetnum
+	return numoffset < 0 ? 0 : numoffset;
+}
+function gettotalsuggestions() {
+	let getsug = db.get(`suggestions`)
+
+	var totalcounter = 1
+	Object.keys(getsug).forEach( function () {
+		totalcounter++
+	});
+	return totalcounter;
 }
 }
 }
