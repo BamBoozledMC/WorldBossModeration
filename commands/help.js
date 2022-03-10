@@ -29,8 +29,14 @@ module.exports = {
 		.addField("Moderation - Misc", ` \`${prefix}snipe\` Snipes the last deleted message in your channel.
 		\`${prefix}rule <rulenumber>\` Sends specified rule in chat.
 		\`${prefix}nick <@user | userID> [nickname | "reset"]\` Get or set the nickname for a specific user.
+		\`${prefix}modnick <@user | userID>\` Moderate a user's nickname.
 		\`${prefix}modstats <@user | userID>\` Get a user's moderation stats.
-		\`${prefix}suggestions <30_days | all_time>\` View top 10 upvoted suggestions from all time or from the past 30 days.`)
+		\`${prefix}suggestions <30_days | all_time>\` View top 10 upvoted suggestions from all time or from the past 30 days.
+		\`${prefix}lock [#channel | channelID / "all"]\` Lock a specific channel or leave blank to lock current channel **or** specify "all" to lockdown the server.
+		\`${prefix}unlock [#channel | channelID / "all"]\` Unlock a specific channel or leave blank to unlock current channel **or** specify "all" to unlock the server.
+		\`${prefix}addlockchannel [#channel | channelID]\` Add a specific channel as a lockdown channel.
+		\`${prefix}rlockchannel [#channel | channelID]\` Remove a specific channel from the lockdown channels.
+		\`${prefix}lockchannels [#channel | channelID]\` Lists all lockdown channels.`)
 
 		.addField("Fun", ` \`${prefix}fact\` Sends a random fact.
 		\`${prefix}tictactoe [@user]\` Play tic tac toe against other poeple or challenge the unbeatable AI.
