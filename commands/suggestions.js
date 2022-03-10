@@ -68,7 +68,7 @@ loading.edit("", top10suggestions)
 
 	let top10suggestions = new Discord.MessageEmbed()
 	.setTitle(`Top 10 suggestions`)
-	.setDescription("Showing result from **all time**")
+	.setDescription(`Showing result from **all time**\nThere are **${getsuggestions.length - 10 ? getsuggestions.length - 10 : "0"}** more suggestions not displayed in this table.\nThere is a __total__ of **${getsuggestions.length}** suggestions ever submitted.`)
 	.setTimestamp()
 	.setColor("#d90053")
 	.setFooter(`Developed by BamBoozled#0882`)
