@@ -8,6 +8,11 @@ const ytdl = require('ytdl-core-discord');
 const ping = require('ping');
 const emojiRegex = require("emoji-regex");
 const express = require('express');
+const passport = require('passport');
+const session = require('express-session');
+const passportSteam = require('passport-steam');
+var SteamStrategy = passportSteam.Strategy;
+var DiscordStrategy = require('passport-discord').Strategy;
 const talkedRecently = new Set();
 const TicTacToe = require('discord-tictactoe');
 const game = new TicTacToe({ language: 'en' });
@@ -36,10 +41,94 @@ commandFiles.forEach((f, i) => {
 	console.log(`Successfully loaded ${i + 1}: ${f}!`)
 })
 
-const app = express();
-app.get('/', (request, response) => {
-	return response.sendFile('index.html', { root: '.' });
+passport.serializeUser((user, done) => {
+  done(null, user);
 });
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.use('steam', new SteamStrategy({
+    returnURL: `https://wbm.bamboozledmc.xyz/auth/steam/return`,
+    realm: `https://wbm.bamboozledmc.xyz/`,
+    apiKey: config.steamAPI_KEY,
+    passReqToCallback: true,
+  },
+  function(req, identifier, profile, done) {
+      process.nextTick(function () {
+      profile.identifier = identifier;
+      if (!req.user) return done(null, null);
+      let accounts = { discord: req.user, steam: profile }
+      req.logout()
+      return done(null, accounts);
+    });
+  }
+));
+
+var scopes = ['identify'];
+
+passport.use('discord', new DiscordStrategy({
+    clientID: config.botID,
+    clientSecret: config.botSecret,
+    callbackURL: `https://wbm.bamboozledmc.xyz/auth/discord/callback`,
+    scope: scopes
+},
+function(accessToken, refreshToken, profile, done) {
+    process.nextTick(function() {
+    return done(null, profile);
+    });
+}));
+
+const app = express();
+app.set('view engine', 'ejs')
+
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+app.get('/', function(req,res) {
+  res.sendFile(__dirname+'/web/index.html');
+  req.logout();
+});
+
+app.get('/auth/steam',
+  passport.authenticate('steam'),
+  function(req, res) {
+    // The request will be redirected to Steam for authentication, so
+    // this function will not be called.
+  });
+
+app.get('/auth/steam/return',
+  passport.authenticate('steam', { failureRedirect: '/' }),
+  function(req, res) {
+    res.redirect('/complete');
+  });
+
+  app.get('/auth/discord', passport.authenticate('discord'));
+  app.get('/auth/discord/callback', passport.authenticate('discord', { failureRedirect: '/' }),
+   function(req, res) {
+      res.redirect('/auth/steam') // Successful auth
+  });
+
+  app.get('/complete', function(req,res) {
+    if (!req.user) return res.redirect('/');
+    let steamuser = req.user.steam
+    let discorduser = req.user.discord
+    res.render(__dirname+'/web/complete.ejs', { discordpfp: `https://cdn.discordapp.com/avatars/${discorduser.id}/${discorduser.avatar}?size=2048`, steampfp: `${steamuser._json.avatarfull}`, discordname: `${discorduser.username}#${discorduser.discriminator}`, steamname: `${steamuser.displayName}` });
+    console.log(req.user);
+    req.logout()
+  });
+
+  function checkAuth(req, res, next) {
+    if (req.isAuthenticated()) return next();
+    res.send('not logged in :(');
+}
 
 app.listen(config.port, () => console.log(`Web server listening at http://localhost:${config.port}`));
 
