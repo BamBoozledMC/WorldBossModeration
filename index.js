@@ -97,6 +97,9 @@ app.get('/', function(req,res) {
   res.sendFile(__dirname+'/web/index.html');
   req.logout();
 });
+app.get('/favicon.ico', function(req,res) {
+  res.sendFile(__dirname+'/web/favicon.ico');
+});
 
 app.get('/auth/steam',
   passport.authenticate('steam'),
