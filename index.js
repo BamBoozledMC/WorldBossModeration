@@ -13,6 +13,7 @@ const session = require('express-session');
 const passportSteam = require('passport-steam');
 var SteamStrategy = passportSteam.Strategy;
 var DiscordStrategy = require('passport-discord').Strategy;
+const SteamAPI = require('steamapi');
 const talkedRecently = new Set();
 const TicTacToe = require('discord-tictactoe');
 const game = new TicTacToe({ language: 'en' });
@@ -113,15 +114,36 @@ app.get('/auth/steam/return',
   app.get('/auth/discord', passport.authenticate('discord'));
   app.get('/auth/discord/callback', passport.authenticate('discord', { failureRedirect: '/' }),
    function(req, res) {
+     let checkdb = db.get(`linked.users.${req.user.id}`)
+     if (checkdb) {
+       return res.redirect('/')
+     }
       res.redirect('/auth/steam') // Successful auth
   });
 
-  app.get('/complete', function(req,res) {
+  app.get('/complete', async function(req,res) {
     if (!req.user) return res.redirect('/');
     let steamuser = req.user.steam
     let discorduser = req.user.discord
+    let checkforreload = db.get(`linked.users.${discorduser.id}`)
+    if (checkforreload) return res.redirect('/');
+    db.set(`linked.users.${discorduser.id}`, { discord: discorduser.id, steam: steamuser.id })
     res.render(__dirname+'/web/complete.ejs', { discordpfp: `https://cdn.discordapp.com/avatars/${discorduser.id}/${discorduser.avatar}?size=2048`, steampfp: `${steamuser._json.avatarfull}`, discordname: `${discorduser.username}#${discorduser.discriminator}`, steamname: `${steamuser.displayName}` });
-    console.log(req.user);
+    let user = await bot.users.fetch(discorduser.id).catch(() => null);
+    if (!user) {
+      console.log(`${discorduser.username}#${discorduser.discriminator} was not found.`);
+    } else if (user) {
+      let linkembed = new Discord.MessageEmbed()
+      .setTitle("Successfully Linked!")
+      .setThumbnail('https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg')
+      .setDescription(`Your Steam (**${steamuser.displayName}**) & Discord (**${discorduser.username}#${discorduser.discriminator}**) account are now linked with **World Boss Moderation**\n\nTo unlink your accounts, use \`!unlink\`in <#932828142094123009> or use \`!link\` to check your linked account info.`)
+      .setColor('#d90053')
+  		.setFooter(`Developed by BamBoozled#0882`)
+      .setTimestamp()
+      user.send(linkembed).catch(() => {
+        console.log(`${discorduser.username}#${discorduser.discriminator} was found but could not be DMed.`);
+      });
+    }
     req.logout()
   });
 
@@ -577,6 +599,10 @@ bot.on('guildMemberAdd', member => {
 });
 
 bot.on('guildMemberRemove', member => {
+  let dbget = db.get(`linked.users.${member.user.id}`)
+  if (dbget) {
+    db.delete(`linked.users.${member.user.id}`)
+  }
 	if(member.guild.id == "929941845004415046") {
 		let leaveLog = member.guild.channels.cache.get(config.joinleavelogsID)
 		let leavelogembed = new Discord.MessageEmbed()
