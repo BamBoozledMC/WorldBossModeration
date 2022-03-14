@@ -116,9 +116,15 @@ app.get('/auth/steam/return',
    function(req, res) {
      let checkdb = db.get(`linked.users.${req.user.id}`)
      if (checkdb) {
-       return res.redirect('/')
+       return res.redirect('/alreadylinked')
      }
       res.redirect('/auth/steam') // Successful auth
+  });
+
+  app.get('/alreadylinked', async function(req,res) {
+    if (!req.user) return res.redirect('/');
+    res.render(__dirname+'/web/alreadylinked.ejs')
+    req.logout()
   });
 
   app.get('/complete', async function(req,res) {
