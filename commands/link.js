@@ -15,7 +15,7 @@ module.exports = {
 		if (!dbget) {
 			let notlinked = new Discord.MessageEmbed()
 			.setTitle(`You're not linked!`)
-			.setDescription(`To link your **Steam** account with **World Boss Moderation** head to [wmb.bamboozledmc.xyz](https://wbm.bamboozledmc.xyz) and click the "Link your Discord & Steam account" button to start the linking proccess!\n\nLinking is completely safe and the only data stored is your Discord user ID and Steam user ID.`)
+			.setDescription(`To link your **Steam** account with **World Boss Moderation** head to [wbm.bamboozledmc.xyz](https://wbm.bamboozledmc.xyz) and click the "Link your Discord & Steam account" button to start the linking proccess!\n\nLinking is completely safe and the only data stored is your Discord user ID and Steam user ID.`)
 			.setColor("#d90053")
 			.setFooter("Developed by BamBoozled#0882")
 			.setTimestamp()
