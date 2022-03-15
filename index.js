@@ -51,8 +51,8 @@ passport.deserializeUser((user, done) => {
 });
 
 passport.use('steam', new SteamStrategy({
-    returnURL: `https://wbm.bamboozledmc.xyz/auth/steam/return`,
-    realm: `https://wbm.bamboozledmc.xyz/`,
+    returnURL: `https://wbmoderation.com/auth/steam/return`,
+    realm: `https://wbmoderation.com/`,
     apiKey: config.steamAPI_KEY,
     passReqToCallback: true,
   },
@@ -72,7 +72,7 @@ var scopes = ['identify'];
 passport.use('discord', new DiscordStrategy({
     clientID: config.botID,
     clientSecret: config.botSecret,
-    callbackURL: `https://wbm.bamboozledmc.xyz/auth/discord/callback`,
+    callbackURL: `https://wbmoderation.com/auth/discord/callback`,
     scope: scopes
 },
 function(accessToken, refreshToken, profile, done) {
