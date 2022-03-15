@@ -49,7 +49,7 @@ module.exports = {
 	if(member.id == message.author.id) return message.lineReply("You can't warn yourself!")
 	message.delete()
 let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
-  member.send(`You have been warned in **${message.guild.name}** for the reason: **${reason}**`);
+  member.send(`You have been warned in **${message.guild.name}** for the reason: **${reason}**`).catch(error => message.reply(`This user was not notified of their warn because they have blocked me or have DMs turned off.`));
 
 
   let warn = new Discord.MessageEmbed()

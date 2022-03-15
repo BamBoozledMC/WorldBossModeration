@@ -121,7 +121,7 @@ module.exports = {
 		  .setFooter(member.id)
   bot.channels.cache.get(config.logsID).send(muteembed);
   try {
-  member.send(`You have been tempmuted in **${message.guild.name}** for \`${args[1]}\` with the reason: **${res}**`)
+  member.send(`You have been tempmuted in **${message.guild.name}** for \`${args[1]}\` with the reason: **${res}**`).catch(error => message.reply(`This user was not notified of their mute because they have blocked me or have DMs turned off.`));
 }catch(e){
   console.log(e.stack);
 }
