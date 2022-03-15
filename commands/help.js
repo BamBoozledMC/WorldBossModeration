@@ -55,6 +55,10 @@ module.exports = {
 		\`${prefix}lurk [reason]\` :eyes: Lurk in chat. (Automatically unlurks on next message sent)
 		\`${prefix}membercount\` Displays the current amount of members and bots.`)
 
+		.addField("Linking", ` \`${prefix}link\` Link your Discord & Steam account or check/get info on your linked accounts.
+		\`${prefix}unlink\` Unlink your currently linked accounts.
+		\`${prefix}linked\` Lists all linked users.`)
+
 		.setDescription(`Here you can find info on every command!\nSince you are a staff member you have access to supporter-only commands. (Marked as 🔓)\n${message.guild.name}'s Current prefix is \`${prefix}\`\nUse ${prefix}prefix reset to reset your server's prefix to default.\nCommands marked as 🔒 are supporter-only commands and can be unlocked by supporting the bot at [patreon.com/bamboozledlw](https://www.patreon.com/bamboozledlw/)\n\n[] = Optional **|** <> = Required\n`)
 		.setThumbnail('https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg')
 		.setFooter(`Developed by BamBoozled#0882`)
@@ -103,6 +107,9 @@ embed.addField("Misc", ` \`${prefix}ping\` Checks the bot's ping.
 \`${prefix}patrons\` Lists all current patrons helping to support this bot!
 \`${prefix}lurk [reason]\` :eyes: Lurk in chat. (Automatically unlurks on next message sent)
 \`${prefix}membercount\` Displays the current amount of members and bots.`)
+
+.addField("Linking", ` \`${prefix}link\` Link your Discord & Steam account or check/get info on your linked accounts.
+\`${prefix}unlink\` Unlink your currently linked accounts.`)
 
 if(message.member.roles.cache.some(role => role.id === '932808382593773589')) {
 	embed.addField("Level exclusive commands - Grunt", `\`${prefix}hug <@user | userID>\` Give someone a hug!`)
