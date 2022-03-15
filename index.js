@@ -156,6 +156,19 @@ app.get('/auth/steam/return',
     req.logout()
   });
 
+  app.get('/discord', function(req,res) {
+    res.redirect('https://discord.gg/worldboss');
+  });
+  app.get('/appeal', function(req,res) {
+    res.redirect('https://forms.gle/5JksXxC9dCqDCob5A');
+  });
+  app.get('/patreon', function(req,res) {
+    res.redirect('https://www.patreon.com/bamboozledlw');
+  });
+  app.get('/github', function(req,res) {
+    res.redirect('https://github.com/BamBoozledMC/WorldBossModeration');
+  });
+
   function checkAuth(req, res, next) {
     if (req.isAuthenticated()) return next();
     res.send('not logged in :(');
