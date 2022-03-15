@@ -28,7 +28,9 @@ module.exports = {
 			message.channel.send(`**${message.author}** is now lurking - **${lurkreason}**`).then(message => {
   			message.delete({timeout:10000})
   		});
-			db.set(`lurking.${message.author.id}`, { reason: lurkreason, startedAT: gettimenow, userID: message.author.id })
+			let currentnick = message.member.nickname ? message.member.nickname : message.author.username
+			message.member.setNickname(`[AFK] ${currentnick}`).catch(error => {});
+			db.set(`lurking.${message.author.id}`, { reason: lurkreason, startedAT: gettimenow, userID: message.author.id, name: currentnick })
 		}
 		}
 }

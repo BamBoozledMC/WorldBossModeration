@@ -436,6 +436,11 @@ bot.on('message', async message => {
     message.channel.send(`**${message.author}** is no longer lurking.`).then(message => {
       message.delete({timeout:10000})
     });
+    if (message.author.username == checkiflurk.name) {
+      message.member.setNickname("").catch(error => {});
+    } else {
+      message.member.setNickname(checkiflurk.name).catch(error => {});
+    }
     db.delete(`lurking.${message.author.id}`)
   }
 
