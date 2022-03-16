@@ -2,6 +2,7 @@ const config = require('../config.json');
 const Discord = require ("discord.js");
 const beautify = require("beautify");
 const db = require('quick.db');
+const si = require('systeminformation');
 
 module.exports = {
 	name: 'eval',
