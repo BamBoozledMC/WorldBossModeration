@@ -43,9 +43,11 @@ module.exports = {
 		\`${prefix}stats [@user]\` Check your tic tac toe stats or view someone elses.
 		🔓 \`${prefix}coinflip\` Flip a coin! Heads/Tails.
 		🔓 \`${prefix}dadjoke\` Sends a dadjoke.
+		🔓 \`${prefix}mumjoke\` Sends a "Your mum" joke.
 		🔓 \`${prefix}soundboard\` Play sound effects in your voice channel!`)
 
-		.addField("Misc", ` \`${prefix}ping\` Checks the bot's ping.
+		.addField("Misc", ` \`${prefix}about\` Get info and statistics of the bot.
+		\`${prefix}ping\` Checks the bot's ping.
 		\`${prefix}uptime\` Checks the bot's uptime.
 		\`${prefix}avatar [@user]\` Sends mentioned user's avatar (pfp).
 		\`${prefix}say <message>\` Returns your message.
@@ -90,6 +92,7 @@ if(message.member.roles.cache.some(role => role.id === '937561741334814810')) {
 	\`${prefix}stats [@user]\` Check your tic tac toe stats or view someone elses.
 	🔓 \`${prefix}coinflip\` Flip a coin! Heads/Tails.
 	🔓 \`${prefix}dadjoke\` Sends a dadjoke.
+	🔓 \`${prefix}mumjoke\` Sends a "Your mum" joke.
 	🔓 \`${prefix}soundboard\` Play sound effects in your voice channel!`)
 } else {
 	embed.addField("Fun", ` \`${prefix}fact\` Sends a random fact.
@@ -97,9 +100,11 @@ if(message.member.roles.cache.some(role => role.id === '937561741334814810')) {
 	\`${prefix}stats [@user]\` Check your tic tac toe stats or view someone elses.
 	🔒 ~~\`${prefix}coinflip\` Flip a coin! Heads/Tails.~~
 	🔒 ~~\`${prefix}dadjoke\` Sends a dadjoke.~~
+	🔒 ~~\`${prefix}mumjoke\` Sends a "Your mum" joke.~~
 	🔒 ~~\`${prefix}soundboard\` Play sound effects in your voice channel!~~`)
 }
-embed.addField("Misc", ` \`${prefix}ping\` Checks the bot's ping.
+embed.addField("Misc", ` \`${prefix}about\` Get info and statistics of the bot.
+\`${prefix}ping\` Checks the bot's ping.
 \`${prefix}uptime\` Checks the bot's uptime.
 \`${prefix}avatar [@user]\` Sends mentioned user's avatar (pfp).
 \`${prefix}suggest <suggestion>\` Suggest something!
