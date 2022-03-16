@@ -17,6 +17,7 @@ const SteamAPI = require('steamapi');
 const talkedRecently = new Set();
 const TicTacToe = require('discord-tictactoe');
 const game = new TicTacToe({ language: 'en' });
+const si = require('systeminformation');
 const cooldowns = new Map();
 const reactionAddEvent = require("./messagereaction-add.js");
 const reactionRemoveEvent = require("./messagereaction-remove.js");
