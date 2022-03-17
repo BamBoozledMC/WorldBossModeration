@@ -57,7 +57,13 @@ sortedupvotes = Object.assign(                      // collect all objects into 
 let icounter = 1
 for (const property in sortedupvotes) {
 	let getinfo = db.get(`suggestions.${property}`)
-	top10suggestions.addField(`Top suggestion ${icounter}`, `**Submitter:** ${getinfo.submitter} - <@${getinfo.submitterID}>\n**Suggestion:** ${getinfo.suggestion}\n**Edited:** ${getinfo.edited ? "Yes" : "No"}\n**Submitted:** <t:${getinfo.time}:F>\n<:Upvote:934930260070371389> Upvotes: **${getinfo.upvotes}** - <:Downvote:934930252713586688> Downvotes: **${getinfo.downvotes}**\n[Jump to message](${getinfo.msgURL})`)
+	let suggestionchecked;
+	if (getinfo.suggestion.length > 512) {
+		suggestionchecked = getinfo.suggestion.substring(0, 512) + '...\nTo read more, Jump to the message.';
+ 	} else {
+	 suggestionchecked = getinfo.suggestion
+ 	}
+	top10suggestions.addField(`Top suggestion ${icounter}`, `**Submitter:** ${getinfo.submitter} - <@${getinfo.submitterID}>\n**Suggestion:** ${suggestionchecked}\n**Edited:** ${getinfo.edited ? "Yes" : "No"}\n**Submitted:** <t:${getinfo.time}:F>\n<:Upvote:934930260070371389> Upvotes: **${getinfo.upvotes}** - <:Downvote:934930252713586688> Downvotes: **${getinfo.downvotes}**\n[Jump to message](${getinfo.msgURL})`)
 	icounter++
 }
 
@@ -97,7 +103,13 @@ sortedupvotes = Object.assign(                      // collect all objects into 
 let icounter = 1
 for (const property in sortedupvotes) {
 let getinfo = db.get(`suggestions.${property}`)
-top10suggestions.addField(`Top suggestion ${icounter}`, `**Submitter:** ${getinfo.submitter} - <@${getinfo.submitterID}>\n**Suggestion:** ${getinfo.suggestion}\n**Edited:** ${getinfo.edited ? "Yes" : "No"}\n**Submitted:** <t:${getinfo.time}:F>\n<:Upvote:934930260070371389> Upvotes: **${getinfo.upvotes}** - <:Downvote:934930252713586688> Downvotes: **${getinfo.downvotes}**\n[Jump to message](${getinfo.msgURL})`)
+let suggestionchecked;
+if (getinfo.suggestion.length > 512) {
+		suggestionchecked = getinfo.suggestion.substring(0, 512) + '...\nTo read more, Jump to the message.';
+ } else {
+	 suggestionchecked = getinfo.suggestion
+ }
+top10suggestions.addField(`Top suggestion ${icounter}`, `**Submitter:** ${getinfo.submitter} - <@${getinfo.submitterID}>\n**Suggestion:** ${suggestionchecked}\n**Edited:** ${getinfo.edited ? "Yes" : "No"}\n**Submitted:** <t:${getinfo.time}:F>\n<:Upvote:934930260070371389> Upvotes: **${getinfo.upvotes}** - <:Downvote:934930252713586688> Downvotes: **${getinfo.downvotes}**\n[Jump to message](${getinfo.msgURL})`)
 icounter++
 }
 
