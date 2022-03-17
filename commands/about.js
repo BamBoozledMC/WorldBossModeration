@@ -39,6 +39,7 @@ module.exports = {
 		.addField('<:ram:953469282661048320> RAM/Memory', `**Total:** ${Math.round(mem.total / 1024 / 1024 / 1024 * 10) / 10}GB\n**Used:** ${Math.round(mem.used / 1024 / 1024 / 1024 * 10) / 10}GB\n**Free:** ${Math.round(mem.free / 1024 / 1024 / 1024 * 10) / 10}GB`)
 		.addField("📤 DISCORD API:", `${apiping}`)
 		.addField("<:online:934604352419684383> UPTIME:", `${uptime}`)
+		.setThumbnail('https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg')
 		.setColor('#d90053')
     .setTimestamp()
 		aboutMsg.edit("", about)
