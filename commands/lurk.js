@@ -5,6 +5,7 @@ const db = require('quick.db');
 module.exports = {
 	name: 'lurk',
   descrption: 'Returns your message',
+	aliases: ['afk'],
 	cooldown: 30,
 	usage: '<message>',
 	args: true,
@@ -23,14 +24,13 @@ module.exports = {
 				  lurkreason = `${reason}`
 				}
 
-				gettimenow = new Date().toString()
 			message.delete()
 			message.channel.send(`**${message.author}** is now lurking - **${lurkreason}**`).then(message => {
   			message.delete({timeout:10000})
   		});
 			let currentnick = message.member.nickname ? message.member.nickname : message.author.username
 			message.member.setNickname(`[AFK] ${currentnick}`).catch(error => {});
-			db.set(`lurking.${message.author.id}`, { reason: lurkreason, startedAT: gettimenow, userID: message.author.id, name: currentnick })
+			db.set(`lurking.${message.author.id}`, { reason: lurkreason, startedAT: Math.round(Date.now() / 1000), userID: message.author.id, name: currentnick })
 		}
 		}
 }

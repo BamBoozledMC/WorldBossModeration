@@ -23,9 +23,11 @@ module.exports = {
 		let getreason = declarearray.reason
 		let getID = declarearray.userID
 		let getTag = bot.users.cache.get(getID);
+		let started = declarearray.startedAT
 		try {
-		lurklist.addField(`${getTag.tag}`, `Reason: ${getreason}`)
+		lurklist.addField(`${getTag.tag}`, `Lurking since: <t:${started}:F>\nReason: ${getreason}`)
 	} catch(e){
+		console.log(e);
 			return message.channel.send("error, check console for info")
 		}
     numofusers++

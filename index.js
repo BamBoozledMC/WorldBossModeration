@@ -464,7 +464,7 @@ bot.on('message', async message => {
     if(mentionlurk) {
       let userislurking = new Discord.MessageEmbed()
       .setTitle(`${message.mentions.members.first().user.tag} is Lurking!`)
-      .setDescription(`They have been lurking since **${mentionlurk.startedAT}**`)
+      .setDescription(`They have been lurking since <t:${mentionlurk.startedAT}:F>`)
       .addField(`Reason`, mentionlurk.reason)
       .setColor("#d90053")
       .setTimestamp()
