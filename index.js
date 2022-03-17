@@ -628,6 +628,11 @@ bot.on('guildMemberAdd', member => {
 
 bot.on('guildMemberRemove', member => {
   let dbget = db.get(`linked.users.${member.user.id}`)
+  let checkiflurk = db.get(`lurking.${member.user.id}`)
+
+  if(checkiflurk) {
+    db.delete(`lurking.${member.user.id}`)
+  }
   if (dbget) {
     db.delete(`linked.users.${member.user.id}`)
   }
