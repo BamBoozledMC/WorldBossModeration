@@ -37,6 +37,7 @@ module.exports = {
 		var highesttime = Math.max.apply(Math,allusersuggestions.map(function(o){return o.value;}))
 		var lastsuggestion = allusersuggestions.find(function(o){ return o.value == highesttime; })
 
+		if(!lastsuggestion) return loading.edit("You have not submit any suggestions that I can edit.");
 
 		let embed = new Discord.MessageEmbed()
 		.setTimestamp()
