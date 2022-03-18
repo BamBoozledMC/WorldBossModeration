@@ -9,7 +9,7 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix, commandName) {
-		if (!message.member.hasPermission("MANAGE_CHANNELS") && message.author.id != config.ownerID) return;
+		if (!message.member.permissions.has("MANAGE_CHANNELS") && message.author.id != config.ownerID) return;
 
 		if (!args[0]) return unlocksinglechannel(message, message.channel.id);
 		if (args[0].toLowerCase() == 'all') return unlockallchannels(message);
@@ -28,7 +28,7 @@ module.exports = {
 			}
 			let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
 			try {
-			await channel.updateOverwrite(channel.guild.roles.everyone, { SEND_MESSAGES: null })
+			await channel.permissionOverwrites.edit(channel.guild.roles.everyone, { SEND_MESSAGES: null })
 			loading.edit(`<:shieldtick:939667770184966186> **${channel}** was unlocked.`)
 		} catch(e) {
 			console.log(e);
@@ -82,7 +82,7 @@ module.exports = {
 				 return message.channel.send(`**${channel}** was not locked.`)
 			}
 			try {
-			await channel.updateOverwrite(channel.guild.roles.everyone, { SEND_MESSAGES: null })
+			await channel.permissionOverwrites.edit(channel.guild.roles.everyone, { SEND_MESSAGES: null })
 		  channel.send(`⚠️ The server is no longer in lockdown and this channel has been unlocked.`).catch(error =>{
 			 console.log(`I couldnt send a message in ${channel.name}. ${error}`);
 		})

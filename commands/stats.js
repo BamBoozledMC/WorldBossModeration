@@ -9,7 +9,7 @@ module.exports = {
     usage: '',
 	args: true,
 	async execute(bot, message, args, prefix, commandName) {
-		if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
+		if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
 			if(message.channel.id == config.generalID) return;
 		}
 		const ai_stats = () => {
@@ -35,11 +35,11 @@ module.exports = {
 			let mentionedavatar = new Discord.MessageEmbed()
 	.setTitle(`AI's Tic Tac Toe stats`)
 	.setThumbnail(`https://cs.anu.edu.au/courses/comp3620/ai-main-img.jpg`)
-	.addField("Wins", otherswins, true)
-	.addField("Losses", otherslosses, true)
-	.addField("Ties", othersties)
+	.addField("Wins", otherswins.toString(), true)
+	.addField("Losses", otherslosses.toString(), true)
+	.addField("Ties", othersties.toString())
 	.setColor('#d90053')
-	    return message.channel.send(mentionedavatar)
+	    return message.channel.send({embeds: [mentionedavatar]})
 	}
 		if(commandName == 'aistats' || commandName == 'aistat') return ai_stats();
 		if(commandName == 'statsai') return ai_stats();
@@ -50,7 +50,7 @@ module.exports = {
           let mention;
           if(message.mentions.members.first()) {
             if(message.mentions.members.first().user.id == bot.user.id) {
-              mention = message.mentions.members.array()[1];
+              mention = [...message.mentions.members.values()][1];
             } else {
               mention = message.mentions.members.first();
             }
@@ -104,11 +104,11 @@ module.exports = {
     let mentionedavatar = new Discord.MessageEmbed()
 .setTitle(`${member.user.username}'s Tic Tac Toe stats`)
 .setThumbnail(`${member.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
-.addField("Wins", otherswins, true)
-.addField("Losses", otherslosses, true)
-.addField("Ties", othersties)
+.addField("Wins", otherswins.toString(), true)
+.addField("Losses", otherslosses.toString(), true)
+.addField("Ties", othersties.toString())
 .setColor('#d90053')
-    return message.channel.send(mentionedavatar)
+    return message.channel.send({embeds: [mentionedavatar]})
 }
 let wins;
 let losses;
@@ -132,10 +132,10 @@ if (db.get(`games.tictactoe.${message.author.id}.ties`)) {
 let executeravatar = new Discord.MessageEmbed()
 .setTitle(`Your Tic Tac Toe stats`)
 .setThumbnail(`${message.author.displayAvatarURL({ dynamic: true, size: 1024 })}`)
-.addField("Wins", wins, true)
-.addField("Losses", losses, true)
-.addField("Ties", ties)
+.addField("Wins", wins.toString(), true)
+.addField("Losses", losses.toString(), true)
+.addField("Ties", ties.toString())
 .setColor('#d90053')
-return message.channel.send(executeravatar)
+return message.channel.send({embeds: [executeravatar]})
 }
 }

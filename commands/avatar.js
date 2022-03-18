@@ -9,7 +9,7 @@ module.exports = {
     usage: '',
 	args: true,
 	async execute(bot, message, args, prefix) {
-		if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
+		if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
 			if(message.channel.id == config.generalID) return;
 		}
         if (args[0]) {
@@ -18,7 +18,7 @@ module.exports = {
           let mention;
           if(message.mentions.members.first()) {
             if(message.mentions.members.first().user.id == bot.user.id) {
-              mention = message.mentions.members.array()[1];
+              mention = [...message.mentions.members.values()][1];
             } else {
               mention = message.mentions.members.first();
             }
@@ -54,12 +54,12 @@ module.exports = {
 .setTitle(`${member.user.username}'s Avatar`)
 .setImage(`${member.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
 .setColor('#d90053')
-    return message.channel.send(mentionedavatar)
+    return message.channel.send({embeds: [mentionedavatar]})
 }
 let executeravatar = new Discord.MessageEmbed()
 .setTitle(`Your Avatar`)
 .setImage(`${message.author.displayAvatarURL({ dynamic: true, size: 1024 })}`)
 .setColor('#d90053')
-return message.channel.send(executeravatar)
+return message.channel.send({embeds: [executeravatar]})
 }
 }

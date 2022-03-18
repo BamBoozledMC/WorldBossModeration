@@ -8,14 +8,14 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-		if (!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
+		if (!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
 		let num = args[0]
 		if(!num) {
-			let errMSG = await message.lineReply('Please include the rule number')
-			return errMSG.delete({timeout:3000});
+			let errMSG = await message.reply('Please include the rule number')
+			return setTimeout(() => errMSG.delete().catch(error => {}), 3000);
 		} else if(isNaN(num)) {
-			let errMSG = await message.lineReply('Not a number')
-			return errMSG.delete({timeout:3000});
+			let errMSG = await message.reply('Not a number')
+			return setTimeout(() => errMSG.delete().catch(error => {}), 3000);
 		} else if(num == '1') {
 			message.channel.send("1️⃣ Treat Everyone with respect. Absolutely no racism, sexism, or hate speech will be tolerated.")
 		} else if(num == '2') {

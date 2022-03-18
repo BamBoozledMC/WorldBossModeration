@@ -9,10 +9,10 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-    if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
+    if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
 	  let getsuggestions = db.get(`suggestions`)
 		let displaytype = args[0]
-		if (!displaytype) return message.lineReply(`Please provide the limit of days you wish to be displayed.\n**Available:** \`30_days\`, \`all_time\`\n**Usage:** \`${prefix}suggestions <30_days | all_time>\``);
+		if (!displaytype) return message.reply(`Please provide the limit of days you wish to be displayed.\n**Available:** \`30_days\`, \`all_time\`\n**Usage:** \`${prefix}suggestions <30_days | all_time>\``);
 
 		if (displaytype.toLowerCase() == "30days" || displaytype.toLowerCase() == "30_days") {
 			let loading = await message.channel.send("<a:loading:939665977728176168> Collecting data...")
@@ -67,7 +67,7 @@ for (const property in sortedupvotes) {
 	icounter++
 }
 
-loading.edit("", top10suggestions)
+loading.edit({content: " ", embeds: [top10suggestions]})
 
 } else if (displaytype.toLowerCase() == "alltime" || displaytype.toLowerCase() == "all_time") {
 	let loading = await message.channel.send("<a:loading:939665977728176168> Collecting data...")
@@ -113,9 +113,9 @@ top10suggestions.addField(`Top suggestion ${icounter}`, `**Submitter:** ${getinf
 icounter++
 }
 
-loading.edit("", top10suggestions)
+loading.edit({content: " ", embeds: [top10suggestions]})
 } else {
-	return message.lineReply(`Please provide the limit of days you wish to be displayed.\n**Available:** \`30_days\`, \`all_time\`\n**Usage:** \`${prefix}suggestions <30_days | all_time>\``);
+	return message.reply(`Please provide the limit of days you wish to be displayed.\n**Available:** \`30_days\`, \`all_time\`\n**Usage:** \`${prefix}suggestions <30_days | all_time>\``);
 }
 
 

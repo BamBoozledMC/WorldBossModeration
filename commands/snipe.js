@@ -7,7 +7,7 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-		if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
+		if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
         const msg = bot.snipes.get(message.channel.id)
         if(!msg) return message.channel.send("I couldn't find any messages to snipe!");
         const snipedmsg = new Discord.MessageEmbed()
@@ -18,6 +18,6 @@ module.exports = {
         .setFooter(`Command called by ${message.author.tag}`)
         if(msg.image)snipedmsg.setImage(msg.image)
 
-        message.channel.send(snipedmsg)
+        message.channel.send({embeds: [snipedmsg]})
     }
 }

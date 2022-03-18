@@ -1,5 +1,14 @@
 const config = require('../config.json');
 const Discord = require ("discord.js");
+const {
+	joinVoiceChannel,
+	createAudioPlayer,
+	createAudioResource,
+	entersState,
+	StreamType,
+	AudioPlayerStatus,
+	VoiceConnectionStatus,
+} = require('@discordjs/voice');
 const fetch = require('node-fetch');
 const fs = require('fs');
 
@@ -10,8 +19,8 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-		if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
-			if(!message.member.roles.cache.some(role => role.id === '937561741334814810')) return message.lineReply(`This command is a supporter-only command. Check the \`${prefix}help\` command for more info.`);
+		if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
+			if(!message.member.roles.cache.some(role => role.id === '937561741334814810')) return message.reply(`This command is a supporter-only command. Check the \`${prefix}help\` command for more info.`);
 		}
 		sfxs = new Map();
 		const sfxFiles = fs.readdirSync('./sfx/').filter(file => file.endsWith('.mp3'));
@@ -39,23 +48,30 @@ module.exports = {
 			.setDescription(`The sound effect name you provided is **Invald** or does not **exist**\nUsage: ${prefix}soundboard sound_effect_name\nAliases: \`${prefix}sb | ${prefix}sfx\`\n**Available Sound Effects:**\n${allsfx}\n**Total: ${sfxs.size}**`)
 			.setColor('#d90053')
 			.setFooter("Developed by BamBoozled#0882")
-			message.lineReply(invalidsfx)
+			message.reply({embeds: [invalidsfx]})
 		}
 
 		if (message.guild.me.voice.channel) return message.channel.send("I am busy in another voice channel! Please try again soon.")
 
             if (message.member.voice.channel) {
-                const connection = await message.member.voice.channel.join();
-            const dispatcher = connection.play(thesfx)
+				const resource = createAudioResource(thesfx);
+				const player = createAudioPlayer();
+                const connection = joinVoiceChannel({
+					channelId: message.member.voice.channel.id,
+					guildId: message.guild.id,
+					adapterCreator: message.guild.voiceAdapterCreator
+				});
+            	await connection.subscribe(player)
+				player.play(resource)
                 message.channel.send(`🔊 Playing the **${thearg}** sound effect in your voice channel`)
-                dispatcher.on('finish', () => {
-                    message.guild.me.voice.channel.leave()
+                player.on(AudioPlayerStatus.Idle, () => {
+                    connection.destroy()
                   });
 
               } else {
-                message.lineReplyNoMention('Join a voice channel and try again')
+                message.reply({contents: 'Join a voice channel and try again', allowedMentions: { repliedUser: false }})
                 .then(message => {
-                message.delete({timeout:5000});
+					setTimeout(() => message.delete().catch(error => {}), 5000);
                 });
 							}
 

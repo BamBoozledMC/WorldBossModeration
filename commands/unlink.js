@@ -20,7 +20,7 @@ module.exports = {
 			.setFooter("Developed by BamBoozled#0882")
 			.setTimestamp()
 
-			message.lineReply(notlinked)
+			message.reply({embeds: [notlinked]})
 		} else if (dbget) {
 			let getusersteam = await steam.getUserSummary(dbget.steam)
 
@@ -28,14 +28,14 @@ module.exports = {
 			.setTitle('Unlink')
 			.setDescription(`⚠️ Are you sure you want to unlink your Steam account?\nCurrently linked to **[${getusersteam.nickname}](${getusersteam.url})**`)
 			.setColor('ORANGE')
-			let areyousuresend = await message.channel.send(areyousure)
+			let areyousuresend = await message.channel.send({embeds: [areyousure]})
 			areyousuresend.react('✅').then(() => areyousuresend.react('❌'));
 
 			const filter = (reaction, user) => {
 				return ['✅', '❌'].includes(reaction.emoji.name) && user.id === message.author.id;
 			};
 
-			areyousuresend.awaitReactions(filter, { max: 1, time: 15000, errors: ['time'] })
+			areyousuresend.awaitReactions({ filter, max: 1, time: 15000, errors: ['time'] })
 				.then(async collected => {
 					const reaction = collected.first();
 
@@ -50,7 +50,7 @@ module.exports = {
 						.setTimestamp()
 
 						db.delete(`linked.users.${message.author.id}`)
-						areyousuresend.edit(unlinked)
+						areyousuresend.edit({content: " ", embeds: [unlinked]})
 					} else {
 						areyousuresend.reactions.removeAll()
 						let unlinked = new Discord.MessageEmbed()
@@ -59,7 +59,7 @@ module.exports = {
 						.setColor("#d90053")
 						.setFooter("Developed by BamBoozled#0882")
 						.setTimestamp()
-						areyousuresend.edit(unlinked)
+						areyousuresend.edit({content: " ", embeds: [unlinked]})
 					}
 				})
 				.catch(collected => {
@@ -70,7 +70,7 @@ module.exports = {
 					.setColor("#d90053")
 					.setFooter("Developed by BamBoozled#0882")
 					.setTimestamp()
-					areyousuresend.edit(unlinked)
+					areyousuresend.edit({content: " ", embeds: [unlinked]})
 			    });
 		}
 

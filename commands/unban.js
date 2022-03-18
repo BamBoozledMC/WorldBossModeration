@@ -9,11 +9,11 @@ module.exports = {
 	args: true,
 	async execute(bot, message, args, prefix) {
     try{
-if (!message.member.hasPermission("BAN_MEMBERS") && message.author.id != config.ownerID) return message.channel.send("Sorry, you don't have permissions to use this!");
+if (!message.member.permissions.has("BAN_MEMBERS") && message.author.id != config.ownerID) return message.channel.send("Sorry, you don't have permissions to use this!");
 
         if (!args[0]) return;
 
-        let bannedMemberInfo = await message.guild.fetchBans()
+        let bannedMemberInfo = await message.guild.bans.fetch()
 
         let bannedMember;
         bannedMember = bannedMemberInfo.find(b => b.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || bannedMemberInfo.get(args[0]) || bannedMemberInfo.find(bm => bm.user.tag.toLowerCase() === args[0].toLocaleLowerCase());
@@ -31,16 +31,16 @@ if (!message.member.hasPermission("BAN_MEMBERS") && message.author.id != config.
             res = `${reason}`
           }
 
-            await message.guild.members.unban(bannedMember.user.id, reason)
+            await message.guild.members.unban(bannedMember.user.id, { reason: reason })
                 let bean = new Discord.MessageEmbed()
 		  .setColor("#d90053")
 		  .setTitle(`Unban | ${bannedMember.user.tag}`)
 		  .addField("User", `<@${bannedMember.user.id}>`, true)
-		  .addField("Moderator", message.author, true)
+		  .addField("Moderator", message.author.toString(), true)
 		  .addField("Reason", res)
 		  .setTimestamp()
       .setFooter(bannedMember.user.id)
-          bot.channels.cache.get(config.logsID).send(bean)
+          bot.channels.cache.get(config.logsID).send({embeds: [bean]})
 
 					let ts = Date.now();
 

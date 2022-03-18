@@ -9,14 +9,14 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-    if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
+    if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
   let member;
   let memberID;
             if(args[0]) {
               let mention;
               if(message.mentions.members.first()) {
                 if(message.mentions.members.first().user.id == bot.user.id) {
-                  mention = message.mentions.members.array()[1];
+                  mention = [...message.mentions.members.values()][1];
                 } else {
                   mention = message.mentions.members.first();
                 }
@@ -54,7 +54,7 @@ module.exports = {
     var varmember = member
     var dbgetuser = db.get(`moderation.punishments.${memberID}`)
 
-    if(!dbgetuser) return message.lineReply("There are no recorded punishments for that user.");
+    if(!dbgetuser) return message.reply("There are no recorded punishments for that user.");
 
 
     // var fieldsformat = []
@@ -119,7 +119,7 @@ module.exports = {
     //   history.addField(`${i}. ${type} | ${date}`, `Reason: ${reason}\nIssued by: ${punisher}`);
     // }
 
-		message.channel.send(history)
+		message.channel.send({embeds: [history]})
 
 }
 }

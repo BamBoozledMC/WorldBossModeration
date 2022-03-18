@@ -9,13 +9,13 @@ module.exports = {
 	usage: '',
 	args: false,
 	async execute(bot, message, args, prefix) {
-    if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
+    if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
     let member;
     if(args[0]) {
       let mention;
       if(message.mentions.members.first()) {
         if(message.mentions.members.first().user.id == bot.user.id) {
-          mention = message.mentions.members.array()[1];
+          mention = [...message.mentions.members.values()][1];
         } else {
           mention = message.mentions.members.first();
         }
@@ -71,13 +71,13 @@ module.exports = {
         let unmuteembed = new Discord.MessageEmbed()
     .setColor("#d90053")
 		  .setTitle(`Unmute | ${member.user.tag}`)
-		  .addField("User", member, true)
-      .addField("Moderator", message.author, true)
+		  .addField("User", member.toString(), true)
+      .addField("Moderator", message.author.toString(), true)
 		  .addField("Reason", res)
 		  .setTimestamp()
 		  .setFooter(member.id)
 
-        bot.channels.cache.get(config.logsID).send(unmuteembed);
+        bot.channels.cache.get(config.logsID).send({embeds: [unmuteembed]});
 
         try {
         member.send(`You have been unmuted in **${message.guild.name}** for the reason: **${res}**`)

@@ -9,15 +9,15 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-		if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
-			if(!message.member.roles.cache.some(role => role.id === '932808382593773589')) return message.lineReply(`You require the **Grunt** rank to use this command!\nCheck your current rank by using \`?rank\` in <#932828142094123009>.`);
+		if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
+			if(!message.member.roles.cache.some(role => role.id === '932808382593773589')) return message.reply(`You require the **Grunt** rank to use this command!\nCheck your current rank by using \`?rank\` in <#932828142094123009>.`);
 		}
 		let member;
 	            if(args[0]) {
 	              let mention;
 	              if(message.mentions.members.first()) {
 	                if(message.mentions.members.first().user.id == bot.user.id) {
-	                  mention = message.mentions.members.array()[1];
+	                  mention = [...message.mentions.members.values()][1];
 	                } else {
 	                  mention = message.mentions.members.first();
 	                }
@@ -46,7 +46,7 @@ module.exports = {
 	            if (!member) return;
 	            else member = message.guild.members.cache.get(member.id);
 	            if (!member) return;
-							if(member.id == message.author.id) return message.lineReply("You can't hug yourself!")
+							if(member.id == message.author.id) return message.reply("You can't hug yourself!")
 			await message.channel.send(`${message.author} hugged ${member}! <:pandahug:948789130626752562>`)
 
     }

@@ -9,7 +9,7 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-		//if (!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
+		//if (!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
 		rps(message)
     }
 }

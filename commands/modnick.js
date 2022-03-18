@@ -9,13 +9,13 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-    if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
+    if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
   let member;
             if(args[0]) {
               let mention;
               if(message.mentions.members.first()) {
                 if(message.mentions.members.first().user.id == bot.user.id) {
-                  mention = message.mentions.members.array()[1];
+                  mention = [...message.mentions.members.values()][1];
                 } else {
                   mention = message.mentions.members.first();
                 }
@@ -54,13 +54,13 @@ let nick = `Moderated Nickname #${generatecode}`
 	let nickembed = new Discord.MessageEmbed()
   .setColor("#d90053")
   .setTitle(`Nickname moderated | ${member.user.tag}`)
-  .addField("User", member, true)
-  .addField("Moderator", message.author, true)
+  .addField("User", member.toString(), true)
+  .addField("Moderator", message.author.toString(), true)
   .addField(`New nickname`, `${nick}\n**ID:** \`#${generatecode}\``)
   .setTimestamp()
   .setFooter(member.id)
 
-    bot.channels.cache.get(config.logsID).send(nickembed)
+    bot.channels.cache.get(config.logsID).send({embeds: [nickembed]})
 
 		loading.edit(`<:shieldtick:939667770184966186> **${member.user.tag}**'s nickname has been Moderated. ID: \`#${generatecode}\``)
 

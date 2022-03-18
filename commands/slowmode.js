@@ -9,7 +9,7 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-        if (!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
+        if (!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
 		//if(message.author.id != config.ownerID) return;
         message.delete()
         let time = args[0]
@@ -31,8 +31,8 @@ module.exports = {
                 return message.channel.send(error)
             })
                 message.channel.send(`<:shieldtick:939667770184966186> Channel slowmode set to \`${args[0]}\``).then(message => {
-									message.delete({timeout:5000})
-								});
+                    setTimeout(() => message.delete().catch(error => {}), 5000);
+				});
                 db.set(`moderation.slowmode.${message.channel.id}`, args[0])
 
 

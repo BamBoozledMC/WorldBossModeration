@@ -9,14 +9,14 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-        if (!message.member.hasPermission("BAN_MEMBERS") && message.author.id != config.ownerID) return;
-		// if(!message.guild.me.hasPermission("SEND_MESSAGES")) return message.author.send(":x: I do not have permission to send messages in this channel!\nPlease make sure i have the \"SEND_MESSAGES\" permission in the channel overrides/permissions")
+        if (!message.member.permissions.has("BAN_MEMBERS") && message.author.id != config.ownerID) return;
+		// if(!message.guild.me.permissions.has("SEND_MESSAGES")) return message.author.send(":x: I do not have permission to send messages in this channel!\nPlease make sure i have the \"SEND_MESSAGES\" permission in the channel overrides/permissions")
 	  let member;
 	  if(args[0]) {
 		let mention;
 		if(message.mentions.members.first()) {
 		  if(message.mentions.members.first().user.id == bot.user.id) {
-			mention = message.mentions.members.array()[1];
+			mention = [...message.mentions.members.values()][1];
 		  } else {
 			mention = message.mentions.members.first();
 		  }
@@ -45,7 +45,7 @@ module.exports = {
 	  if (!member) return;
 	  else member = message.guild.members.cache.get(member.id);
 	  if (!member) return;
-		if(member.id == message.author.id) return message.lineReply("You can't ban yourself!")
+		if(member.id == message.author.id) return message.reply("You can't ban yourself!")
 		message.delete()
 		if(!member.bannable) return message.channel.send("I cannot ban this user!");
 		let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
@@ -65,13 +65,13 @@ module.exports = {
 		  let bean = new Discord.MessageEmbed()
 		  .setColor("#d90053")
 		  .setTitle(`Permanent Ban | ${member.user.tag}`)
-		  .addField("User", member, true)
-		  .addField("Moderator", message.author, true)
+		  .addField("User", member.toString(), true)
+		  .addField("Moderator", message.author.toString(), true)
 		  .addField("Reason", res)
 		  .setTimestamp()
 		  .setFooter(member.id)
 
-		  bot.channels.cache.get(config.logsID).send(bean)
+		  bot.channels.cache.get(config.logsID).send({embeds: [bean]})
 
 			let ts = Date.now();
 

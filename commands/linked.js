@@ -10,7 +10,7 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-		if (!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
+		if (!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
 		if (message.member.roles.cache.some(role => role.id === '947756109932937246')) return;
 		let dbget = db.get(`linked.users`)
 
@@ -26,6 +26,6 @@ module.exports = {
 		.setFooter("Developed by BamBoozled#0882")
 		.setTimestamp()
 
-		message.channel.send(linkedusers)
+		message.channel.send({embeds: [linkedusers]})
     }
 }

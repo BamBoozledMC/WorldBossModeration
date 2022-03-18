@@ -10,7 +10,7 @@ module.exports = {
 	usage: 'about bot',
 	args: false,
 	async execute(bot, message, args, prefix) {
-		if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
+		if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
 			if(message.channel.id == config.generalID) return;
 		}
 		const aboutMsg =  await message.channel.send('<a:loading:939665977728176168> Gathering data...');
@@ -42,7 +42,7 @@ module.exports = {
 		.setThumbnail('https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg')
 		.setColor('#d90053')
     .setTimestamp()
-		aboutMsg.edit("", about)
+		aboutMsg.edit({content: " ", embeds: [about]})
 
 }
 }

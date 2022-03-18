@@ -25,7 +25,7 @@ module.exports = {
 			.addField("🖥️ INTERNAL:", `**${localping.time}ms**`)
 			.setColor("#d90053")
 			.setTimestamp()
-		return pingMsg.edit("", pingembed);
+		return pingMsg.edit({ content: ' ', embeds: [pingembed] });
 	}catch(e){}
 }
 }

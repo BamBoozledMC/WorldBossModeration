@@ -8,7 +8,7 @@ module.exports = {
 	usage: '',
 	args: false,
 	async execute(bot, message, args, prefix) {
-			if(message.member.hasPermission("MANAGE_MESSAGES")) {
+			if(message.member.permissions.has("MANAGE_MESSAGES")) {
 				let embed = new Discord.MessageEmbed()
 		.setTitle('Help Page')
 		.addField("Configuration", `\`${prefix}prefix\` Change the server's prefix`)
@@ -76,8 +76,8 @@ module.exports = {
 			embed.addField("Level exclusive commands - Contender", `\`${prefix}kiss <@user | userID>\` Kiss someone... :flushed:\n\`${prefix}delete <@user | userID>\` Delete someone.`)
 		}
 		try {
-		await message.author.send(embed)
-		message.lineReply(`Check your DMs!`).catch(error =>{
+		await message.author.send({ embeds: [embed]})
+		message.reply(`Check your DMs!`).catch(error =>{
 		})
 	} catch(e){
 		message.reply(`:x: An Error occurred whilst messaging you! Please make sure your DMs are open so I can message you.`)
@@ -135,8 +135,8 @@ embed.setThumbnail('https://media.discordapp.net/attachments/933574813849632848/
 embed.setFooter(`Developed by BamBoozled#0882`)
 embed.setColor('#d90053')
 try {
-await message.author.send(embed)
-message.lineReply(`Check your DMs!`).catch(error =>{
+await message.author.send({ embeds: [embed]})
+message.reply(`Check your DMs!`).catch(error =>{
 })
 } catch(e){
 message.reply(`:x: An Error occurred whilst messaging you! Please make sure your DMs are open so I can message you.`)

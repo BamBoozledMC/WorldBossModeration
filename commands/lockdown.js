@@ -9,7 +9,7 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix, commandName) {
-		if (!message.member.hasPermission("MANAGE_CHANNELS") && message.author.id != config.ownerID) return;
+		if (!message.member.permissions.has("MANAGE_CHANNELS") && message.author.id != config.ownerID) return;
 
 		let theargs = args[0]
 		if (commandName === 'addlockchannel' || commandName === 'addlockch') return addlockdownchannel(message, theargs);
@@ -38,11 +38,11 @@ module.exports = {
 				}
 				let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
 				try {
-				await channel.updateOverwrite(channel.guild.roles.everyone, { SEND_MESSAGES: false })
-				if (!message.guild.me.permissionsIn(channel).has("SEND_MESSAGES")) await channel.updateOverwrite(message.guild.me, { SEND_MESSAGES: true })
+				await channel.permissionOverwrites.edit(channel.guild.roles.everyone, { SEND_MESSAGES: false })
+				if (!message.guild.me.permissionsIn(channel).has("SEND_MESSAGES")) await channel.permissionOverwrites.edit(message.guild.me, { SEND_MESSAGES: true })
 				if (!message.member.permissionsIn(channel).has("SEND_MESSAGES")) {
-				 await channel.updateOverwrite('932108051924783104', { SEND_MESSAGES: true })
-				 await channel.updateOverwrite('932770457810251857', { SEND_MESSAGES: true })
+				 await channel.permissionOverwrites.edit('932108051924783104', { SEND_MESSAGES: true })
+				 await channel.permissionOverwrites.edit('932770457810251857', { SEND_MESSAGES: true })
 			 }
 
 				loading.edit(`<:shieldtick:939667770184966186> **${channel}** was locked.`)
@@ -98,11 +98,11 @@ module.exports = {
 					 return message.channel.send(`**${channel}** was already locked.`)
 				}
 				try {
-				await channel.updateOverwrite(channel.guild.roles.everyone, { SEND_MESSAGES: false })
-				if (!message.guild.me.permissionsIn(channel).has("SEND_MESSAGES")) await channel.updateOverwrite(message.guild.me, { SEND_MESSAGES: true })
+				await channel.permissionOverwrites.edit(channel.guild.roles.everyone, { SEND_MESSAGES: false })
+				if (!message.guild.me.permissionsIn(channel).has("SEND_MESSAGES")) await channel.permissionOverwrites.edit(message.guild.me, { SEND_MESSAGES: true })
 				if (!message.member.permissionsIn(channel).has("SEND_MESSAGES")) {
-				  channel.updateOverwrite('932108051924783104', { SEND_MESSAGES: true })
-				 channel.updateOverwrite('932770457810251857', { SEND_MESSAGES: true })
+				  channel.permissionOverwrites.edit('932108051924783104', { SEND_MESSAGES: true })
+				 channel.permissionOverwrites.edit('932770457810251857', { SEND_MESSAGES: true })
 			 }
 			 channel.send(`⚠️ The server is in lockdown. Check <#${config.generalID}> for more info.`).catch(error =>{
 				 console.log(`I couldnt send a message in ${channel.name}. ${error}`);
@@ -192,7 +192,7 @@ module.exports = {
 		} else {
 			embed.setDescription("There are no lockdown channels added.")
 		}
-			message.channel.send(embed)
+			message.channel.send({embeds: [embed]})
 		}
 
     }

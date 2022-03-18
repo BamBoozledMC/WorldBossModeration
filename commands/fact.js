@@ -9,7 +9,7 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-		let loading = await message.lineReplyNoMention("<a:loading:939665977728176168> Give me a sec...")
+		let loading = await message.reply("<a:loading:939665977728176168> Give me a sec...")
 		const getfact = await fetch('https://uselessfacts.jsph.pl/random.json?language=en')
 		let fact = await getfact.json()
 		let embed = new Discord.MessageEmbed()
@@ -17,6 +17,6 @@ module.exports = {
 		.setTitle(`Here is your Fact!`)
 		.setURL(`${fact.permalink}`)
 		.setDescription(`**${fact.text}**`)
-		loading.edit("",embed)
+		loading.edit({ content: " ", embeds: [embed]})
     }
 }

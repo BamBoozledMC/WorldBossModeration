@@ -9,13 +9,13 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-    if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
+    if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
   let member;
             if(args[0]) {
               let mention;
               if(message.mentions.members.first()) {
                 if(message.mentions.members.first().user.id == bot.user.id) {
-                  mention = message.mentions.members.array()[1];
+                  mention = [...message.mentions.members.values()][1];
                 } else {
                   mention = message.mentions.members.first();
                 }
@@ -47,20 +47,20 @@ module.exports = {
 
     var dbgetuser = db.get(`moderation.punishments.${member.id}`)
 
-    if(!dbgetuser) return message.lineReply("There are no recorded punishments for that user.");
+    if(!dbgetuser) return message.reply("There are no recorded punishments for that user.");
 
-		if(!args[1]) return message.lineReply('Invalid offence number,\nPlease provide the number of an offence you wish to remove or "all" to clear all offences');
+		if(!args[1]) return message.reply('Invalid offence number,\nPlease provide the number of an offence you wish to remove or "all" to clear all offences');
 		if(!isNaN(args[1])) {
     let tryget = db.get(`moderation.punishments.${member.id}.${args[1]}`)
-		if(!tryget) return message.lineReply('Invalid offence number,\nPlease provide the number of an offence you wish to remove or "all" to clear all offences');
+		if(!tryget) return message.reply('Invalid offence number,\nPlease provide the number of an offence you wish to remove or "all" to clear all offences');
 		await db.delete(`moderation.punishments.${member.id}.${args[1]}`)
-		message.lineReply(`<:shieldtick:939667770184966186> Deleted **${member.user.tag}'s** ${args[1]} Offence.`)
+		message.reply(`<:shieldtick:939667770184966186> Deleted **${member.user.tag}'s** ${args[1]} Offence.`)
 	} else if(args[1].toLowerCase() == "all") {
 		await db.delete(`moderation.punishments.${member.id}`)
 		db.delete(`moderation.punishments.${member.id}.offenceno`)
-		message.lineReply(`<:shieldtick:939667770184966186> Deleted all of **${member.user.tag}'s** Offences.`)
+		message.reply(`<:shieldtick:939667770184966186> Deleted all of **${member.user.tag}'s** Offences.`)
 	} else {
-		return message.lineReply('Invalid offence number,\nPlease provide the number of an offence you wish to remove or "all" to clear all offences');
+		return message.reply('Invalid offence number,\nPlease provide the number of an offence you wish to remove or "all" to clear all offences');
 	}
 
     // for(i = 1; i <= dbgetuser.offenceno; i++) {

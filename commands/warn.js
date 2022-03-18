@@ -8,7 +8,7 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-    if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
+    if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
   let reason = args.slice(1).join(' ');
 
   let member;
@@ -16,7 +16,7 @@ module.exports = {
               let mention;
               if(message.mentions.members.first()) {
                 if(message.mentions.members.first().user.id == bot.user.id) {
-                  mention = message.mentions.members.array()[1];
+                  mention = [...message.mentions.members.values()][1];
                 } else {
                   mention = message.mentions.members.first();
                 }
@@ -45,8 +45,8 @@ module.exports = {
             if (!member) return;
             else member = message.guild.members.cache.get(member.id);
             if (!member) return;
-  if (!reason) return message.lineReply('Please provide a reason.');
-	if(member.id == message.author.id) return message.lineReply("You can't warn yourself!")
+  if (!reason) return message.reply('Please provide a reason.');
+	if(member.id == message.author.id) return message.reply("You can't warn yourself!")
 	message.delete()
 let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
   member.send(`You have been warned in **${message.guild.name}** for the reason: **${reason}**`).catch(error => message.reply(`This user was not notified of their warn because they have blocked me or have DMs turned off.`));
@@ -55,13 +55,13 @@ let loading = await message.channel.send("<a:loading:939665977728176168> Give me
   let warn = new Discord.MessageEmbed()
   .setColor("#d90053")
   .setTitle(`Warn | ${member.user.tag}`)
-  .addField("User", member, true)
-  .addField("Moderator", message.author, true)
+  .addField("User", member.toString(), true)
+  .addField("Moderator", message.author.toString(), true)
   .addField("Reason", reason)
   .setTimestamp()
   .setFooter(member.id)
 
-    bot.channels.cache.get(config.logsID).send(warn)
+    bot.channels.cache.get(config.logsID).send({embeds: [warn]})
 
 		let ts = Date.now();
 

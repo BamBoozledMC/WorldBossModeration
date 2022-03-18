@@ -9,7 +9,7 @@ module.exports = {
     aliases: ['up'],
 	args: false,
 	async execute(bot, message, args, prefix) {
-		if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
+		if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
 			if(message.channel.id == config.generalID) return;
 		}
 	let totalSeconds = (bot.uptime / 1000);

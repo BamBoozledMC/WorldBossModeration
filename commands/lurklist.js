@@ -9,7 +9,7 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-    if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
+    if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
 		let getlurkers = db.get(`lurking`)
 
     let lurklist = new Discord.MessageEmbed()
@@ -34,7 +34,7 @@ module.exports = {
 });
 lurklist.setDescription(`There are **${numofusers}** lurkers`)
 
-		message.channel.send(lurklist)
+		message.channel.send({embeds: [lurklist]})
 
 }
 }

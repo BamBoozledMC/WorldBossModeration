@@ -9,7 +9,7 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-    if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
+    if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
   let nick = args.slice(1).join(' ');
 
   let member;
@@ -17,7 +17,7 @@ module.exports = {
               let mention;
               if(message.mentions.members.first()) {
                 if(message.mentions.members.first().user.id == bot.user.id) {
-                  mention = message.mentions.members.array()[1];
+                  mention = [...message.mentions.members.values()][1];
                 } else {
                   mention = message.mentions.members.first();
                 }
@@ -48,7 +48,7 @@ module.exports = {
             if (!member) return;
   if (!nick) {
 		let thenick = member.nickname ? `is currently nicknamed **${member.nickname}**` : "is not nicknamed"
-		return message.lineReply(`This user ${thenick}`)
+		return message.reply(`This user ${thenick}`)
 	}
 	message.delete()
 let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
@@ -74,13 +74,13 @@ if(nick.length > 32) {
 	let nickembed = new Discord.MessageEmbed()
   .setColor("#d90053")
   .setTitle(`Nickname changed | ${member.user.tag}`)
-  .addField("User", member, true)
-  .addField("Moderator", message.author, true)
+  .addField("User", member.toString(), true)
+  .addField("Moderator", message.author.toString(), true)
   .addField(`New nickname`, `${checknick ? `**${checknick}**` : `Nickname was **reset** to default.`}`)
   .setTimestamp()
   .setFooter(member.id)
 
-    bot.channels.cache.get(config.logsID).send(nickembed)
+    bot.channels.cache.get(config.logsID).send({embeds: [nickembed]})
 
 		loading.edit(`<:shieldtick:939667770184966186> **${member.user.tag}**'s nickname has been ${resetorset} ${checknick ? `**${checknick}**` : ""} ${notemsg}`)
 

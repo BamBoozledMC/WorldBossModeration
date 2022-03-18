@@ -9,14 +9,14 @@ module.exports = {
 	args: true,
 	async execute(bot, message, args, prefix) {
 
-    if (!message.member.hasPermission("KICK_MEMBERS") && message.author.id != config.ownerID) return;
+    if (!message.member.permissions.has("KICK_MEMBERS") && message.author.id != config.ownerID) return;
 
   let member;
             if(args[0]) {
               let mention;
               if(message.mentions.members.first()) {
                 if(message.mentions.members.first().user.id == bot.user.id) {
-                  mention = message.mentions.members.array()[1];
+                  mention = [...message.mentions.members.values()][1];
                 } else {
                   mention = message.mentions.members.first();
                 }
@@ -45,7 +45,7 @@ module.exports = {
             if (!member) return;
             else member = message.guild.members.cache.get(member.id);
             if (!member) return;
-			if(member.id == message.author.id) return message.lineReply("You can't kick yourself!")
+			if(member.id == message.author.id) return message.reply("You can't kick yourself!")
 			message.delete()
     if(!member.kickable)
       return message.channel.send("I cannot kick this user!");
@@ -67,13 +67,13 @@ module.exports = {
       let kick = new Discord.MessageEmbed()
       .setColor("#d90053")
       .setTitle(`Kick | ${member.user.tag}`)
-      .addField("User", member, true)
-      .addField("Moderator", message.author, true)
+      .addField("User", member.toString(), true)
+      .addField("Moderator", message.author.toString(), true)
       .addField("Reason", res)
       .setTimestamp()
       .setFooter(member.id)
 
-      bot.channels.cache.get(config.logsID).send(kick)
+      bot.channels.cache.get(config.logsID).send({embeds: [kick]})
 
 			let ts = Date.now();
 

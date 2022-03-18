@@ -1,7 +1,6 @@
 const config = require('./config.json');
-const Discord = require ("discord.js");
-require('discord-reply');
-const bot = new Discord.Client ({ partials: ["MESSAGE", "CHANNEL", "REACTION"]});
+const { Client, Intents, Collection, MessageEmbed } = require ("discord.js");
+const bot = new Client({ failIfNotExists: false, intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.GUILD_INTEGRATIONS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.DIRECT_MESSAGES], partials: ["MESSAGE", "CHANNEL", "REACTION"]});
 const db = require('quick.db');
 const fetch = require('node-fetch');
 const ytdl = require('ytdl-core-discord');
@@ -23,7 +22,7 @@ const reactionAddEvent = require("./messagereaction-add.js");
 const reactionRemoveEvent = require("./messagereaction-remove.js");
 
 const fs = require('fs');
-bot.commands = new Discord.Collection();
+bot.commands = new Collection();
 //bot.aliases = new Discord.Collection();
 
 
@@ -143,14 +142,14 @@ app.get('/auth/steam/return',
     if (!user) {
       console.log(`${discorduser.username}#${discorduser.discriminator} was not found.`);
     } else if (user) {
-      let linkembed = new Discord.MessageEmbed()
+      let linkembed = new MessageEmbed()
       .setTitle("Successfully Linked!")
       .setThumbnail('https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg')
       .setDescription(`Your Steam (**${steamuser.displayName}**) & Discord (**${discorduser.username}#${discorduser.discriminator}**) account are now linked with **World Boss Moderation**\n\nTo unlink your accounts, use \`!unlink\`in <#932828142094123009> or use \`!link\` to check your linked account info.`)
       .setColor('#d90053')
   		.setFooter(`Developed by BamBoozled#0882`)
       .setTimestamp()
-      user.send(linkembed).catch(() => {
+      user.send({embeds: [linkembed]}).catch(() => {
         console.log(`${discorduser.username}#${discorduser.discriminator} was found but could not be DMed.`);
       });
     }
@@ -195,11 +194,11 @@ bot.on("ready", async () => {
 				if(mutetime == 0) {
 					clearInterval(timer);
 
-					let unmuteembed = new Discord.MessageEmbed()
+					let unmuteembed = new MessageEmbed()
     				.setColor("#d90053")
 		  			.setTitle(`Unmute | ${member.user.tag}`)
-		  			.addField("User", member, true)
-     				.addField("Moderator", bot.user, true)
+		  			.addField("User", member.toString(), true)
+     				.addField("Moderator", bot.user.toString(), true)
 		  			.addField("Reason", "Auto Unmute")
 		  			.setTimestamp()
 					.setFooter(member.id)
@@ -213,7 +212,7 @@ bot.on("ready", async () => {
  					}catch(e){
     				console.log(e.stack);
 					  }
-					  bot.channels.cache.get(config.logsID).send(unmuteembed)
+					  bot.channels.cache.get(config.logsID).send({embeds: [unmuteembed]})
             db.delete(`moderation.punishments.${member.user.id}.muted`)
 
 				}
@@ -231,44 +230,6 @@ setInterval(() => {
     bot.user.setActivity(`${activities[i++ % activities.length]}`, { type: "WATCHING"});
 }, 15000)
 
-  bot.api.applications(bot.user.id).commands.post({
-          data: {
-              name: "ping",
-              description: "Checks the bot's ping."
-              // possible options here e.g. options: [{...}]
-          }
-      });
-
-
-    bot.ws.on('INTERACTION_CREATE', async interaction => {
-            let command = interaction.data.name.toLowerCase();
-            let args = interaction.data.options;
-
-            if (command === 'ping'){
-              let localping = await ping.promise.probe('127.0.0.1', {
-                timeout: 5,
-            });
-         let isp_dns = await ping.promise.probe('1.1.1.1', {
-                 timeout: 5,
-             });
-           let pingembed = new Discord.MessageEmbed()
-           .setTitle("Pong! 🏓")
-           .addField("📥 Roundtrip:", `**${(interaction.data.editedTimestamp || interaction.data.createdTimestamp) - (interaction.data.editedTimestamp || interaction.data.createdTimestamp)}ms**`)
-           .addField("📤 API:", `**${bot.ws.ping}ms**`)
-           .addField("<:server:948743195309768746> ISP/DNS:", `**${isp_dns.time}ms**`)
-           .addField("🖥️ INTERNAL:", `**${localping.time}ms**`)
-           .setColor("#d90053")
-           .setTimestamp()
-                bot.api.interactions(interaction.id, interaction.token).callback.post({
-                    data: {
-                        type: 4,
-                        data: {
-                          embeds: [ pingembed ]
-                        }
-                    }
-                })
-            }
-        });
 
 });
 
@@ -276,10 +237,8 @@ setInterval(() => {
 bot.on('messageReactionAdd', (reaction, user) => reactionAddEvent(reaction, user, bot));
 bot.on('messageReactionRemove', (reaction, user) => reactionRemoveEvent(reaction, user, bot));
 
-bot.on('message', async message => {
-	if (message.channel.type == "dm") return;
-
-
+bot.on('messageCreate', async message => {
+  if (message.channel.type == "DM") return;
   const auto_mute = async (message) => {
 
       db.delete(`pingwarn.${message.author.id}`)
@@ -290,16 +249,16 @@ bot.on('message', async message => {
         console.log(e);
         return;
       }
-    let muteembed = new Discord.MessageEmbed()
+    let muteembed = new MessageEmbed()
         .setColor("#d90053")
         .setTitle(`Tempmute | ${message.author.tag}`)
-        .addField("User", message.author, true)
-        .addField("Moderator", bot.user, true)
+        .addField("User", message.author.toString(), true)
+        .addField("Moderator", bot.user.toString(), true)
         .addField("Time", "24h")
         .addField("Reason", "Pinging Fresh/Lazarbeam multiple times", true)
         .setTimestamp()
         .setFooter(message.author.id)
-    bot.channels.cache.get(config.logsID).send(muteembed);
+    bot.channels.cache.get(config.logsID).send({embeds: [muteembed]});
     try {
     message.author.send(`You have been tempmuted in **${message.guild.name}** for \`24h\` with the reason: **Pinging Fresh/Lazarbeam multiple times**`)
   }catch(e){
@@ -337,11 +296,11 @@ bot.on('message', async message => {
       if(mutetime == 0) {
           clearInterval(timer);
 
-          let unmuteembed = new Discord.MessageEmbed()
+          let unmuteembed = new MessageEmbed()
       .setColor("#d90053")
         .setTitle(`Unmute | ${message.author.tag}`)
-        .addField("User", message.author, true)
-        .addField("Moderator", bot.user, true)
+        .addField("User", message.author.toString(), true)
+        .addField("Moderator", bot.user.toString(), true)
         .addField("Reason", "Auto Unmute")
         .setTimestamp()
         .setFooter(message.author.id)
@@ -354,7 +313,7 @@ bot.on('message', async message => {
     }catch(e){
       console.log(e.stack);
     }
-    bot.channels.cache.get(config.logsID).send(unmuteembed)
+    bot.channels.cache.get(config.logsID).send({embeds: [unmuteembed]})
     db.delete(`moderation.punishments.${message.author.id}.muted`)
 
       }
@@ -380,7 +339,7 @@ bot.on('message', async message => {
         db.delete(`pingwarn.${message.author.id}`)
     }, 300000);
     }
-    message.lineReply("Hey! Please don't ping the WorldBoss's. Make sure you read the <#929941845260255273>.\n**Repeated attempts will result in moderator action.**")
+    message.reply("Hey! Please don't ping the WorldBoss's. Make sure you read the <#929941845260255273>.\n**Repeated attempts will result in moderator action.**")
   }
   if(message.mentions.has("218345611802574848")) {
     if (message.author.bot) return;
@@ -400,7 +359,7 @@ bot.on('message', async message => {
         db.delete(`pingwarn.${message.author.id}`)
     }, 300000);
     }
-    message.lineReply("Hey! Please don't ping the WorldBoss's. Make sure you read the <#929941845260255273>.\n**Repeated attempts will result in moderator action.**")
+    message.reply("Hey! Please don't ping the WorldBoss's. Make sure you read the <#929941845260255273>.\n**Repeated attempts will result in moderator action.**")
   }
   if(message.content.includes("🍆")) {
     message.delete().catch(error =>{
@@ -442,13 +401,13 @@ bot.on('message', async message => {
   //       db.delete(`pingwarn.${message.author.id}`)
   //   }, 300000);
   //   }
-  //   message.lineReply("Please refrain from pinging Bam.")
+  //   message.reply("Please refrain from pinging Bam.")
   // }
   let checkiflurk = db.get(`lurking.${message.author.id}`)
 
   if(checkiflurk) {
     message.channel.send(`**${message.author}** is no longer lurking.`).then(message => {
-      message.delete({timeout:10000})
+      setTimeout(() => message.delete(), 10000);
     });
     if (message.author.username == checkiflurk.name) {
       message.member.setNickname("").catch(error => {});
@@ -462,14 +421,14 @@ bot.on('message', async message => {
     if(message.author.bot) return;
     let mentionlurk = db.get(`lurking.${message.mentions.members.first().user.id}`)
     if(mentionlurk) {
-      let userislurking = new Discord.MessageEmbed()
+      let userislurking = new MessageEmbed()
       .setTitle(`${message.mentions.members.first().user.tag} is Lurking!`)
       .setDescription(`They have been lurking since <t:${mentionlurk.startedAT}:F>`)
       .addField(`Reason`, mentionlurk.reason)
       .setColor("#d90053")
       .setTimestamp()
-      message.channel.send(userislurking).then(message => {
-  			message.delete({timeout:10000})
+      message.channel.send({embeds: [userislurking]}).then(message => {
+  			setTimeout(() => message.delete(), 10000);
   		});
     }
   }
@@ -496,14 +455,14 @@ bot.on('message', async message => {
 	}
 
   //delete messages from suggestion channel that is not a suggestion
-  if (message.channel.id == "929941845260255278") {
-    if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
+  if (message.channel.id == config.suggestionID) {
+    if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
       if(!message.content.toLowerCase().startsWith(`${prefix}suggest`) && !message.content.toLowerCase().startsWith(`${prefix}suggestion`)) {
         if(!message.content.toLowerCase().startsWith(`${prefix}editsuggestion`) && !message.content.toLowerCase().startsWith(`${prefix}editlastsuggestion`)) {
           message.delete().catch(error =>{
 			    })
-			    message.reply(`Use **${prefix}suggest *your suggestion*** if you wish to suggest something __or__\nUse **${prefix}editsuggestion *your edited suggestion*** to edit your last suggestion.\nMisuing this command will lead to punishments.`).then(message => {
-            message.delete({timeout:10000})
+			    message.channel.send(`${message.author}, Use **${prefix}suggest *your suggestion*** if you wish to suggest something __or__\nUse **${prefix}editsuggestion *your edited suggestion*** to edit your last suggestion.\nMisuing this command will lead to punishments.`).then(message => {
+            setTimeout(() => message.delete(), 10000);
           });
       }
     }
@@ -522,7 +481,7 @@ const [, matchedPrefix] = message.content.match(prefixRegex);
 	if(!commandName && !message.content.startsWith(prefix)) return;
 
 	if(commandName == "prefix") {
-		if (!message.member.hasPermission("MANAGE_GUILD") && message.author.id != config.ownerID) return;
+		if (!message.member.permissions.has("MANAGE_GUILD") && message.author.id != config.ownerID) return;
 		let data = db.get(`prefix.${message.guild.id}`);
 		if (args[0] === "reset") {
 			await db.delete(`prefix.${message.guild.id}`);
@@ -530,14 +489,14 @@ const [, matchedPrefix] = message.content.match(prefixRegex);
 			return console.log(`The prefix for ${message.guild.name} was reset.`);
 		}
 		let symbol = args[0];
-		let nonedefined = new Discord.MessageEmbed()
+		let nonedefined = new MessageEmbed()
 		.setTitle("Server Prefix")
 		.setDescription(`${message.guild.name}'s Current prefix is \`${prefix}\`\nUse ${prefix}prefix reset to reset the server's prefix to default.`)
 		.addField("Description:", "Change the server's prefix", true)
 		.addField("Usage:", `${prefix}prefix [Your_custom_prefix_here]\n${prefix}prefix reset`, true)
 		.addField("Example:", `${prefix}prefix -`)
 		.setColor('#d90053')
-		if (!symbol) return message.channel.send(nonedefined)
+		if (!symbol) return message.channel.send({embeds: [nonedefined]})
 
 		db.set(`prefix.${message.guild.id}`, symbol);
 		message.channel.send(`The server prefix for **${message.guild.name}** has been updated to: \`${symbol}\``)
@@ -550,7 +509,7 @@ const [, matchedPrefix] = message.content.match(prefixRegex);
   if (!command) return;
 
   if(!cooldowns.has(command.name)){
-        cooldowns.set(command.name, new Discord.Collection());
+        cooldowns.set(command.name, new Collection());
     }
 
     const current_time = Date.now();
@@ -564,8 +523,8 @@ const [, matchedPrefix] = message.content.match(prefixRegex);
         if(current_time < expiration_time){
             const time_left = (expiration_time - current_time) / 1000;
 
-            return message.lineReply(`Please wait \`${time_left.toFixed(1)}\` second(s) before using that command again.`).then(message => {
-    					message.delete({timeout:3000})
+            return message.reply(`Please wait \`${time_left.toFixed(1)}\` second(s) before using that command again.`).then(message => {
+    					setTimeout(() => message.delete(), 3000);
     				});
         }
     }
@@ -575,7 +534,7 @@ const [, matchedPrefix] = message.content.match(prefixRegex);
     //Delete the user's id once the cooldown is over.
     setTimeout(() => time_stamps.delete(message.author.id), cooldown_amount);
 
-	if (message.channel.type == "dm") return;
+	if (message.channel.type == "DM") return;
   try {
 		command.execute(bot, message, args, prefix, commandName);
 	} catch (error) {
@@ -599,12 +558,12 @@ bot.on('guildMemberAdd', member => {
     else memberCount = memberCount + "th";
 		let welcomeChannel = member.guild.channels.cache.get(config.welcomeID)
 		welcomeChannel.send(`Welcome to the **Official World Boss Discord** ${member}**!**\nYou are the **${memberCount}** member!`).then(message => {
-			message.delete({timeout:30000})
+			setTimeout(() => message.delete(), 30000);
 		});
 
 
 		let joinLog = member.guild.channels.cache.get(config.joinleavelogsID)
-		let joinlogembed = new Discord.MessageEmbed()
+		let joinlogembed = new MessageEmbed()
 		.setTitle('User Joined')
     .setDescription(`They are the **${memberCount}** member!`)
 		.addField("User:", `${member.user.tag}\n${member}`)
@@ -613,7 +572,7 @@ bot.on('guildMemberAdd', member => {
 		.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
 		.setFooter(member.user.id)
 		.setColor('GREEN')
-		joinLog.send(joinlogembed)
+		joinLog.send({embeds: [joinlogembed]})
 		}
 
     let dbgetuser = db.get(`moderation.punishments.${member.user.id}`)
@@ -638,7 +597,7 @@ bot.on('guildMemberRemove', member => {
   }
 	if(member.guild.id == "929941845004415046") {
 		let leaveLog = member.guild.channels.cache.get(config.joinleavelogsID)
-		let leavelogembed = new Discord.MessageEmbed()
+		let leavelogembed = new MessageEmbed()
 		.setTitle('User Left')
 		.addField("User:", `${member.user.tag}\n${member}`)
 		.addField("Discord Account created at:", `${member.user.createdAt}`)
@@ -647,7 +606,7 @@ bot.on('guildMemberRemove', member => {
 		.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
 		.setFooter(member.user.id)
 		.setColor('RED')
-		leaveLog.send(leavelogembed)
+		leaveLog.send({embeds: [leavelogembed]})
 		}
 });
 

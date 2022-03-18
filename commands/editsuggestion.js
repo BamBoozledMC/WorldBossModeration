@@ -12,15 +12,15 @@ module.exports = {
 	async execute(bot, message, args, prefix) {
 		if (message.author.bot) return;
 		if(message.channel.id == config.generalID) return;
-		if (message.guild.id != "929941845004415046") return
+		if (message.guild.id != config.serverID) return
 		if (message.content.includes("@everyone"))  return;
 		if (message.content.includes("@here")) return;
 		let msgtosend = args.join(" ")
 		if (!msgtosend) {
-			let errMSG = await message.lineReply('Please include the edited suggestion!').catch(error =>{
+			let errMSG = await message.reply('Please include the edited suggestion!').catch(error =>{
 			})
-			errMSG.delete({timeout:5000});
-			message.delete({timeout:5000});
+			setTimeout(() => errMSG.delete().catch(error => {}), 5000);
+			setTimeout(() => message.delete().catch(error => {}), 5000);
 			return;
 		}
 		let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
@@ -48,16 +48,16 @@ module.exports = {
 		.setFooter('To suggest something use !suggest')
 
 		var editembed = await message.guild.channels.cache.get(config.suggestionID).messages.fetch(lastsuggestion.key).then(message => {
-      message.edit(embed);
+      message.edit({content: " ", embeds: [embed]});
     }).catch(err => {
 			loading.edit(":x: An error occurred.")
-      console.error(err);
+      console.log(err);
     });
 
 				db.set(`suggestions.${lastsuggestion.key}.suggestion`, msgtosend )
 				db.set(`suggestions.${lastsuggestion.key}.edited`, true )
 				loading.edit("<a:completed:934404118754263050> Your suggestion has been edited!").then(message => {
-					message.delete({timeout:5000})
+					setTimeout(() => message.delete().catch(error => {}), 5000);
 				});
 
 		message.delete().catch(error =>{

@@ -8,7 +8,7 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-		if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
+		if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
 			if(message.channel.id == config.generalID) return;
 		}
 
@@ -35,6 +35,6 @@ module.exports = {
 				patrons.addField(`Tier 2 Patrons`, `${formatT2}`)
 			}
 
-		message.channel.send(patrons)
+		message.channel.send({embeds: [patrons]})
     }
 }

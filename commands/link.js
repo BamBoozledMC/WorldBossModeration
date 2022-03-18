@@ -20,7 +20,7 @@ module.exports = {
 			.setFooter("Developed by BamBoozled#0882")
 			.setTimestamp()
 
-			message.lineReply(notlinked)
+			message.reply({embeds: [notlinked]})
 		} else if (dbget) {
 			let getusersteam = await steam.getUserSummary(dbget.steam)
 			let linked = new Discord.MessageEmbed()
@@ -31,7 +31,7 @@ module.exports = {
 			.setFooter("Developed by BamBoozled#0882")
 			.setTimestamp()
 
-			message.lineReply(linked)
+			message.reply({embeds: [linked]})
 		}
 
     }

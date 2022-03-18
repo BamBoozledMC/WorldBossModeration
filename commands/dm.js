@@ -14,7 +14,7 @@ module.exports = {
 	              let mention;
 	              if(message.mentions.members.first()) {
 	                if(message.mentions.members.first().user.id == bot.user.id) {
-	                  mention = message.mentions.members.array()[1];
+	                  mention = [...message.mentions.members.values()][1];
 	                } else {
 	                  mention = message.mentions.members.first();
 	                }
@@ -50,7 +50,7 @@ module.exports = {
             member.send(mentionMessage);
 			message.channel.send(`:thumbsup: Successfully DM'd **${member.user.username}**!`)
 			.then(message => {
-				message.delete({timeout:5000})
+				setTimeout(() => message.delete().catch(error => {}), 5000);
 			});
 		} catch(e){
 			console.log(e)

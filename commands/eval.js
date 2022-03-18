@@ -25,7 +25,7 @@ module.exports = {
         .addField("Input:", `\`\`\`js\n${beautify(args.join(" "), { format: "js" })}\n\`\`\``)
         .addField("Output:", `\`\`\`${evaluated}\`\`\``)
         .addField("Type of:", typeof(evaluated))
-        var Evalembed = await message.channel.send(embed)
+        var Evalembed = await message.channel.send({embeds: [embed]})
 
         Evalembed.react('✅').then(() => Evalembed.react('❌'));
 
@@ -33,7 +33,7 @@ const filter = (reaction, user) => {
 	return ['✅', '❌'].includes(reaction.emoji.name) && user.id === message.author.id;
 };
 
-Evalembed.awaitReactions(filter, { max: 1, time: 15000, errors: ['time'] })
+Evalembed.awaitReactions({ filter, max: 1, time: 15000, errors: ['time'] })
 	.then(collected => {
 		const reaction = collected.first();
 
@@ -76,7 +76,7 @@ Evalembed.awaitReactions(filter, { max: 1, time: 15000, errors: ['time'] })
         .setTitle("ERROR!")
         .setDescription(`\`\`\`${e}\`\`\``)
         .setFooter(bot.user.username)
-        var Errorembed = await message.channel.send(embed)
+        var Errorembed = await message.channel.send({embeds: [embed]})
 
         Errorembed.react('✅').then(() => Errorembed.react('❌'));
 
@@ -84,7 +84,7 @@ const filter = (reaction, user) => {
 	return ['✅', '❌'].includes(reaction.emoji.name) && user.id === message.author.id;
 };
 
-Errorembed.awaitReactions(filter, { max: 1, time: 15000, errors: ['time'] })
+Errorembed.awaitReactions({ filter, max: 1, time: 15000, errors: ['time'] })
 	.then(collected => {
 		const reaction = collected.first();
 

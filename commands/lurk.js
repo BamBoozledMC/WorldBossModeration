@@ -12,7 +12,7 @@ module.exports = {
 	async execute(bot, message, args, prefix) {
 		let checkiflurk = db.get(`lurking.${message.author.id}`)
 
-		if(checkiflurk) return message.lineReply("You are already lurking!");
+		if(checkiflurk) return message.reply("You are already lurking!");
 		else {
 			if (message.content.includes("@everyone"))  return;
 			if (message.content.includes("@here")) return;
@@ -26,7 +26,7 @@ module.exports = {
 
 			message.delete()
 			message.channel.send(`**${message.author}** is now lurking - **${lurkreason}**`).then(message => {
-  			message.delete({timeout:10000})
+				setTimeout(() => message.delete().catch(error => {}), 10000);
   		});
 			let currentnick = message.member.nickname ? message.member.nickname : message.author.username
 			message.member.setNickname(`[AFK] ${currentnick}`).catch(error => {});

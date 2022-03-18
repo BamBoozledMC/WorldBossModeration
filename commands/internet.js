@@ -9,7 +9,7 @@ module.exports = {
 	usage: '!internet',
 	args: false,
 	async execute(bot, message, args, prefix) {
-		if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
+		if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
 		const pingMsg =  await message.channel.send('<a:loading:939665977728176168> Gathering data...');
 
 		const FastTest = new FastAPI({
@@ -31,7 +31,7 @@ FastTest.runTest().then(result => {
     .setTimestamp()
 
 		pingMsg.delete()
-		message.lineReply(results)
+		message.reply({embeds: [results]})
 		}).catch(e => {
     	console.error(e.message);
 			pingMsg.edit("Failed to retrieve data.")

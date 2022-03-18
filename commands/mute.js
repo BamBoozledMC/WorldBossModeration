@@ -12,13 +12,13 @@ module.exports = {
 	async execute(bot, message, args, prefix) {
     //!mute @user 1s/m/h/d
   try {
-  if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
+  if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
   let member;
             if(args[0]) {
               let mention;
               if(message.mentions.members.first()) {
                 if(message.mentions.members.first().user.id == bot.user.id) {
-                  mention = message.mentions.members.array()[1];
+                  mention = [...message.mentions.members.values()][1];
                 } else {
                   mention = message.mentions.members.first();
                 }
@@ -49,21 +49,19 @@ module.exports = {
             if (!member) return;
 						if (member.id === message.author.id) return message.channel.send("You cannot mute yourself!");
 						message.delete()
-  if(member.hasPermission("ADMINISTRATOR")) return message.channel.send("I cant mute this user");
+  if(member.permissions.has("ADMINISTRATOR")) return message.channel.send("I cant mute this user");
 	let loading = await message.channel.send("<a:loading:939665977728176168> Give me a sec...")
   let muterole = message.guild.roles.cache.find(r => r.name === "Muted");
 
   if(!muterole){
     try{
       muterole = await message.guild.roles.create({
-        data: {
         name: "Muted",
         color: "#777777",
         permissions: ['VIEW_CHANNEL', 'READ_MESSAGE_HISTORY'],
-        }
       });
       message.guild.channels.cache.forEach(async (channel, id) => {
-        await channel.createOverwrite(muterole, {
+        await channel.permissionOverwrites.create(muterole, {
           SEND_MESSAGES: false,
           ADD_REACTIONS: false,
           CONNECT: false,
@@ -113,13 +111,13 @@ module.exports = {
   let muteembed = new Discord.MessageEmbed()
 		  .setColor("#d90053")
 		  .setTitle(`Tempmute | ${member.user.tag}`)
-		  .addField("User", member, true)
-      .addField("Moderator", message.author, true)
+		  .addField("User", member.toString(), true)
+      .addField("Moderator", message.author.toString(), true)
       .addField("Time", args[1])
 		  .addField("Reason", res, true)
 		  .setTimestamp()
 		  .setFooter(member.id)
-  bot.channels.cache.get(config.logsID).send(muteembed);
+  bot.channels.cache.get(config.logsID).send({embeds: [muteembed]});
   try {
   member.send(`You have been tempmuted in **${message.guild.name}** for \`${args[1]}\` with the reason: **${res}**`).catch(error => message.reply(`This user was not notified of their mute because they have blocked me or have DMs turned off.`));
 }catch(e){
@@ -164,8 +162,8 @@ let timer = setInterval(async function() {
         let unmuteembed = new Discord.MessageEmbed()
     .setColor("#d90053")
 		  .setTitle(`Unmute | ${member.user.tag}`)
-		  .addField("User", member, true)
-      .addField("Moderator", bot.user, true)
+		  .addField("User", member.toString(), true)
+      .addField("Moderator", bot.user.toString(), true)
 		  .addField("Reason", "Auto Unmute")
 		  .setTimestamp()
 		  .setFooter(member.id)
@@ -178,7 +176,7 @@ let timer = setInterval(async function() {
   }catch(e){
     console.log(e.stack);
   }
-	bot.channels.cache.get(config.logsID).send(unmuteembed)
+	bot.channels.cache.get(config.logsID).send({embeds: [unmuteembed]})
 	db.delete(`moderation.punishments.${member.user.id}.muted`)
     }
 }, 1000);
@@ -186,7 +184,7 @@ let timer = setInterval(async function() {
 
       }catch(e){
         console.log(e.stack);
-        if(!message.guild.me.hasPermission("MANAGE_ROLES" || "MANAGE_MESSAGES")) return message.channel.send(":x: I do not have enough permissions to do this!\nPlease make sure i have the \"MANAGE_ROLES\" and \"MANAGE_MESSAGES\" permissions.")
+        if(!message.guild.me.permissions.has("MANAGE_ROLES" || "MANAGE_MESSAGES")) return message.channel.send(":x: I do not have enough permissions to do this!\nPlease make sure i have the \"MANAGE_ROLES\" and \"MANAGE_MESSAGES\" permissions.")
         }
     }
 }

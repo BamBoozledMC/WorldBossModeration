@@ -7,13 +7,11 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-		if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
+		if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
 			if(!message.member.roles.cache.some(role => role.id === '937561741334814810')) return;
 		}
-		const picture = new MessageAttachment('./kettle.jpg');
-		message.channel.startTyping()
-		await message.channel.send(picture).catch(error =>{
+		message.channel.sendTyping()
+		await message.channel.send({files: ['./kettle.jpg']}).catch(error =>{
 		})
-		message.channel.stopTyping()
     }
 }

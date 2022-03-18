@@ -9,14 +9,14 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-    if(!message.member.hasPermission("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
+    if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
   let member;
   let memberID;
             if(args[0]) {
               let mention;
               if(message.mentions.members.first()) {
                 if(message.mentions.members.first().user.id == bot.user.id) {
-                  mention = message.mentions.members.array()[1];
+                  mention = [...message.mentions.members.values()][1];
                 } else {
                   mention = message.mentions.members.first();
                 }
@@ -60,22 +60,22 @@ module.exports = {
 		let bans = db.get(`moderation.modstats.${memberID}.bans`) ? db.get(`moderation.modstats.${memberID}.bans`) : 0
 		let unbans = db.get(`moderation.modstats.${memberID}.unbans`) ? db.get(`moderation.modstats.${memberID}.unbans`) : 0
 
-    if(!dbgetuser) return message.lineReply("There are no recorded moderation stats for that user.");
+    if(!dbgetuser) return message.reply("There are no recorded moderation stats for that user.");
 
 		let modstatsembed = new Discord.MessageEmbed()
 		.setTitle(`Mod Stats | ${member.user.tag}`)
 		.setThumbnail(`${member.user.displayAvatarURL({ dynamic: true })}`)
-		.addField("Warns:", warns)
-		.addField("Mutes:", mutes)
-		.addField("Unmutes:", unmutes)
-		.addField("Kicks:", kicks)
-		.addField("Bans:", bans)
-		.addField("Unbans:", unbans)
+		.addField("Warns:", warns.toString())
+		.addField("Mutes:", mutes.toString())
+		.addField("Unmutes:", unmutes.toString())
+		.addField("Kicks:", kicks.toString())
+		.addField("Bans:", bans.toString())
+		.addField("Unbans:", unbans.toString())
 		.addField("Total:", `${warns + mutes + unmutes + kicks + bans + unbans}`)
 		.setColor("#d90053")
 		.setTimestamp()
 
-	message.channel.send(modstatsembed)
+	message.channel.send({embeds: [modstatsembed]})
 
 
 
