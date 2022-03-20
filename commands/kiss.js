@@ -1,5 +1,5 @@
 const config = require('../config.json');
-const {Discord, MessageAttachment} = require ("discord.js");
+const Discord = require ("discord.js");
 const canvacord = require("canvacord");
 
 module.exports = {
@@ -47,32 +47,36 @@ module.exports = {
 	            else member = message.guild.members.cache.get(member.id);
 	            if (!member) return;
 							if(member.id == message.author.id) return message.reply("You can't kiss yourself!")
-							let askkiss = await message.reply(`${member.user}, ${message.author} would like to kiss you.\n⬇️ **Accept** / **Deny** ⬇️`)
-							askkiss.react('✅').then(() => askkiss.react('❌'));
+			const row = new Discord.MessageActionRow()
+			.addComponents(
+				new Discord.MessageButton()
+					.setCustomId('accept')
+					.setLabel('Accept')
+					.setStyle('SUCCESS'),
+					
+				new Discord.MessageButton()
+					.setCustomId('deny')
+					.setLabel('Deny')
+					.setStyle('DANGER'),
+			);
+			let askkiss = await message.reply({content: `${member.user}, ${message.author} would like to kiss you.`, components: [row] })
 
-			const filter = (reaction, user) => {
-				return ['✅', '❌'].includes(reaction.emoji.name) && user.id === member.id;
-			};
+			const filter = i => ['accept', 'deny'].includes(i.customId) && i.user.id === member.id;
 
-			askkiss.awaitReactions({ filter, max: 1, time: 15000, errors: ['time'] })
-				.then(async collected => {
-					const reaction = collected.first();
+			const collector = askkiss.createMessageComponentCollector({ filter, max: 1, time: 15000 });
 
-					if (reaction.emoji.name === '✅') {
-						askkiss.reactions.removeAll()
-						askkiss.edit(`${member.user} Accepted your kiss!`)
-						message.channel.sendTyping()
+			collector.on('collect', async i => {
+				if (i.customId === 'accept') {
+					i.deferUpdate()
 						let image = await canvacord.Canvas.kiss(message.author.displayAvatarURL({ dynamic: true, format: "jpg" }), member.user.displayAvatarURL({ dynamic: true, format: "jpg" }))
-						await message.channel.send({content: `${message.author} kissed ${member} <:peepolove:948813384785231892>`, files: [image]})
-					} else {
-						askkiss.reactions.removeAll()
-						askkiss.edit(`${member.user} doesn't want to kiss.`)
-					}
-				})
-				.catch(collected => {
-					askkiss.reactions.removeAll()
-					askkiss.edit(`${member.user} didn't respond in time.`)
-			    });
+						await i.editReply({content: `${message.author} kissed ${member} <:peepolove:948813384785231892>`, components: [], files: [image]})
+				} else if (i.customId === 'deny') {
+					await i.update({ content: `${member.user} doesn't want to kiss.`, components: [] });
+				}
+			})
+			collector.on('end', async i => {
+				if (i.size === 0) await askkiss.edit({ content: `${member.user} didn't respond in time.`, components: [] });
+			});
 
     }
 }
