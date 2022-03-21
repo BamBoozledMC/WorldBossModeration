@@ -1,6 +1,10 @@
 const config = require('./config.json');
 const { Client, Intents, Collection, MessageEmbed } = require ("discord.js");
 const bot = new Client({ failIfNotExists: false, intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.GUILD_INTEGRATIONS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.DIRECT_MESSAGES], partials: ["MESSAGE", "CHANNEL", "REACTION"]});
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
+const rest = new REST({ version: '9' }).setToken(config.token);
+const { SlashCommandBuilder } = require('@discordjs/builders');
 const db = require('quick.db');
 const fetch = require('node-fetch');
 const ytdl = require('ytdl-core-discord');
@@ -20,12 +24,11 @@ const si = require('systeminformation');
 const cooldowns = new Map();
 const reactionAddEvent = require("./messagereaction-add.js");
 const reactionRemoveEvent = require("./messagereaction-remove.js");
+const slashCommands = require("./slashcommands.js");
 
 const fs = require('fs');
 bot.commands = new Collection();
 //bot.aliases = new Discord.Collection();
-
-
 
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
 for(const file of commandFiles){
@@ -35,6 +38,7 @@ for(const file of commandFiles){
 	//	bot.aliases.set(alias, command.name)
 	//});
 }
+
 
 console.log(`Loading ${commandFiles.length} commands...`)
 
@@ -234,6 +238,28 @@ setInterval(() => {
 });
 
 
+const slashcmds = [
+	new SlashCommandBuilder()
+  .setName('ping')
+  .setDescription("Get bot's latency"),
+	new SlashCommandBuilder()
+  .setName('hello')
+  .setDescription('Replies with Hello!'),
+].map(command => command.toJSON());
+
+(async () => {
+	try {
+		await rest.put(
+			Routes.applicationGuildCommands(config.botID, '934186244810870874'),
+			{ body: slashcmds },
+		);
+		console.log('Successfully reloaded application (/) commands.');
+	} catch (error) {
+		console.error(error);
+	}
+})();
+
+bot.on('interactionCreate', interaction => slashCommands(interaction, bot));
 bot.on('messageReactionAdd', (reaction, user) => reactionAddEvent(reaction, user, bot));
 bot.on('messageReactionRemove', (reaction, user) => reactionRemoveEvent(reaction, user, bot));
 
