@@ -9,7 +9,7 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix, commandName) {
-		if (!message.member.permissions.has("MANAGE_CHANNELS") && message.author.id != config.ownerID) return;
+		if (!message.member.permissions.has("MANAGE_GUILD") && message.author.id != config.ownerID) return;
 
 		let theargs = args[0]
 		if (commandName === 'addlockchannel' || commandName === 'addlockch') return addlockdownchannel(message, theargs);

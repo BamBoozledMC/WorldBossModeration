@@ -9,7 +9,7 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix, commandName) {
-		if (!message.member.permissions.has("MANAGE_CHANNELS") && message.author.id != config.ownerID) return;
+		if (!message.member.permissions.has("MANAGE_GUILD") && message.author.id != config.ownerID) return;
 
 		if (!args[0]) return unlocksinglechannel(message, message.channel.id);
 		if (args[0].toLowerCase() == 'all') return unlockallchannels(message);
