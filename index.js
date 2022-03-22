@@ -235,6 +235,7 @@ setInterval(() => {
 }, 15000)
 
 
+
 });
 
 
@@ -245,12 +246,24 @@ const slashcmds = [
 	new SlashCommandBuilder()
   .setName('hello')
   .setDescription('Replies with Hello!'),
+  new SlashCommandBuilder()
+  .setName('slowmode')
+  .setDescription('Set a channel slowmode')
+  .addStringOption(option => option.setName('time').setDescription('Enter the slowmode time.')),
+  new SlashCommandBuilder()
+  .setName('tictactoe')
+  .setDescription('Play a game of TicTacToe')
+  .addUserOption(option => option.setName('opponent').setDescription('VS Another user.')),
 ].map(command => command.toJSON());
 
 (async () => {
 	try {
 		await rest.put(
 			Routes.applicationGuildCommands(config.botID, '934186244810870874'),
+			{ body: slashcmds },
+		);
+    await rest.put(
+			Routes.applicationGuildCommands(config.botID, config.serverID),
 			{ body: slashcmds },
 		);
 		console.log('Successfully reloaded application (/) commands.');
