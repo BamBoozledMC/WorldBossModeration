@@ -67,7 +67,7 @@ module.exports = {
 
 			collector.on('collect', async i => {
 				if (i.customId === 'accept') {
-					i.deferUpdate()
+					await i.deferUpdate()
 						let image = await canvacord.Canvas.kiss(message.author.displayAvatarURL({ dynamic: true, format: "jpg" }), member.user.displayAvatarURL({ dynamic: true, format: "jpg" }))
 						await i.editReply({content: `${message.author} kissed ${member} <:peepolove:948813384785231892>`, components: [], files: [image]})
 				} else if (i.customId === 'deny') {
