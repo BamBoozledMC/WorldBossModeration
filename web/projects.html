@@ -2,30 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>World Boss Moderation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>World Boss Moderation | Other Projects</title>
   <meta name="description" content="Official website of World Boss Moderation!
-  World Boss Moderation is a powerful Discord moderation bot created by BamBoozled#0882 with the purpose of serving the World Boss Discord." />
+  Other Projects. These are some other similar projects I am working on." />
   <meta property="og:image" content="https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg">
-  <meta name="keywords" lang="en-us" content="Discord, Discord bot, bot, World Boss, moderation, moderation bot">
-  <meta name="keywords" lang="en" content="Discord, Discord bot, bot, World Boss, moderation, moderation bot">
+  <meta name="keywords" lang="en-us" content="Discord, Discord bot, bot, World Boss, moderation, moderation bot, projects">
+  <meta name="keywords" lang="en" content="Discord, Discord bot, bot, World Boss, moderation, moderation bot, projects">
   <meta name="theme-color" content="#d90053">
   <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Ubuntu" />
   <link rel="icon" type="image/png" href="favicon.ico">
 </head>
 <body>
   <div class="topnav">
-      <a class="active">Home</a>
-      <a href="/projects">Other Projects</a>
+      <a href="/">Home</a>
+      <a class="active">Other Projects</a>
       <a href="/discord" rel="noopener noreferrer" target="_blank">World Boss Discord</a>
       <a href="/appeal" rel="noopener noreferrer" target="_blank">Discord Ban Appeals</a>
       <a href="/patreon" rel="noopener noreferrer" target="_blank">Patreon</a>
       <a href="/github" rel="noopener noreferrer" target="_blank">GitHub</a>
     </div>
-<h1>World Boss Moderation</h1>
-<h3>World Boss Moderation is a powerful moderation bot created by BamBoozled#0882 with the purpose of serving the <a href="/discord">World Boss Discord</a></h3>
+<h1>Other Projects</h1>
+<p class="subhead">These are some other similar projects I am also currently working on.</p>
 
 <div class="center">
-  <button onclick="window.location.href = 'https://wbmoderation.com/auth/discord'" class="button-63" role="button">Link your Discord & Steam account</button>
+  <h4 class="aodhead">Age of Darkness Bot</h4>
+  <img class="botprofile" src="aodbot.png" alt="AoD Discord bot info">
+  <p>The Age of Darkness Discord bot is a simple and easy to use suggestion bot. The suggestion system is almost exactly the same as the one in World Boss Moderation, with minor changes to suit the different workspace.<br/>This bot also has a similar Linking system that includes the user's game statistics in the <abbr title="Age of Darkness">AoD</abbr> game.</p>
+  <p><b>Purchase</b> <a class="aodhead" href="https://store.steampowered.com/app/1426450/Age_of_Darkness_Final_Stand/" rel="noopener noreferrer" target="_blank">Age of Darkness on Steam.</a></p>
+  <h4 class="bnfthead">BeansNFT Bot</h4>
+  <img class="botprofile" src="bnftbot.png" alt="BeansNFT Discord bot info">
+  <p>The BeansNFT Discord Bot is a more complex, easy to use bot. The suggestion system includes 2 suggsetion channels, one for all users, and the other one for members with a certain role. This bot also includes a new questions system which has the same framework as suggestions, just changed to questions.<br/>BeansNFT Bot also does not have a linking system, as it is not needed.</p>
+  <p><b>Check out</b> <a class="bnfthead" href="https://www.beansnfts.io/" rel="noopener noreferrer" target="_blank">Beans NFTS here</a> </p>
 </div>
 
 <style>
@@ -36,18 +44,49 @@ h1 {
   text-align: center;
   font-size: 55px;
 }
-h3 {
+.subhead {
   font-family: calibri;
+  font-weight: bold;
   color: black;
   text-align: center;
   font-size: 40px;
+}
+h4 {
+  font-family: calibri;
+  text-align: center;
+  font-size: 36px;
+}
+.aodhead {
+  color: #064349; !important
+}
+.bnfthead {
+  color: #87ff3c; !important
+}
+.botprofile {
+  border-radius: 10px;
+}
+img {
+    animation: updown 6s ease infinite;
+}
+@keyframes updown {
+  0% {
+    transform: translateY(-3%);
+  }
+
+  50% {
+    transform: translateY(3%);
+  }
+
+  100% {
+    transform: translateY(-3%);
+  }
 }
 c {
   color: #d90053;
 }
 p {
   font-family: calibri;
-  font-size: 35px;
+  font-size: 30px;
   text-align: center;
 }
 
@@ -59,7 +98,7 @@ body {
 
 .center {
 margin: auto;
-width: 50%;
+width: 70%;
 padding: 10px;
 display: table;
 text-align: center;

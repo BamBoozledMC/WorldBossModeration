@@ -104,6 +104,16 @@ app.get('/', function(req,res) {
 app.get('/favicon.ico', function(req,res) {
   res.sendFile(__dirname+'/web/favicon.ico');
 });
+app.get('/projects', function(req,res) {
+  res.sendFile(__dirname+'/web/projects.html');
+  req.logout();
+});
+app.get('/aodbot.png', function(req,res) {
+  res.sendFile(__dirname+'/web/aodbot.PNG');
+});
+app.get('/bnftbot.png', function(req,res) {
+  res.sendFile(__dirname+'/web/bnftbot.PNG');
+});
 
 app.get('/auth/steam',
   passport.authenticate('steam'),
