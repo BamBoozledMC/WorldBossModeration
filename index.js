@@ -254,6 +254,49 @@ const slashcmds = [
   .setName('tictactoe')
   .setDescription('Play a game of TicTacToe')
   .addUserOption(option => option.setName('opponent').setDescription('VS Another user.')),
+  new SlashCommandBuilder()
+  .setName('discorddate')
+  .setDescription('Generate a timestamp that complies with user timezones.')
+  .addStringOption(option => {
+    option.setName('timezone')
+    option.setDescription('Your current timezone')
+    option.setRequired(true)
+    option.addChoice('Queensland, Australia', 'Australia/Brisbane')
+    option.addChoice('NSW, Australia', 'Australia/Sydney')
+    option.addChoice('Victoria, Australia', 'Australia/Victoria')
+    option.addChoice('New Zealand (NZ)', 'Pacific/Auckland')
+    option.addChoice('America (US), ET (Eastern Time)', 'US/Eastern')
+    option.addChoice('America (US), CT (Central Time)', 'US/Central')
+    option.addChoice('London, Europe', 'Europe/London')
+    option.addChoice('Paris, Europe', 'Europe/Paris')
+    option.addChoice('IST (Indian Standard Time)', 'Asia/Calcutta')
+    option.addChoice('UTC (Universal Time)', 'UTC')
+
+    return option
+  })
+  .addIntegerOption( option => option.setName('date').setDescription('Date (day) number from 1 - 31').setRequired(true))
+  .addIntegerOption( option => {
+    option.setName('month')
+    option.setDescription('Month number from 01 - 12')
+    option.setRequired(true)
+    for (let i = 1; i <= 12; i++) {
+      let num = i <= 9 ? "0" + i.toString() : i
+      option.addChoice(`${num}`, i)
+    }
+    return option
+  })
+  .addIntegerOption( option => option.setName('year').setDescription('Year as a 4 digit number').setRequired(true))
+  .addIntegerOption( option => {
+    option.setName('time_hour')
+    option.setDescription('Hour number in 24 hour time from 00 - 23')
+    option.setRequired(true)
+    for (let i = 0; i <= 23; i++) {
+      let num = i <= 9 ? "0" + i.toString() : i
+      option.addChoice(`${num}`, i)
+    }
+    return option
+  })
+  .addIntegerOption( option => option.setName('time_minute').setDescription('Minute number from 00 - 59').setRequired(true)),
 ].map(command => command.toJSON());
 
 (async () => {
