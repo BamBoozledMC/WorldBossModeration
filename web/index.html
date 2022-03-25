@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=600px, initial-scale=1">
   <title>World Boss Moderation</title>
   <meta name="description" content="Official website of World Boss Moderation!
   World Boss Moderation is a powerful Discord moderation bot created by BamBoozled#0882 with the purpose of serving the World Boss Discord." />
@@ -13,6 +14,9 @@
   <link rel="icon" type="image/png" href="favicon.ico">
 </head>
 <body>
+  <video oncontextmenu="return false;" id="background-video" autoplay loop muted poster="/media/backpic.png">
+  <source src="/media/backvid.mp4" type="video/mp4">
+</video>
   <div class="topnav">
       <a class="active">Home</a>
       <a href="/projects">Other Projects</a>
@@ -51,10 +55,16 @@ p {
   text-align: center;
 }
 
-body {
-  background-image: url('https://bamboozledmc.xyz/wbmback.png');
-  background-repeat: repeat;
-  background-size: 100vw 100vh;
+#background-video {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
 }
 
 .center {

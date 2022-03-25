@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=600px, initial-scale=1">
   <title>World Boss Moderation | Other Projects</title>
   <meta name="description" content="Official website of World Boss Moderation!
   Other Projects. These are some other similar projects I am working on." />
@@ -14,6 +14,9 @@
   <link rel="icon" type="image/png" href="favicon.ico">
 </head>
 <body>
+  <video oncontextmenu="return false;" id="background-video" autoplay loop muted poster="/media/backpic.png">
+  <source src="/media/backvid.mp4" type="video/mp4">
+</video>
   <div class="topnav">
       <a href="/">Home</a>
       <a class="active">Other Projects</a>
@@ -29,13 +32,15 @@
   <h4 class="aodhead">Age of Darkness Bot</h4>
   <img class="botprofile" src="aodbot.png" alt="AoD Discord bot info">
   <p>The Age of Darkness Discord bot is a simple and easy to use suggestion bot. The suggestion system is almost exactly the same as the one in World Boss Moderation, with minor changes to suit the different workspace.<br/>This bot also has a similar Linking system that includes the user's game statistics in the <abbr title="Age of Darkness">AoD</abbr> game.</p>
-  <p><b>Purchase</b> <a class="aodhead" href="https://store.steampowered.com/app/1426450/Age_of_Darkness_Final_Stand/" rel="noopener noreferrer" target="_blank">Age of Darkness on Steam.</a></p>
+  <p><b>Purchase</b> <a class="aodhead, external" href="https://store.steampowered.com/app/1426450/Age_of_Darkness_Final_Stand/" rel="noopener noreferrer" target="_blank">Age of Darkness on Steam.</a></p>
   <h4 class="bnfthead">BeansNFT Bot</h4>
   <img class="botprofile" src="bnftbot.png" alt="BeansNFT Discord bot info">
   <p>The BeansNFT Discord Bot is a more complex, easy to use bot. The suggestion system includes 2 suggsetion channels, one for all users, and the other one for members with a certain role. This bot also includes a new questions system which has the same framework as suggestions, just changed to questions.<br/>BeansNFT Bot also does not have a linking system, as it is not needed.</p>
-  <p><b>Check out</b> <a class="bnfthead" href="https://www.beansnfts.io/" rel="noopener noreferrer" target="_blank">Beans NFTS here</a> </p>
+  <p><b>Check out</b> <a class="bnfthead, external" href="https://www.beansnfts.io/" rel="noopener noreferrer" target="_blank">Beans NFTS here</a> </p>
+  <h4>That's everything!</h4>
+  <p>That is all for my current projects!<br/>Consider helping me out by supporting over at <a class="external" href="https://wbmoderation.com/patreon">Patreon </a></p>
 </div>
-
+<button class="totop" onclick='window.scrollTo({top: 0, behavior: "smooth"});'>🔝</button>
 <style>
 h1 {
   font-family: calibri;
@@ -68,6 +73,10 @@ h4 {
 img {
     animation: updown 6s ease infinite;
 }
+a.external::after {
+  content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
+  margin: 0 3px 0 5px;
+}
 @keyframes updown {
   0% {
     transform: translateY(-3%);
@@ -90,18 +99,40 @@ p {
   text-align: center;
 }
 
-body {
-  background-image: url('https://bamboozledmc.xyz/wbmback.png');
-  background-repeat: repeat;
-  background-size: 100vw 100vh;
+.totop {
+  float: right;
+  margin: 20px;
+  padding: 10px;
+  border: none;
+  border-radius: 50px;
+  font-size: 50px;
+  display: inline-block;
+  background-color: blue;
+  cursor: pointer;
+}
+
+#background-video {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
 }
 
 .center {
 margin: auto;
-width: 70%;
+width: 80%;
 padding: 10px;
 display: table;
 text-align: center;
+background-color: rgba(133, 133, 133, 0.5);
+border-radius: 25px;
+border-color: black;
+border-style: groove;
 }
 
 .left {
@@ -124,6 +155,7 @@ text-align: center;
   background-color: #333;
   border-radius: 10px;
   padding: 5px;
+
 }
 
 .topnav a, a:visited {

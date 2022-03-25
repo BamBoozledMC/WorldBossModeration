@@ -95,7 +95,7 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use('/media', express.static(__dirname + '/web/media'));
 
 app.get('/', function(req,res) {
   res.sendFile(__dirname+'/web/index.html');
