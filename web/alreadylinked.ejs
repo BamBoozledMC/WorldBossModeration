@@ -7,6 +7,9 @@
   <meta http-equiv="refresh" content="10;url=https://wbmoderation.com/" />
 </head>
 <body>
+  <video oncontextmenu="return false;" id="background-video" autoplay loop muted poster="/media/backpic.png">
+  <source src="/media/backvid.mp4" type="video/mp4">
+</video>
 <h1>Already Linked!</h1>
 <h2>Your Steam & Discord account are already linked with <c>World Boss Moderation</c></h2>
 <p>To unlink your account, use <b>!unlink</b> in the bot commands channel in the World Boss Discord.</p>
@@ -16,14 +19,14 @@
 <style>
 h1 {
   font-family: calibri;
-  color: navy;
+  color: lime;
   padding: 5px;
   text-align: center;
   font-size: 55px;
 }
 h2 {
   font-family: calibri;
-  color: navy;
+  color: lime;
   text-align: center;
   font-size: 45px;
 }
@@ -34,12 +37,39 @@ p {
   font-family: calibri;
   font-size: 35px;
   text-align: center;
+  color: orangered;
 }
 
-body {
-  background-image: url('https://bamboozledmc.xyz/wbmback.png');
-  background-repeat: repeat;
-  background-size: 100vw 100vh;
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #00008B;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #d90053;
+  border-radius: 15px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #b30045;
+}
+#background-video {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
 }
 
 .center {

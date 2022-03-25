@@ -6,6 +6,9 @@
   <link rel="icon" type="image/png" href="favicon.ico">
 </head>
 <body>
+  <video oncontextmenu="return false;" id="background-video" autoplay loop muted poster="/media/backpic.png">
+  <source src="/media/backvid.mp4" type="video/mp4">
+</video>
 <h1>Successfully Linked!</h1>
 <h2>Your Steam & Discord account are now linked with <c>World Boss Moderation</c><br/><img class="pfps" src="https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg" style="width:10%"></h2>
 <p>You may now close this page.</p>
@@ -23,14 +26,14 @@
 <style>
 h1 {
   font-family: calibri;
-  color: navy;
+  color: lime;
   padding: 5px;
   text-align: center;
   font-size: 55px;
 }
 h2 {
   font-family: calibri;
-  color: navy;
+  color: lime;
   text-align: center;
   font-size: 45px;
 }
@@ -42,11 +45,36 @@ p {
   font-size: 35px;
   text-align: center;
 }
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
 
-body {
-  background-image: url('https://bamboozledmc.xyz/wbmback.png');
-  background-repeat: repeat;
-  background-size: 100vw 100vh;
+/* Track */
+::-webkit-scrollbar-track {
+  background: #00008B;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #d90053;
+  border-radius: 15px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #b30045;
+}
+#background-video {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
 }
 
 .center {
