@@ -502,9 +502,9 @@ bot.on('messageCreate', async message => {
       setTimeout(() => message.delete(), 10000);
     });
     if (message.author.username == checkiflurk.name) {
-      message.member.setNickname("").catch(error => {});
+      await message.member.setNickname("").catch(error => {});
     } else {
-      message.member.setNickname(checkiflurk.name).catch(error => {});
+      await message.member.setNickname(checkiflurk.name).catch(error => {});
     }
     db.delete(`lurking.${message.author.id}`)
   }
