@@ -29,7 +29,7 @@ module.exports = {
 				setTimeout(() => message.delete().catch(error => {}), 10000);
   		});
 			let currentnick = message.member.nickname ? message.member.nickname : message.author.username
-			message.member.setNickname(`[AFK] ${currentnick}`).catch(error => {});
+			await message.member.setNickname(`[AFK] ${currentnick}`).catch(error => {});
 			db.set(`lurking.${message.author.id}`, { reason: lurkreason, startedAT: Math.round(Date.now() / 1000), userID: message.author.id, name: currentnick })
 		}
 		}
