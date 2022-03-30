@@ -79,4 +79,15 @@ module.exports = async (interaction, bot) => {
 
     interaction.reply({content: `**Timezone compliant dates & times**\n\n<t:${discordunix}:F> **-** \`<t:${discordunix}:F>\`\n\n<t:${discordunix}:f> **-** \`<t:${discordunix}:f>\`\n\n<t:${discordunix}:D> **-** \`<t:${discordunix}:D>\`\n\n<t:${discordunix}:d> **-** \`<t:${discordunix}:d>\`\n\n<t:${discordunix}:t> **-** \`<t:${discordunix}:t>\`\n\n<t:${discordunix}:R> **-** \`<t:${discordunix}:R>\``})
   }
+
+  if (interaction.commandName === 'say') {
+    if(!interaction.member.permissions.has("MANAGE_MESSAGES") && interaction.user.id != config.ownerID) return;
+    let msg = interaction.options.getString('message');
+    if (msg.includes("@everyone")) return interaction.reply({content: "Your suggestion contains a blacklisted phrase/word", ephemeral: true});
+    if (msg.includes("@here")) return interaction.reply({content: "Your suggestion contains a blacklisted phrase/word", ephemeral: true});
+
+    await interaction.deferReply({ephemeral: true})
+    await interaction.channel.send({content: `${msg}`})
+    interaction.editReply({content: ":thumbsup:", ephemeral: true })
+  }
 }

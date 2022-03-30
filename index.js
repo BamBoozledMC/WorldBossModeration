@@ -307,6 +307,10 @@ const slashcmds = [
     return option
   })
   .addIntegerOption( option => option.setName('time_minute').setDescription('Minute number from 00 - 59').setRequired(true)),
+  new SlashCommandBuilder()
+  .setName('say')
+  .setDescription('Returns your message')
+  .addStringOption(option => option.setName('message').setDescription('Message to send.').setRequired(true)),
 ].map(command => command.toJSON());
 
 (async () => {
