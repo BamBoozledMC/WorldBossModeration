@@ -114,6 +114,9 @@ app.get('/aodbot.png', function(req,res) {
 app.get('/bnftbot.png', function(req,res) {
   res.sendFile(__dirname+'/web/bnftbot.PNG');
 });
+app.get('/secret', function(req,res) {
+  res.sendFile(__dirname+'/web/secret.html');
+});
 
 app.get('/auth/steam',
   passport.authenticate('steam'),
