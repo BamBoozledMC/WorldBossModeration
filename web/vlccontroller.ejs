@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=650px, initial-scale=1">
+  <title>World Boss Moderation | VLC Controller</title>
+  <meta name="description" content="Official website of World Boss Moderation!
+  VLC Controller gives users the ability to control the Video Player in the World Boss Discord in their browser!" />
+  <meta property="og:image" content="https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg">
+  <meta name="theme-color" content="#d90053">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Ubuntu" />
+  <link rel="icon" type="image/png" href="favicon.ico">
+  <link href="/media/bootstrap.css" rel="stylesheet">
+</head>
+<body onload="checkLogin()">
+  <video oncontextmenu="return false;" id="background-video" autoplay loop muted poster="/media/backpic.png">
+  <source src="/media/backvid.mp4" type="video/mp4">
+</video>
+  <div class="topnav">
+      <a href="/">Home</a>
+      <a href="/projects">Other Projects</a>
+      <a class="active">VLC Controller</a>
+      <a id="userinfo"> <img src=<%= discordpfp %> alt="pfp" style="width:48px; height:48px; float: left; border-radius: 30px; padding: 5px;"> <%= discordname %> </a>
+      <button id="loginbutton" onclick="window.location.href = 'https://wbmoderation.com/vlc/auth/discord'">Login</button>
+    </div>
+<h1>VLC Controller</h1>
+<p class="subhead">Control the Video Player in the World Boss Discord here in your browser!</p>
+<p id="noaccess">You do not have access to this feature.</p>
+<div id="hideifnoaccess" class="center">
+  <button onclick="stop()">⏹</button>
+  <button onclick="playpause()">⏯</button>
+  <button onclick="previous()">⏮</button>
+  <button onclick="next()">⏭</button>
+  <div>
+    <label for="url" style="font-size: 30px; color: black;">URL</label>
+    <input type="text" class="form-control" id="url" placeholder="Enter URL e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+    <button onclick="playnow()" style="font-size: 30px; color: black;">▶ Play now</button>
+    <button onclick="add()" style="font-size: 30px; color: black;">➕ Add to queue</button>
+  </div>
+</div>
+
+<div id="snackbar">Successfully did something</div>
+<script type="text/javascript">
+  function checkLogin() {
+    if (!<%= loggedin %>) {
+      document.getElementById("loginbutton").style.display = "block";
+      document.getElementById("userinfo").style.display = "none";
+      document.getElementById("noaccess").style.display = "block";
+      document.getElementById("hideifnoaccess").style.display = "none";
+    } else {
+      document.getElementById("userinfo").style.display = "block";
+      document.getElementById("loginbutton").style.display = "none";
+      if (!<%= inguild %>) {
+        document.getElementById("noaccess").style.display = "block";
+        document.getElementById("hideifnoaccess").style.display = "none";
+      } else {
+        document.getElementById("noaccess").style.display = "none";
+        document.getElementById("hideifnoaccess").style.display = "block";
+      }
+    }
+  }
+
+  function playnow() {
+    var url = document.getElementById("url").value;
+    document.getElementById('url').value = ''
+      fetch(`/vlc/actions/?action=add&url=${url}`, {method: 'POST'})
+        .then(async response => {
+          let e = await response.text()
+          if (e == 'success') {
+            var x = document.getElementById("snackbar");
+            x.className = "show";
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+          }
+        })
+    }
+    function add() {
+      var url = document.getElementById("url").value;
+      document.getElementById('url').value = ''
+        fetch(`/vlc/actions/?action=enqueue&url=${url}`, {method: 'POST'})
+          .then(async response => {
+            let e = await response.text()
+            if (e == 'success') {
+              var x = document.getElementById("snackbar");
+              x.className = "show";
+              setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+            }
+          })
+      }
+      function stop() {
+          fetch('/vlc/actions/?action=stop', {method: 'POST'})
+            .then(async response => {
+              let e = await response.text()
+              if (e == 'success') {
+                var x = document.getElementById("snackbar");
+                x.className = "show";
+                setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+              }
+            })
+        }
+        function playpause() {
+            fetch('/vlc/actions/?action=playpause', {method: 'POST'})
+              .then(async response => {
+                let e = await response.text()
+                if (e == 'success') {
+                  var x = document.getElementById("snackbar");
+                  x.className = "show";
+                  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+                }
+              })
+          }
+          function previous() {
+              fetch('/vlc/actions/?action=previous', {method: 'POST'})
+                .then(async response => {
+                  let e = await response.text()
+                  if (e == 'success') {
+                    var x = document.getElementById("snackbar");
+                    x.className = "show";
+                    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+                  }
+                })
+            }
+            function next() {
+                fetch('/vlc/actions/?action=next', {method: 'POST'})
+                  .then(async response => {
+                    let e = await response.text()
+                    if (e == 'success') {
+                      var x = document.getElementById("snackbar");
+                      x.className = "show";
+                      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+                    }
+                  })
+              }
+</script>
+<style>
+h1 {
+  font-family: calibri, sans-serif;
+  color: #d90053;
+  padding: 5px;
+  text-align: center;
+  font-size: 55px;
+}
+.subhead {
+  font-family: calibri, sans-serif;
+  font-weight: bold;
+  color: black;
+  text-align: center;
+  font-size: 40px;
+}
+h4 {
+  font-family: calibri, sans-serif;
+  text-align: center;
+  font-size: 36px;
+}
+#userinfo {
+float: right;
+pointer-events: none !important;
+color: white;
+padding: 5px;
+border: none;
+background-color: #171717;
+display: none;
+}
+#loginbutton {
+  float: right;
+  color: white;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 18px;
+  font-family: Ubuntu;
+  margin: 1px;
+  background-color: #43b581;
+  display: block;
+}
+#loginbutton:hover {
+  background-color: #2f7f5a;
+}
+#userinfo {
+  text-align: center;
+  line-height: 48px;
+  text-align: center;
+}
+#noaccess {
+  color: red;
+  font-family: calibri, sans-serif;;
+  font-weight: bold;
+  font-size: 30px;
+  display: none;
+}
+#hideifnoaccess {
+  display: none;
+}
+a.external::after {
+  content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
+  margin: 0 3px 0 5px;
+}
+@keyframes updown {
+  0% {
+    transform: translateY(-3%);
+  }
+
+  50% {
+    transform: translateY(3%);
+  }
+
+  100% {
+    transform: translateY(-3%);
+  }
+}
+c {
+  color: #d90053;
+}
+p {
+  font-family: calibri, sans-serif;
+  font-size: 30px;
+  text-align: center;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #00008B;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #d90053;
+  border-radius: 15px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #b30045;
+}
+
+.totop {
+  float: right;
+  margin: 20px;
+  padding: 10px;
+  border: none;
+  border-radius: 50px;
+  font-size: 50px;
+  display: inline-block;
+  background-color: blue;
+  cursor: pointer;
+}
+
+#background-video {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+}
+
+#snackbar {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: #43b581;
+  color: white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 20px;
+  font-family: Ubuntu;
+}
+
+#snackbar.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+.center {
+margin: auto;
+width: 80%;
+padding: 10px;
+display: table;
+text-align: center;
+border-radius: 25px;
+border-color: black;
+border-style: groove;
+background-color: rgba(255, 255, 255, 0.8);
+}
+.center button {
+  background-color: #ff8800;
+  border-style: ridge;
+  border-radius: 50px;
+  border-color: black;
+  font-size: 50px;
+  cursor: pointer;
+  margin: 20px;
+  padding: 10px;
+  transition: 0.1s;
+  box-shadow: 0 9px #999;
+}
+.center button:hover {
+  background-color: #cc6d00;
+  transition: 0.3s;
+}
+.center button:active {
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+  transition: 0.1s;
+}
+
+.left {
+  float: left;
+  width: 45%;
+  padding: 5px;
+}
+.right {
+  float: right;
+  width: 45%;
+  padding: 5px;
+}
+.pfps {
+  border-radius: 15px;
+}
+
+.topnav {
+  margin: 5px;
+  overflow: hidden;
+  background-color: #333;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.topnav a, a:visited {
+  margin-left: 5px;
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  font-family: Ubuntu;
+  transition: 0.3s;
+  border-radius: 10px;
+  border-style: groove;
+  border-color: #242424;
+  background-color: #242424;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+  border-radius: 10px;
+}
+
+.topnav a.active {
+  margin-left: 5px;
+  background-color: #7289DA;
+  border-color: #7289DA;
+  color: white;
+  border-radius: 10px;
+}
+.topnav a.active:hover {
+  cursor: not-allowed;
+  pointer-events: none !important;
+}
+
+.button-63 {
+  align-items: center;
+  background-image: linear-gradient(144deg,#AF40FF, #5B42F3 50%,#00DDEB);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  font-family: Phantomsans, sans-serif;
+  font-size: 20px;
+  justify-content: center;
+  line-height: 1em;
+  max-width: 100%;
+  min-width: 140px;
+  padding: 19px 24px;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.button-63:active,
+.button-63:hover {
+  outline: 0;
+}
+
+@media (min-width: 768px) {
+  .button-63 {
+    font-size: 34px;
+    min-width: 196px;
+  }
+}
+</style>
+</body>
+</html>

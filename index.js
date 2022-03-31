@@ -25,6 +25,7 @@ const cooldowns = new Map();
 const reactionAddEvent = require("./messagereaction-add.js");
 const reactionRemoveEvent = require("./messagereaction-remove.js");
 const slashCommands = require("./slashcommands.js");
+const vlc = require('./vlc');
 
 const fs = require('fs');
 bot.commands = new Collection();
@@ -45,6 +46,9 @@ console.log(`Loading ${commandFiles.length} commands...`)
 commandFiles.forEach((f, i) => {
 	console.log(`Successfully loaded ${i + 1}: ${f}!`)
 })
+
+vlc.connect()
+// vlc.add('https://www.youtube.com/watch?v=QYh6mYIJG2Y')
 
 passport.serializeUser((user, done) => {
   done(null, user);
@@ -72,6 +76,7 @@ passport.use('steam', new SteamStrategy({
 ));
 
 var scopes = ['identify'];
+var vlcscopes = ['identify', 'guilds'];
 
 passport.use('discord', new DiscordStrategy({
     clientID: config.botID,
@@ -81,6 +86,19 @@ passport.use('discord', new DiscordStrategy({
 },
 function(accessToken, refreshToken, profile, done) {
     process.nextTick(function() {
+    return done(null, profile);
+    });
+}));
+passport.use('vlcdiscord', new DiscordStrategy({
+    clientID: config.botID,
+    clientSecret: config.botSecret,
+    callbackURL: `https://wbmoderation.com/vlc/auth/discord/callback`,
+    scope: vlcscopes,
+    passReqToCallback: true,
+},
+function(req, accessToken, refreshToken, profile, done) {
+    process.nextTick(function() {
+    req.logout()
     return done(null, profile);
     });
 }));
@@ -107,6 +125,31 @@ app.get('/favicon.ico', function(req,res) {
 app.get('/projects', function(req,res) {
   res.sendFile(__dirname+'/web/projects.html');
   req.logout();
+});
+app.get('/vlc/controller', async function(req,res) {
+  let basicinfo = req.user ? req.user : null
+  let loggedin = req.user ? true : false
+  let userguilds = basicinfo ? basicinfo.guilds : null
+  let inguild = false
+  if (basicinfo) {
+    if (basicinfo.guilds.some(e => e.id == config.serverID)) {
+      inguild = true
+    } else inguild = false
+  }
+  res.render(__dirname+'/web/vlccontroller.ejs', { loggedin: loggedin, discordpfp: basicinfo ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, inguild: inguild, })
+});
+app.post('/vlc/actions/*', function(request, response){
+  if (request.headers.referer != 'https://wbmoderation.com/vlc/controller') return;
+  let action = request.query.action
+  let vidurl = request.query.url
+  console.log(`VLC Player ${action} ${vidurl}`);
+  if (action == "add") vlc.add(vidurl);
+  if (action == "enqueue") vlc.enqueue(vidurl);
+  if (action == "stop") vlc.stop();
+  if (action == "playpause") vlc.pause();
+  if (action == "next") vlc.next();
+  if (action == "previous") vlc.prev();
+  response.send("success")
 });
 app.get('/aodbot.png', function(req,res) {
   res.sendFile(__dirname+'/web/aodbot.PNG');
@@ -139,6 +182,11 @@ app.get('/auth/steam/return',
        return res.redirect('/alreadylinked')
      }
       res.redirect('/auth/steam') // Successful auth
+  });
+  app.get('/vlc/auth/discord', passport.authenticate('vlcdiscord'));
+  app.get('/vlc/auth/discord/callback', passport.authenticate('vlcdiscord', { failureRedirect: '/' }),
+   function(req, res) {
+      res.redirect('/vlc/controller') // Successful auth
   });
 
   app.get('/alreadylinked', async function(req,res) {
