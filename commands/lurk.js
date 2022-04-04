@@ -6,7 +6,7 @@ module.exports = {
 	name: 'lurk',
   descrption: 'Returns your message',
 	aliases: ['afk'],
-	cooldown: 30,
+	cooldown: 60,
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
