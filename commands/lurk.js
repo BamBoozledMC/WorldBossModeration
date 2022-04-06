@@ -24,7 +24,7 @@ module.exports = {
 				  lurkreason = `${reason}`
 				}
 
-			message.delete()
+			message.delete().catch(error => {})
 			message.channel.send(`**${message.author}** is now lurking - **${lurkreason}**`).then(message => {
 				setTimeout(() => message.delete().catch(error => {}), 10000);
   		});

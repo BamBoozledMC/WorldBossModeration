@@ -527,7 +527,7 @@ bot.on('messageCreate', async message => {
       if (message.author.bot) return;
       if (message.member.roles.cache.some(role => role.id === '929941845004415049')) return;
       if (message.member.roles.cache.some(role => role.id === '932108051924783104')) return;
-      message.delete()
+      message.delete().catch(error => {})
     }
   }
   // if(message.mentions.has("562382703190867972")) {
@@ -554,7 +554,7 @@ bot.on('messageCreate', async message => {
 
   if(checkiflurk) {
     message.channel.send(`**${message.author}** is no longer lurking.`).then(message => {
-      setTimeout(() => message.delete(), 10000);
+      setTimeout(() => message.delete().catch(error => {}), 10000);
     });
     if (message.author.username == checkiflurk.name) {
       await message.member.setNickname("").catch(error => {});
