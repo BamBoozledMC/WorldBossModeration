@@ -17,6 +17,7 @@ const passportSteam = require('passport-steam');
 var SteamStrategy = passportSteam.Strategy;
 var DiscordStrategy = require('passport-discord').Strategy;
 const SteamAPI = require('steamapi');
+const { DateTime } = require("luxon");
 const talkedRecently = new Set();
 const TicTacToe = require('discord-tictactoe');
 const game = new TicTacToe({ language: 'en' });
@@ -714,7 +715,7 @@ bot.on('guildMemberAdd', member => {
 		.setTitle('User Joined')
     .setDescription(`They are the **${memberCount}** member!`)
 		.addField("User:", `${member.user.tag}\n${member}`)
-		.addField("Discord Account created at:", `${member.user.createdAt}`)
+		.addField("Discord Account created at:", `<t:${Math.round(member.user.createdAt.getTime() / 1000)}:F>`)
 		.setTimestamp()
 		.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
 		.setFooter(member.user.id)
@@ -747,8 +748,8 @@ bot.on('guildMemberRemove', member => {
 		let leavelogembed = new MessageEmbed()
 		.setTitle('User Left')
 		.addField("User:", `${member.user.tag}\n${member}`)
-		.addField("Discord Account created at:", `${member.user.createdAt}`)
-		.addField('Joined Server at:', `${member.joinedAt}`)
+		.addField("Discord Account created at:", `<t:${Math.round(member.user.createdAt.getTime() / 1000)}:F>`)
+		.addField('Joined Server at:', `<t:${Math.round(member.joinedAt.getTime() / 1000)}:F>`)
 		.setTimestamp()
 		.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
 		.setFooter(member.user.id)
