@@ -730,11 +730,14 @@ bot.on('guildMemberAdd', member => {
 		.setTitle('User Joined')
     .setDescription(`They are the **${memberCount}** member!`)
 		.addField("User:", `${member.user.tag}\n${member}`)
-		.addField("Discord Account created at:", `<t:${Math.round(member.user.createdAt.getTime() / 1000)}:F>`)
 		.setTimestamp()
 		.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
 		.setFooter(member.user.id)
 		.setColor('GREEN')
+    try {
+      joinlogembed.addField("Discord Account created at:", `<t:${Math.round(member.user.createdAt.getTime() / 1000)}:F>`)
+    } catch (e) {
+    }
 		joinLog.send({embeds: [joinlogembed]})
 		}
 
@@ -763,12 +766,15 @@ bot.on('guildMemberRemove', member => {
 		let leavelogembed = new MessageEmbed()
 		.setTitle('User Left')
 		.addField("User:", `${member.user.tag}\n${member}`)
-		.addField("Discord Account created at:", `<t:${Math.round(member.user.createdAt.getTime() / 1000)}:F>`)
-		.addField('Joined Server at:', `<t:${Math.round(member.joinedAt.getTime() / 1000)}:F>`)
 		.setTimestamp()
 		.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
 		.setFooter(member.user.id)
 		.setColor('RED')
+    try {
+    leavelogembed.addField("Discord Account created at:", `<t:${Math.round(member.user.createdAt.getTime() / 1000)}:F>`)
+    leavelogembed.addField('Joined Server at:', `<t:${Math.round(member.joinedAt.getTime() / 1000)}:F>`)
+  } catch (e) {
+  }
 		leaveLog.send({embeds: [leavelogembed]})
 		}
 });
