@@ -5,6 +5,7 @@ const ping = require('ping');
 const TicTacToe = require('discord-tictactoe');
 const game = new TicTacToe({ language: 'en', simultaneousGames: true, requestExpireTime: 45, gameExpireTime: 45, })
 const { DateTime } = require("luxon");
+const fetch = require('node-fetch');
 
 
 module.exports = async (interaction, bot) => {
@@ -89,5 +90,84 @@ module.exports = async (interaction, bot) => {
     await interaction.deferReply({ephemeral: true})
     await interaction.channel.send({content: `${msg}`})
     interaction.editReply({content: ":thumbsup:", ephemeral: true })
+  }
+
+  if (interaction.commandName === 'fortnitestats') {
+    if(interaction.user.id != config.ownerID) return;
+    let platform = interaction.options.getString('platform');
+    let username = interaction.options.getString('username');
+    if (username.includes("@everyone")) return interaction.reply({content: "Username contains a blacklisted phrase/word", ephemeral: true});
+    if (username.includes("@here")) return interaction.reply({content: "Username contains a blacklisted phrase/word", ephemeral: true});
+    await interaction.deferReply()
+
+    const getstats = await fetch(`https://api.fortnitetracker.com/v1/profile/${platform}/${username}`, {
+			method: 'GET',
+			headers: {'TRN-Api-Key': config.TRNAPIKEY},
+		})
+    let stats = await getstats.json()
+    console.log(stats);
+    let errorembed = new Discord.MessageEmbed()
+    .setColor("RED")
+    .setTitle(":x: An error occurred")
+    .setDescription(`${stats.error}`)
+    let errorembed2 = new Discord.MessageEmbed()
+    .setColor("RED")
+    .setTitle(":x: An error occurred")
+    .setDescription(`${stats.message}`)
+    if (stats.error) return interaction.editReply({embeds: [errorembed]});
+    if (stats.message) return interaction.editReply({embeds: [errorembed2]});
+    const row = new Discord.MessageActionRow()
+			.addComponents(
+				new Discord.MessageSelectMenu()
+					.setCustomId('select')
+					.setPlaceholder('Select a stat to show')
+					.addOptions([
+						{
+							label: 'Lifetime',
+							description: 'Lifetime stats',
+							value: 'lifetime',
+						},
+						{
+							label: 'You can select me too',
+							description: 'This is also a description',
+							value: 'second_option',
+						},
+					]),
+			);
+
+      let statembed = new Discord.MessageEmbed()
+      .setTitle("Fortnite Stats | Menu")
+      .setDescription(`<:epicgames:965863563468107846> **User:** ${stats.epicUserHandle}\n**Platform:** ${stats.platformNameLong}`)
+      .setThumbnail(stats.avatar)
+      .setColor("#d90053")
+    let displaystats = await interaction.editReply({embeds: [statembed], components: [row]})
+
+    const filter = i => i.user.id === interaction.user.id;
+
+		const collector = displaystats.createMessageComponentCollector({ filter, componentType: 'SELECT_MENU', time: 120000 });
+
+    collector.on('collect', i => {
+    if (i.values.toString() == 'lifetime') {
+      let lifetime = new Discord.MessageEmbed()
+      .setTitle("Fortnite Stats | Lifetime")
+      .setDescription(`<:epicgames:965863563468107846> **User:** ${stats.epicUserHandle}\n**Platform:** ${stats.platformNameLong}`)
+      .setThumbnail(stats.avatar)
+      .setColor("#d90053")
+      stats.lifeTimeStats.forEach((item) => {
+        lifetime.addField(`${item.key}`, `${item.value}`)
+      });
+
+      interaction.editReply({embeds: [lifetime]})
+      i.deferUpdate()
+    } else if (i.values.toString() == 'second_option') {
+      console.log("second");
+      let second = new Discord.MessageEmbed()
+      .setTitle("fn stats")
+      .setDescription(`second`)
+      .setColor("#d90053")
+      interaction.editReply({embeds: [second]})
+      i.deferUpdate()
+    }
+});
   }
 }

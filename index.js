@@ -363,6 +363,21 @@ const slashcmds = [
   .setName('say')
   .setDescription('Returns your message')
   .addStringOption(option => option.setName('message').setDescription('Message to send.').setRequired(true)),
+  new SlashCommandBuilder()
+  .setName('fortnitestats')
+  .setDescription("Get the stats of someone's Fortnite account")
+  .addStringOption(option => {
+    option.setName('platform')
+    option.setDescription('Platform the user plays on')
+    option.setRequired(true)
+    option.addChoice('PlayStation', 'gamepad')
+    option.addChoice('XBOX', 'gamepad')
+    option.addChoice('PC', 'kbm')
+    option.addChoice('Mobile', 'touch')
+
+    return option
+  })
+  .addStringOption( option => option.setName('username').setDescription('Epic Games account username').setRequired(true))
 ].map(command => command.toJSON());
 
 (async () => {
