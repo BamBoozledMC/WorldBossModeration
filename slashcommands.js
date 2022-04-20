@@ -93,7 +93,6 @@ module.exports = async (interaction, bot) => {
   }
 
   if (interaction.commandName === 'fortnitestats') {
-    if(interaction.user.id != config.ownerID) return;
     let platform = interaction.options.getString('platform');
     let username = interaction.options.getString('username');
     if (username.includes("@everyone")) return interaction.reply({content: "Username contains a blacklisted phrase/word", ephemeral: true});
