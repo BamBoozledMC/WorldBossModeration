@@ -183,9 +183,11 @@ module.exports = async (interaction, bot) => {
 
     const filter = i => i.user.id === interaction.user.id;
 
-		const collector = displaystats.createMessageComponentCollector({ filter, componentType: 'SELECT_MENU', time: 300000 });
+		const collector = displaystats.createMessageComponentCollector({ componentType: 'SELECT_MENU', time: 300000 });
 
     collector.on('collect', i => {
+      if (i.user.id !== interaction.user.id) return i.reply({content: "You cannot interact with someone elses command.\nUse the **/fortnitestats** slash command to view someone's or your stats.", ephemeral: true})
+
     if (i.values.toString() == 'lifetime') {
       let lifetime = new Discord.MessageEmbed()
       .setTitle("Fortnite Stats | Lifetime")
@@ -196,8 +198,7 @@ module.exports = async (interaction, bot) => {
         lifetime.addField(`${item.key}`, `${item.value}`)
       });
 
-      interaction.editReply({embeds: [lifetime]})
-      i.deferUpdate()
+      i.update({embeds: [lifetime]})
     } else if (i.values.toString() == 'solos') {
       let s = stats.stats.p2
       let solo = new Discord.MessageEmbed()
@@ -225,8 +226,7 @@ module.exports = async (interaction, bot) => {
       .addField(s.score.label, s.score.displayValue)
       .addField(`${s.matches.label} Played`, s.matches.displayValue)
 
-      interaction.editReply({embeds: [solo]})
-      i.deferUpdate()
+      i.update({embeds: [solo]})
     } else if (i.values.toString() == 'duos') {
       let s = stats.stats.p10
       let duos = new Discord.MessageEmbed()
@@ -254,8 +254,7 @@ module.exports = async (interaction, bot) => {
       .addField(s.score.label, s.score.displayValue)
       .addField(`${s.matches.label} Played`, s.matches.displayValue)
 
-      interaction.editReply({embeds: [duos]})
-      i.deferUpdate()
+      i.update({embeds: [duos]})
     } else if (i.values.toString() == 'trios') {
       let s = stats.stats.trios
       let trios = new Discord.MessageEmbed()
@@ -283,8 +282,7 @@ module.exports = async (interaction, bot) => {
       .addField(s.score.label, s.score.displayValue)
       .addField(`${s.matches.label} Played`, s.matches.displayValue)
 
-      interaction.editReply({embeds: [trios]})
-      i.deferUpdate()
+      i.update({embeds: [trios]})
     } else if (i.values.toString() == 'squads') {
       let s = stats.stats.p9
       let squads = new Discord.MessageEmbed()
@@ -312,8 +310,7 @@ module.exports = async (interaction, bot) => {
       .addField(s.score.label, s.score.displayValue)
       .addField(`${s.matches.label} Played`, s.matches.displayValue)
 
-      interaction.editReply({embeds: [squads]})
-      i.deferUpdate()
+      i.update({embeds: [squads]})
     } else if (i.values.toString() == 'ltm') {
       let s = stats.stats.ltm
       let ltm = new Discord.MessageEmbed()
@@ -338,8 +335,7 @@ module.exports = async (interaction, bot) => {
       .addField(s.score.label, s.score.displayValue)
       .addField(`${s.matches.label} Played`, s.matches.displayValue)
 
-      interaction.editReply({embeds: [ltm]})
-      i.deferUpdate()
+      i.update({embeds: [ltm]})
     } else if (i.values.toString() == 'recent') {
       let recent = new Discord.MessageEmbed()
       .setTitle("Fortnite Stats | Recent Matches")
@@ -359,8 +355,7 @@ module.exports = async (interaction, bot) => {
         recent.addField(`${nums[i]} ${playlist[item.playlist]}`, `**Playlist:** ${playlist[item.playlist]}\n**Date Played:** <t:${compliantdate}:F>\n**Time Playing:** ${item.minutesPlayed} Minutes\n**Matches Played (consecutively):** ${item.matches}\n**Kills:** ${item.kills}\n**Match Won:** ${gamewon}`)
       });
 
-      interaction.editReply({embeds: [recent]})
-      i.deferUpdate()
+      i.update({embeds: [recent]})
     }
 });
   }
