@@ -105,7 +105,6 @@ module.exports = async (interaction, bot) => {
 			headers: {'TRN-Api-Key': config.TRNAPIKEY},
 		})
     let stats = await getstats.json()
-    console.log(stats);
     let errorembed = new Discord.MessageEmbed()
     .setColor("RED")
     .setTitle(":x: An error occurred")
@@ -116,6 +115,21 @@ module.exports = async (interaction, bot) => {
     .setDescription(`${stats.message}`)
     if (stats.error) return interaction.editReply({embeds: [errorembed]});
     if (stats.message) return interaction.editReply({embeds: [errorembed2]});
+    let playlist = {
+      misc: "Creative",
+      p2: "Solos",
+      p10: "Duos",
+      p9: "Squads",
+      trios: "Trios",
+      ltm: "LTMs",
+    }
+    let nums = {
+      0: ":one:",
+      1: ":two:",
+      2: ":three:",
+      3: ":four:",
+      4: ":five:"
+    }
     const row = new Discord.MessageActionRow()
 			.addComponents(
 				new Discord.MessageSelectMenu()
@@ -128,9 +142,34 @@ module.exports = async (interaction, bot) => {
 							value: 'lifetime',
 						},
 						{
-							label: 'You can select me too',
-							description: 'This is also a description',
-							value: 'second_option',
+							label: 'Solos',
+							description: 'Solos stats',
+							value: 'solos',
+						},
+            {
+							label: 'Duos',
+							description: 'Duos stats',
+							value: 'duos',
+						},
+            {
+							label: 'Trios',
+							description: 'Trios stats',
+							value: 'trios',
+						},
+            {
+							label: 'Squads',
+							description: 'Squads stats',
+							value: 'squads',
+						},
+            {
+							label: 'LTMs',
+							description: 'LTMs stats',
+							value: 'ltm',
+						},
+            {
+							label: 'Recent Matches',
+							description: 'Recent Matches tats',
+							value: 'recent',
 						},
 					]),
 			);
@@ -144,7 +183,7 @@ module.exports = async (interaction, bot) => {
 
     const filter = i => i.user.id === interaction.user.id;
 
-		const collector = displaystats.createMessageComponentCollector({ filter, componentType: 'SELECT_MENU', time: 120000 });
+		const collector = displaystats.createMessageComponentCollector({ filter, componentType: 'SELECT_MENU', time: 300000 });
 
     collector.on('collect', i => {
     if (i.values.toString() == 'lifetime') {
@@ -159,13 +198,168 @@ module.exports = async (interaction, bot) => {
 
       interaction.editReply({embeds: [lifetime]})
       i.deferUpdate()
-    } else if (i.values.toString() == 'second_option') {
-      console.log("second");
-      let second = new Discord.MessageEmbed()
-      .setTitle("fn stats")
-      .setDescription(`second`)
+    } else if (i.values.toString() == 'solos') {
+      let s = stats.stats.p2
+      let solo = new Discord.MessageEmbed()
+      .setTitle("Fortnite Stats | Solos")
+      .setDescription(`<:epicgames:965863563468107846> **User:** ${stats.epicUserHandle}\n**Platform:** ${stats.platformNameLong}`)
+      .setThumbnail(stats.avatar)
       .setColor("#d90053")
-      interaction.editReply({embeds: [second]})
+      .addField(s.top1.label, s.top1.displayValue, true)
+      .addField(s.kills.label, s.kills.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.winRatio.label, s.winRatio.displayValue, true)
+      .addField(s.kd.label, s.kd.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.top10.label, s.top10.displayValue, true)
+      .addField(s.top25.label, s.top25.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.minutesPlayed.label, s.minutesPlayed.displayValue, true)
+      .addField(s.avgTimePlayed.label, s.avgTimePlayed.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.kpg.label, s.kpg.displayValue, true)
+      .addField(s.kpm.label, s.kpm.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.scorePerMatch.label, s.scorePerMatch.displayValue, true)
+      .addField(s.scorePerMin.label, s.scorePerMin.displayValue, true)
+      .addField(s.score.label, s.score.displayValue)
+      .addField(`${s.matches.label} Played`, s.matches.displayValue)
+
+      interaction.editReply({embeds: [solo]})
+      i.deferUpdate()
+    } else if (i.values.toString() == 'duos') {
+      let s = stats.stats.p10
+      let duos = new Discord.MessageEmbed()
+      .setTitle("Fortnite Stats | Duos")
+      .setDescription(`<:epicgames:965863563468107846> **User:** ${stats.epicUserHandle}\n**Platform:** ${stats.platformNameLong}`)
+      .setThumbnail(stats.avatar)
+      .setColor("#d90053")
+      .addField(s.top1.label, s.top1.displayValue, true)
+      .addField(s.kills.label, s.kills.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.winRatio.label, s.winRatio.displayValue, true)
+      .addField(s.kd.label, s.kd.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.top5.label, s.top5.displayValue, true)
+      .addField(s.top12.label, s.top12.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.minutesPlayed.label, s.minutesPlayed.displayValue, true)
+      .addField(s.avgTimePlayed.label, s.avgTimePlayed.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.kpg.label, s.kpg.displayValue, true)
+      .addField(s.kpm.label, s.kpm.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.scorePerMatch.label, s.scorePerMatch.displayValue, true)
+      .addField(s.scorePerMin.label, s.scorePerMin.displayValue, true)
+      .addField(s.score.label, s.score.displayValue)
+      .addField(`${s.matches.label} Played`, s.matches.displayValue)
+
+      interaction.editReply({embeds: [duos]})
+      i.deferUpdate()
+    } else if (i.values.toString() == 'trios') {
+      let s = stats.stats.trios
+      let trios = new Discord.MessageEmbed()
+      .setTitle("Fortnite Stats | Trios")
+      .setDescription(`<:epicgames:965863563468107846> **User:** ${stats.epicUserHandle}\n**Platform:** ${stats.platformNameLong}`)
+      .setThumbnail(stats.avatar)
+      .setColor("#d90053")
+      .addField(s.top1.label, s.top1.displayValue, true)
+      .addField(s.kills.label, s.kills.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.winRatio.label, s.winRatio.displayValue, true)
+      .addField(s.kd.label, s.kd.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.top3.label, s.top3.displayValue, true)
+      .addField(s.top6.label, s.top6.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.minutesPlayed.label, s.minutesPlayed.displayValue, true)
+      .addField(s.avgTimePlayed.label, s.avgTimePlayed.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.kpg.label, s.kpg.displayValue, true)
+      .addField(s.kpm.label, s.kpm.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.scorePerMatch.label, s.scorePerMatch.displayValue, true)
+      .addField(s.scorePerMin.label, s.scorePerMin.displayValue, true)
+      .addField(s.score.label, s.score.displayValue)
+      .addField(`${s.matches.label} Played`, s.matches.displayValue)
+
+      interaction.editReply({embeds: [trios]})
+      i.deferUpdate()
+    } else if (i.values.toString() == 'squads') {
+      let s = stats.stats.p9
+      let squads = new Discord.MessageEmbed()
+      .setTitle("Fortnite Stats | Squads")
+      .setDescription(`<:epicgames:965863563468107846> **User:** ${stats.epicUserHandle}\n**Platform:** ${stats.platformNameLong}`)
+      .setThumbnail(stats.avatar)
+      .setColor("#d90053")
+      .addField(s.top1.label, s.top1.displayValue, true)
+      .addField(s.kills.label, s.kills.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.winRatio.label, s.winRatio.displayValue, true)
+      .addField(s.kd.label, s.kd.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.top3.label, s.top3.displayValue, true)
+      .addField(s.top6.label, s.top6.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.minutesPlayed.label, s.minutesPlayed.displayValue, true)
+      .addField(s.avgTimePlayed.label, s.avgTimePlayed.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.kpg.label, s.kpg.displayValue, true)
+      .addField(s.kpm.label, s.kpm.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.scorePerMatch.label, s.scorePerMatch.displayValue, true)
+      .addField(s.scorePerMin.label, s.scorePerMin.displayValue, true)
+      .addField(s.score.label, s.score.displayValue)
+      .addField(`${s.matches.label} Played`, s.matches.displayValue)
+
+      interaction.editReply({embeds: [squads]})
+      i.deferUpdate()
+    } else if (i.values.toString() == 'ltm') {
+      let s = stats.stats.ltm
+      let ltm = new Discord.MessageEmbed()
+      .setTitle("Fortnite Stats | LTMs")
+      .setDescription(`<:epicgames:965863563468107846> **User:** ${stats.epicUserHandle}\n**Platform:** ${stats.platformNameLong}`)
+      .setThumbnail(stats.avatar)
+      .setColor("#d90053")
+      .addField(s.top1.label, s.top1.displayValue, true)
+      .addField(s.kills.label, s.kills.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.winRatio.label, s.winRatio.displayValue, true)
+      .addField(s.kd.label, s.kd.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.minutesPlayed.label, s.minutesPlayed.displayValue, true)
+      .addField(s.avgTimePlayed.label, s.avgTimePlayed.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.kpg.label, s.kpg.displayValue, true)
+      .addField(s.kpm.label, s.kpm.displayValue, true)
+      .addField('\u200b', '\u200b')
+      .addField(s.scorePerMatch.label, s.scorePerMatch.displayValue, true)
+      .addField(s.scorePerMin.label, s.scorePerMin.displayValue, true)
+      .addField(s.score.label, s.score.displayValue)
+      .addField(`${s.matches.label} Played`, s.matches.displayValue)
+
+      interaction.editReply({embeds: [ltm]})
+      i.deferUpdate()
+    } else if (i.values.toString() == 'recent') {
+      let recent = new Discord.MessageEmbed()
+      .setTitle("Fortnite Stats | Recent Matches")
+      .setDescription(`<:epicgames:965863563468107846> **User:** ${stats.epicUserHandle}\n**Platform:** ${stats.platformNameLong}`)
+      .setThumbnail(stats.avatar)
+      .setColor("#d90053")
+      stats.recentMatches.forEach((item, i) => {
+        if (i > 4) return;
+        let compliantdate = DateTime.fromISO(item.dateCollected, { zone: 'UTC' }).toSeconds()
+        compliantdate = Math.round(compliantdate)
+        let gamewon;
+        if (item.top1 == 0) {
+          gamewon = "No"
+        } else {
+          gamewon = "Yes"
+        }
+        recent.addField(`${nums[i]} ${playlist[item.playlist]}`, `**Playlist:** ${playlist[item.playlist]}\n**Date Played:** <t:${compliantdate}:F>\n**Time Playing:** ${item.minutesPlayed} Minutes\n**Matches Played (consecutively):** ${item.matches}\n**Kills:** ${item.kills}\n**Match Won:** ${gamewon}`)
+      });
+
+      interaction.editReply({embeds: [recent]})
       i.deferUpdate()
     }
 });
