@@ -175,7 +175,7 @@ module.exports = async (interaction, bot) => {
 
       let statembed = new Discord.MessageEmbed()
       .setTitle("Fortnite Stats | Menu")
-      .setDescription(`<:epicgames:965863563468107846> **User:** ${stats.epicUserHandle}\n**Platform:** ${stats.platformNameLong}`)
+      .setDescription(`<:epicgames:965863563468107846> **User:** [${stats.epicUserHandle}](https://fortnitetracker.com/profile/all/${stats.epicUserHandle})\n**Platform:** ${stats.platformNameLong}`)
       .setThumbnail(stats.avatar)
       .setColor("#d90053")
     let displaystats = await interaction.editReply({embeds: [statembed], components: [row]})
@@ -190,7 +190,7 @@ module.exports = async (interaction, bot) => {
     if (i.values.toString() == 'lifetime') {
       let lifetime = new Discord.MessageEmbed()
       .setTitle("Fortnite Stats | Lifetime")
-      .setDescription(`<:epicgames:965863563468107846> **User:** ${stats.epicUserHandle}\n**Platform:** ${stats.platformNameLong}`)
+      .setDescription(`<:epicgames:965863563468107846> **User:** [${stats.epicUserHandle}](https://fortnitetracker.com/profile/all/${stats.epicUserHandle})\n**Platform:** ${stats.platformNameLong}`)
       .setThumbnail(stats.avatar)
       .setColor("#d90053")
       stats.lifeTimeStats.forEach((item) => {
@@ -202,7 +202,7 @@ module.exports = async (interaction, bot) => {
       let s = stats.stats.p2
       let solo = new Discord.MessageEmbed()
       .setTitle("Fortnite Stats | Solos")
-      .setDescription(`<:epicgames:965863563468107846> **User:** ${stats.epicUserHandle}\n**Platform:** ${stats.platformNameLong}`)
+      .setDescription(`<:epicgames:965863563468107846> **User:** [${stats.epicUserHandle}](https://fortnitetracker.com/profile/all/${stats.epicUserHandle})\n**Platform:** ${stats.platformNameLong}`)
       .setThumbnail(stats.avatar)
       .setColor("#d90053")
       .addField(s.top1.label, s.top1.displayValue, true)
@@ -230,7 +230,7 @@ module.exports = async (interaction, bot) => {
       let s = stats.stats.p10
       let duos = new Discord.MessageEmbed()
       .setTitle("Fortnite Stats | Duos")
-      .setDescription(`<:epicgames:965863563468107846> **User:** ${stats.epicUserHandle}\n**Platform:** ${stats.platformNameLong}`)
+      .setDescription(`<:epicgames:965863563468107846> **User:** [${stats.epicUserHandle}](https://fortnitetracker.com/profile/all/${stats.epicUserHandle})\n**Platform:** ${stats.platformNameLong}`)
       .setThumbnail(stats.avatar)
       .setColor("#d90053")
       .addField(s.top1.label, s.top1.displayValue, true)
@@ -258,7 +258,7 @@ module.exports = async (interaction, bot) => {
       let s = stats.stats.trios
       let trios = new Discord.MessageEmbed()
       .setTitle("Fortnite Stats | Trios")
-      .setDescription(`<:epicgames:965863563468107846> **User:** ${stats.epicUserHandle}\n**Platform:** ${stats.platformNameLong}`)
+      .setDescription(`<:epicgames:965863563468107846> **User:** [${stats.epicUserHandle}](https://fortnitetracker.com/profile/all/${stats.epicUserHandle})\n**Platform:** ${stats.platformNameLong}`)
       .setThumbnail(stats.avatar)
       .setColor("#d90053")
       .addField(s.top1.label, s.top1.displayValue, true)
@@ -286,7 +286,7 @@ module.exports = async (interaction, bot) => {
       let s = stats.stats.p9
       let squads = new Discord.MessageEmbed()
       .setTitle("Fortnite Stats | Squads")
-      .setDescription(`<:epicgames:965863563468107846> **User:** ${stats.epicUserHandle}\n**Platform:** ${stats.platformNameLong}`)
+      .setDescription(`<:epicgames:965863563468107846> **User:** [${stats.epicUserHandle}](https://fortnitetracker.com/profile/all/${stats.epicUserHandle})\n**Platform:** ${stats.platformNameLong}`)
       .setThumbnail(stats.avatar)
       .setColor("#d90053")
       .addField(s.top1.label, s.top1.displayValue, true)
@@ -314,7 +314,7 @@ module.exports = async (interaction, bot) => {
       let s = stats.stats.ltm
       let ltm = new Discord.MessageEmbed()
       .setTitle("Fortnite Stats | LTMs")
-      .setDescription(`<:epicgames:965863563468107846> **User:** ${stats.epicUserHandle}\n**Platform:** ${stats.platformNameLong}`)
+      .setDescription(`<:epicgames:965863563468107846> **User:** [${stats.epicUserHandle}](https://fortnitetracker.com/profile/all/${stats.epicUserHandle})\n**Platform:** ${stats.platformNameLong}`)
       .setThumbnail(stats.avatar)
       .setColor("#d90053")
       .addField(s.top1.label, s.top1.displayValue, true)
@@ -338,7 +338,7 @@ module.exports = async (interaction, bot) => {
     } else if (i.values.toString() == 'recent') {
       let recent = new Discord.MessageEmbed()
       .setTitle("Fortnite Stats | Recent Matches")
-      .setDescription(`<:epicgames:965863563468107846> **User:** ${stats.epicUserHandle}\n**Platform:** ${stats.platformNameLong}`)
+      .setDescription(`<:epicgames:965863563468107846> **User:** [${stats.epicUserHandle}](https://fortnitetracker.com/profile/all/${stats.epicUserHandle})\n**Platform:** ${stats.platformNameLong}`)
       .setThumbnail(stats.avatar)
       .setColor("#d90053")
       stats.recentMatches.forEach((item, i) => {
