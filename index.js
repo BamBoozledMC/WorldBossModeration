@@ -370,14 +370,15 @@ const slashcmds = [
     option.setName('platform')
     option.setDescription('Platform the user plays on')
     option.setRequired(true)
-    option.addChoice('PlayStation', 'gamepad')
-    option.addChoice('XBOX', 'gamepad')
-    option.addChoice('PC', 'kbm')
+    option.addChoice('All (Global)', 'all')
     option.addChoice('Mobile', 'touch')
+    option.addChoice('PC', 'kbm')
+    option.addChoice('PlayStation', 'psn')
+    option.addChoice('XBOX', 'xbox')
 
     return option
   })
-  .addStringOption( option => option.setName('username').setDescription('Epic Games account username').setRequired(true))
+  .addStringOption( option => option.setName('username').setDescription("Username of the account you'd like to view").setRequired(true))
 ].map(command => command.toJSON());
 
 (async () => {
