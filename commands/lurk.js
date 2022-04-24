@@ -16,6 +16,7 @@ module.exports = {
 		else {
 			if (message.content.includes("@everyone"))  return;
 			if (message.content.includes("@here")) return;
+			if (message.content.includes("<@&")) return; // role mentions are <@&role_id>
 			let reason = args.join(" ");
 				if(!reason) {
 				  lurkreason = "No reason specified";
