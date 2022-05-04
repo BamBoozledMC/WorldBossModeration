@@ -55,7 +55,8 @@ module.exports = {
 		\`${prefix}editsuggestion <edited suggestion>\` Edit your last (most recent) suggestion!
 		\`${prefix}patrons\` Lists all current patrons helping to support this bot!
 		\`${prefix}lurk [reason]\` :eyes: Lurk in chat. (Automatically unlurks on next message sent)
-		\`${prefix}membercount\` Displays the current amount of members and bots.`)
+		\`${prefix}membercount\` Displays the current amount of members and bots.
+		\`${prefix}enlarge <emoji>\` Enlarge an emoji.`)
 
 		.addField("Linking", ` \`${prefix}link\` Link your Discord & Steam account or check/get info on your linked accounts.
 		\`${prefix}unlink\` Unlink your currently linked accounts.
@@ -111,7 +112,8 @@ embed.addField("Misc", ` \`${prefix}about\` Get info and statistics of the bot.
 \`${prefix}editsuggestion <edited suggestion>\` Edit your last (most recent) suggestion!
 \`${prefix}patrons\` Lists all current patrons helping to support this bot!
 \`${prefix}lurk [reason]\` :eyes: Lurk in chat. (Automatically unlurks on next message sent)
-\`${prefix}membercount\` Displays the current amount of members and bots.`)
+\`${prefix}membercount\` Displays the current amount of members and bots.
+\`${prefix}enlarge <emoji>\` Enlarge an emoji.`)
 
 .addField("Linking", ` \`${prefix}link\` Link your Discord & Steam account or check/get info on your linked accounts.
 \`${prefix}unlink\` Unlink your currently linked accounts.`)
