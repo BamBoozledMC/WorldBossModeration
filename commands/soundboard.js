@@ -69,7 +69,7 @@ module.exports = {
                   });
 
               } else {
-                message.reply({contents: 'Join a voice channel and try again', allowedMentions: { repliedUser: false }})
+                message.reply({content: 'Join a voice channel and try again', allowedMentions: { repliedUser: false }})
                 .then(message => {
 					setTimeout(() => message.delete().catch(error => {}), 5000);
                 });
