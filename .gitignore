@@ -1,5 +1,6 @@
 config.json
 json.sqlite
+web/media/attachments
 
 # Logs
 logs

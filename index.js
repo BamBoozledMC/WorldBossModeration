@@ -27,7 +27,7 @@ const reactionAddEvent = require("./messagereaction-add.js");
 const reactionRemoveEvent = require("./messagereaction-remove.js");
 const slashCommands = require("./slashcommands.js");
 const vlc = require('./vlc');
-
+const https = require('https')
 const fs = require('fs');
 bot.commands = new Collection();
 //bot.aliases = new Discord.Collection();
@@ -795,6 +795,32 @@ bot.on('messageDelete', function(message, channel) {
 		icon:message.author.avatarURL(),
 		image:message.attachments.first() ? message.attachments.first().proxyURL : null
 	})
+  if (message.attachments.first()) {
+    let atta = message.attachments.map(attachment => attachment.toJSON())
+    Object.keys(atta).forEach( async function (key){
+			let attachment = atta[key]
+      let url = attachment.attachment
+      let filename = url.replace('https://cdn.discordapp.com/attachments/', '')
+      filename = filename.replaceAll('/', '-')
+      let filelink = `https://wbmoderation.com/media/attachments/${filename}`
+      if (!filename.endsWith('.exe')) {
+        https.get(url, resp => {
+          resp.pipe(fs.createWriteStream(`./web/media/attachments/${filename}`));
+          resp.on('end', () => {
+            let deletedattach = new MessageEmbed()
+            .setColor("RED")
+            .setAuthor(`${message.author.tag}`, message.author.avatarURL())
+            .setTitle(`Attachment deleted in #${message.channel.name}`)
+            .addField(`${attachment.name}`, `[Attachment Link](${filelink}) - Helpful if content below fails to load.\nNote: Videos will not load in embeds, use the link above to view videos.`)
+            .setImage(`${filelink}`)
+            .setFooter(`ID: ${message.author.id}`)
+            .setTimestamp()
+            bot.channels.cache.get(config.logsID).send({embeds: [deletedattach]})
+          })
+        })
+    }
+    });
+  }
 });
 
 // game.on('win', data => {
