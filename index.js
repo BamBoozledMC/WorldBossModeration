@@ -639,10 +639,9 @@ const prefixRegex = new RegExp(`^(<@!?${bot.user.id}>|${escapeRegex(prefix)})\\s
 if(!prefixRegex.test(message.content)) return;
 const [, matchedPrefix] = message.content.match(prefixRegex);
 	if (message.author.bot) return;
-
 	const args = message.content.slice(matchedPrefix.length).trim().split(/ +/);
 	const commandName = args.shift().toLowerCase();
-	if(!commandName && !message.content.startsWith(prefix)) return;
+	if(!commandName && !message.content.startsWith(prefix)) return message.channel.send(`Hi! I'm World Boss Moderation, a powerful moderation bot created and hosted by BamBoozled#0882.\nUse \`${prefix}help\` to view a list of commands.\nWebsite => <https://wbmoderation.com/>`);
 
 	if(commandName == "prefix") {
 		if (!message.member.permissions.has("MANAGE_GUILD") && message.author.id != config.ownerID) return;

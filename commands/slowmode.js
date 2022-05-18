@@ -26,6 +26,8 @@ module.exports = {
             else if(time.endsWith("h")) time = time.slice(0, -1) * 3600;
 
             if(isNaN(time) || time > 21600) return message.channel.send('Please include a valid time!')
+						if(time.includes(".")) return message.channel.send('Please include a valid time!')
+
             await message.channel.setRateLimitPerUser(time).catch(error =>{
                 console.log(error)
                 return message.channel.send(error)
