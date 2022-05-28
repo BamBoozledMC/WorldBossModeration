@@ -2,7 +2,7 @@ const net = require('net');
 
 module.exports = {
    connect: function() {
-     global.vlc = net.createConnection({ port: 9999 })
+     global.vlc = net.createConnection({ host: '192.168.0.227', port: 4040 })
      console.log('connected to VLC');
      vlc.on('error', (data) => console.log(data))
      vlc.on('data', (data) => {
