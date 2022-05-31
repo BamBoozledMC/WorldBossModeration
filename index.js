@@ -488,7 +488,7 @@ bot.on('messageCreate', async message => {
   if(message.mentions.has("199087471215116288")) {
     if (message.author.bot) return;
     if (message.member.roles.cache.some(role => role.id === '929941845004415049')) return;
-    if (message.member.roles.cache.some(role => role.id === '934314188858355782')) return;
+    if (message.member.roles.cache.some(role => role.id === '932108051924783104')) return;
     if (db.get(`pingwarn.${message.author.id}`) == '2') {
       auto_mute(message);
       return;
