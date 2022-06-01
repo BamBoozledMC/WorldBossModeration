@@ -115,6 +115,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/media', express.static(__dirname + '/web/media'));
+app.use('/dumpy', express.static(__dirname + '/dumpys'));
+
 
 app.get('/', function(req,res) {
   res.sendFile(__dirname+'/web/index.html');
