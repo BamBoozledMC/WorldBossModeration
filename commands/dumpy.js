@@ -30,8 +30,8 @@ module.exports = {
 	async execute(bot, message, args, prefix) {
 		if (message.author.bot) return;
 		size = args[0]
-		if(isNaN(size) || size > 100) return message.channel.send('Please include a valid size (1 - 100)')
-		if(size.includes(".")) return message.channel.send('Please include a valid size (1 - 100)')
+		if(isNaN(size) || size > 100) return message.channel.send('Please include a valid size (1 - 100)\n**Format:** `!dumpy <size> [file]`')
+		if(size.includes(".")) return message.channel.send('Please include a valid size (1 - 100)\n**Format:** `!dumpy <size> [file]`')
 		let nofile = new Discord.MessageEmbed()
 		.setTitle(":x: Error")
 		.setColor("RED")
@@ -68,7 +68,6 @@ module.exports = {
 				resp.pipe(fs.createWriteStream(`./dumpys/todo/${filename}.${ext}`));
 				resp.on('end', async () => {
 					await dumpymsg.edit({ embeds: [generating] })
-					console.log("done")
 					dumpy.createdumpy(dumpymsg, executer, false, `./dumpys/todo/${filename}.${ext}`, size)
 				})
 			})
