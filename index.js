@@ -380,7 +380,10 @@ const slashcmds = [
 
     return option
   })
-  .addStringOption( option => option.setName('username').setDescription("Username of the account you'd like to view").setRequired(true))
+  .addStringOption( option => option.setName('username').setDescription("Username of the account you'd like to view").setRequired(true)),
+  new SlashCommandBuilder()
+  .setName('calculator')
+  .setDescription('Calculator with clickable buttons.')
 ].map(command => command.toJSON());
 
 (async () => {
