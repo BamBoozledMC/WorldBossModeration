@@ -50,16 +50,40 @@ module.exports = {
     if (!member) {
         return message.reply('Make sure to mention a user!')
     }
+		let customavatar;
+		if(member.user.displayAvatarURL({ dynamic: true }) == member.displayAvatarURL({ dynamic: true })) {
+			customavatar = false
+		} else {
+			customavatar = true
+		}
     let mentionedavatar = new Discord.MessageEmbed()
-.setTitle(`${member.user.username}'s Avatar`)
-.setImage(`${member.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
+.setTitle(`${member.user.username}'s${customavatar ? " Server" : ""} Avatar`)
+.setDescription(`**Links:**\n[webp](${member.displayAvatarURL({ dynamic: true, size: 4096, format: 'webp' })}) | [png](${member.displayAvatarURL({ dynamic: true, size: 4096, format: 'png' })}) | [jpg](${member.displayAvatarURL({ dynamic: true, size: 4096, format: 'jpg' })})`)
+.setImage(`${member.displayAvatarURL({ dynamic: true, size: 4096, format: 'png' })}`)
 .setColor('#d90053')
-    return message.channel.send({embeds: [mentionedavatar]})
+let mentionedavataruser = new Discord.MessageEmbed()
+.setTitle(`${member.user.username}'s User Avatar`)
+.setDescription(`**Links:**\n[webp](${member.user.displayAvatarURL({ dynamic: true, size: 4096, format: 'webp' })}) | [png](${member.user.displayAvatarURL({ dynamic: true, size: 4096, format: 'png' })}) | [jpg](${member.user.displayAvatarURL({ dynamic: true, size: 4096, format: 'jpg' })})`)
+.setImage(`${member.user.displayAvatarURL({ dynamic: true, size: 4096, format: 'png' })}`)
+.setColor('#d90053')
+    return customavatar ? message.channel.send({embeds: [mentionedavatar, mentionedavataruser]}) : message.channel.send({embeds: [mentionedavatar]})
+}
+let customavatar;
+if(message.author.displayAvatarURL({ dynamic: true }) == message.member.displayAvatarURL({ dynamic: true })) {
+	customavatar = false
+} else {
+	customavatar = true
 }
 let executeravatar = new Discord.MessageEmbed()
-.setTitle(`Your Avatar`)
-.setImage(`${message.author.displayAvatarURL({ dynamic: true, size: 1024 })}`)
+.setTitle(`Your${customavatar ? " Server" : ""} Avatar`)
+.setDescription(`**Links:**\n[webp](${message.member.displayAvatarURL({ dynamic: true, size: 4096, format: 'webp' })}) | [png](${message.member.displayAvatarURL({ dynamic: true, size: 4096, format: 'png' })}) | [jpg](${message.member.displayAvatarURL({ dynamic: true, size: 4096, format: 'jpg' })})`)
+.setImage(`${message.member.displayAvatarURL({ dynamic: true, size: 4096, format: 'png' })}`)
 .setColor('#d90053')
-return message.channel.send({embeds: [executeravatar]})
+let executeravataruser = new Discord.MessageEmbed()
+.setTitle(`Your User Avatar`)
+.setDescription(`**Links:**\n[webp](${message.author.displayAvatarURL({ dynamic: true, size: 4096, format: 'webp' })}) | [png](${message.author.displayAvatarURL({ dynamic: true, size: 4096, format: 'png' })}) | [jpg](${message.author.displayAvatarURL({ dynamic: true, size: 4096, format: 'jpg' })})`)
+.setImage(`${message.author.displayAvatarURL({ dynamic: true, size: 4096, format: 'png' })}`)
+.setColor('#d90053')
+return customavatar ? message.channel.send({embeds: [executeravatar, executeravataruser]}) : message.channel.send({embeds: [executeravatar]})
 }
 }
