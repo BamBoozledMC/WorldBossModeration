@@ -56,7 +56,8 @@ module.exports = {
 		\`${prefix}patrons\` Lists all current patrons helping to support this bot!
 		\`${prefix}lurk [reason]\` :eyes: Lurk in chat. (Automatically unlurks on next message sent)
 		\`${prefix}membercount\` Displays the current amount of members and bots.
-		\`${prefix}enlarge <emoji>\` Enlarge an emoji.`)
+		\`${prefix}enlarge <emoji>\` Enlarge an emoji.
+		\`${prefix}dumpy <size> [file]\` Generate an Among us Dumpy gif with an image. File can be an attachment or link.`)
 
 		.addField("Linking", ` \`${prefix}link\` Link your Discord & Steam account or check/get info on your linked accounts.
 		\`${prefix}unlink\` Unlink your currently linked accounts.
@@ -113,7 +114,8 @@ embed.addField("Misc", ` \`${prefix}about\` Get info and statistics of the bot.
 \`${prefix}patrons\` Lists all current patrons helping to support this bot!
 \`${prefix}lurk [reason]\` :eyes: Lurk in chat. (Automatically unlurks on next message sent)
 \`${prefix}membercount\` Displays the current amount of members and bots.
-\`${prefix}enlarge <emoji>\` Enlarge an emoji.`)
+\`${prefix}enlarge <emoji>\` Enlarge an emoji.
+\`${prefix}dumpy <size> [file]\` Generate an Among us Dumpy gif with an image. File can be an attachment or link.`)
 
 .addField("Linking", ` \`${prefix}link\` Link your Discord & Steam account or check/get info on your linked accounts.
 \`${prefix}unlink\` Unlink your currently linked accounts.`)
