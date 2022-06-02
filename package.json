@@ -42,6 +42,7 @@
     "passport-steam": "^1.0.17",
     "ping": "^0.4.1",
     "quick.db": "^7.1.3",
+    "simply-djs": "^2.5.2",
     "snekfetch": "^4.0.4",
     "steamapi": "^2.2.0",
     "systeminformation": "^5.11.8",

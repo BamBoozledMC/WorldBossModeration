@@ -389,4 +389,12 @@ module.exports = async (interaction, bot) => {
     }
 });
   }
+  if (interaction.commandName === 'calculator') {
+    const simplydjs = require("simply-djs");
+    await interaction.deferReply()
+		simplydjs.calculator(interaction, {
+  		embedColor: config.themecolor,
+			credit: false
+		});
+  }
 }
