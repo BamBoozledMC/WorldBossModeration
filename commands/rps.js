@@ -9,7 +9,10 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix) {
-		//if (!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
-		rps(message)
+		const simplydjs = require("simply-djs");
+		simplydjs.rps(message, {
+  		embedColor: config.themecolor, // default: #075FFF
+  		credit: false
+		});
     }
 }
