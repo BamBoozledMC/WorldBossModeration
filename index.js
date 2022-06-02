@@ -48,7 +48,7 @@ commandFiles.forEach((f, i) => {
 	console.log(`Successfully loaded ${i + 1}: ${f}!`)
 })
 
-vlc.connect()
+//vlc.connect()
 // vlc.add('https://www.youtube.com/watch?v=QYh6mYIJG2Y')
 
 passport.serializeUser((user, done) => {
