@@ -82,37 +82,16 @@ module.exports = {
     if (!member) {
         return message.reply('Make sure to mention a user!')
     }
-		let otherswins;
-		let otherslosses;
-		let othersties;
-		let otherhwins;
-		let otherhlosses;
+		let otherswins = db.get(`games.tictactoe.${member.user.id}.wins`) ? db.get(`games.tictactoe.${member.user.id}.wins`) : '0'
+		let otherslosses = db.get(`games.tictactoe.${member.user.id}.losses`) ? db.get(`games.tictactoe.${member.user.id}.losses`) : '0'
+		let othersties = db.get(`games.tictactoe.${member.user.id}.ties`) ? db.get(`games.tictactoe.${member.user.id}.ties`) : '0'
+		let otherhwins = db.get(`games.hangman.${member.user.id}.wins`) ? db.get(`games.hangman.${member.user.id}.wins`) : '0'
+		let otherhlosses = db.get(`games.hangman.${member.user.id}.losses`) ? db.get(`games.hangman.${member.user.id}.losses`) : '0'
+		let otherc4wins = db.get(`games.connectfour.${member.user.id}.wins`) ? db.get(`games.connectfour.${member.user.id}.wins`) : '0'
+		let otherc4losses = db.get(`games.connectfour.${member.user.id}.losses`) ? db.get(`games.connectfour.${member.user.id}.losses`) : '0'
+		let otherc4ties = db.get(`games.connectfour.${member.user.id}.ties`) ? db.get(`games.connectfour.${member.user.id}.ties`) : '0'
 
-		if (db.get(`games.tictactoe.${member.user.id}.wins`)) {
-			otherswins = db.get(`games.tictactoe.${member.user.id}.wins`)
-		} else {
-			otherswins = '0'
-		}
-		if (db.get(`games.tictactoe.${member.user.id}.losses`)) {
-			otherslosses = db.get(`games.tictactoe.${member.user.id}.losses`)
-		} else {
-			otherslosses = '0'
-		}
-		if (db.get(`games.tictactoe.${member.user.id}.ties`)) {
-			othersties = db.get(`games.tictactoe.${member.user.id}.ties`)
-		} else {
-			othersties = '0'
-		}
-		if (db.get(`games.hangman.${member.user.id}.wins`)) {
-		  otherhwins = db.get(`games.hangman.${member.user.id}.wins`)
-		} else {
-			otherhwins = '0'
-		}
-		if (db.get(`games.hangman.${member.user.id}.losses`)) {
-		  otherhlosses = db.get(`games.hangman.${member.user.id}.losses`)
-		} else {
-			otherhlosses = '0'
-		}
+
     let mentionedavatar = new Discord.MessageEmbed()
 .setTitle(`${member.user.username}'s Minigame stats`)
 .setThumbnail(`${member.displayAvatarURL({ dynamic: true, size: 1024 })}`)
@@ -123,40 +102,22 @@ module.exports = {
 .addField("🧍 Hangman stats", "\u200b")
 .addField("Wins", otherhwins.toString(), true)
 .addField("Losses", otherhlosses.toString(), true)
+.addField("4️⃣ Connect Four stats", "\u200b")
+.addField("Wins", otherc4wins.toString(), true)
+.addField("Losses", otherc4losses.toString(), true)
+.addField("Ties", otherc4ties.toString())
 .setColor(config.themecolor)
     return message.channel.send({embeds: [mentionedavatar]})
 }
-let wins;
-let losses;
-let ties;
-let hwins;
-let hlosses;
+let wins = db.get(`games.tictactoe.${message.author.id}.wins`) ? db.get(`games.tictactoe.${message.author.id}.wins`) : '0'
+let losses = db.get(`games.tictactoe.${message.author.id}.losses`) ? db.get(`games.tictactoe.${message.author.id}.losses`) : '0'
+let ties = db.get(`games.tictactoe.${message.author.id}.ties`) ? db.get(`games.tictactoe.${message.author.id}.ties`) : '0'
+let hwins = db.get(`games.hangman.${message.author.id}.wins`) ? db.get(`games.hangman.${message.author.id}.wins`) : '0'
+let hlosses = db.get(`games.hangman.${message.author.id}.losses`) ? db.get(`games.hangman.${message.author.id}.losses`) : '0'
+let c4wins = db.get(`games.connectfour.${message.author.id}.wins`) ? db.get(`games.connectfour.${message.author.id}.wins`) : '0'
+let c4losses = db.get(`games.connectfour.${message.author.id}.losses`) ? db.get(`games.connectfour.${message.author.id}.losses`) : '0'
+let c4ties = db.get(`games.connectfour.${message.author.id}.ties`) ? db.get(`games.connectfour.${message.author.id}.ties`) : '0'
 
-if (db.get(`games.tictactoe.${message.author.id}.wins`)) {
-	wins = db.get(`games.tictactoe.${message.author.id}.wins`)
-} else {
-	wins = '0'
-}
-if (db.get(`games.tictactoe.${message.author.id}.losses`)) {
-	losses = db.get(`games.tictactoe.${message.author.id}.losses`)
-} else {
-	losses = '0'
-}
-if (db.get(`games.tictactoe.${message.author.id}.ties`)) {
-  ties = db.get(`games.tictactoe.${message.author.id}.ties`)
-} else {
-	ties = '0'
-}
-if (db.get(`games.hangman.${message.author.id}.wins`)) {
-  hwins = db.get(`games.hangman.${message.author.id}.wins`)
-} else {
-	hwins = '0'
-}
-if (db.get(`games.hangman.${message.author.id}.losses`)) {
-  hlosses = db.get(`games.hangman.${message.author.id}.losses`)
-} else {
-	hlosses = '0'
-}
 let executeravatar = new Discord.MessageEmbed()
 .setTitle(`Your Minigame stats`)
 .setThumbnail(`${message.member.displayAvatarURL({ dynamic: true, size: 1024 })}`)
@@ -167,6 +128,10 @@ let executeravatar = new Discord.MessageEmbed()
 .addField("🧍 Hangman stats", "\u200b")
 .addField("Wins", hwins.toString(), true)
 .addField("Losses", hlosses.toString(), true)
+.addField("4️⃣ Connect Four stats", "\u200b")
+.addField("Wins", c4wins.toString(), true)
+.addField("Losses", c4losses.toString(), true)
+.addField("Ties", c4ties.toString())
 .setColor(config.themecolor)
 return message.channel.send({embeds: [executeravatar]})
 }
