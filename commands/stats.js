@@ -38,7 +38,7 @@ module.exports = {
 	.addField("Wins", otherswins.toString(), true)
 	.addField("Losses", otherslosses.toString(), true)
 	.addField("Ties", othersties.toString())
-	.setColor('#d90053')
+	.setColor(config.themecolor)
 	    return message.channel.send({embeds: [mentionedavatar]})
 	}
 		if(commandName == 'aistats' || commandName == 'aistat') return ai_stats();
@@ -85,6 +85,8 @@ module.exports = {
 		let otherswins;
 		let otherslosses;
 		let othersties;
+		let otherhwins;
+		let otherhlosses;
 
 		if (db.get(`games.tictactoe.${member.user.id}.wins`)) {
 			otherswins = db.get(`games.tictactoe.${member.user.id}.wins`)
@@ -101,18 +103,34 @@ module.exports = {
 		} else {
 			othersties = '0'
 		}
+		if (db.get(`games.hangman.${member.user.id}.wins`)) {
+		  otherhwins = db.get(`games.hangman.${member.user.id}.wins`)
+		} else {
+			otherhwins = '0'
+		}
+		if (db.get(`games.hangman.${member.user.id}.losses`)) {
+		  otherhlosses = db.get(`games.hangman.${member.user.id}.losses`)
+		} else {
+			otherhlosses = '0'
+		}
     let mentionedavatar = new Discord.MessageEmbed()
-.setTitle(`${member.user.username}'s Tic Tac Toe stats`)
-.setThumbnail(`${member.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
+.setTitle(`${member.user.username}'s Minigame stats`)
+.setThumbnail(`${member.displayAvatarURL({ dynamic: true, size: 1024 })}`)
+.addField("🅾️ Tic Tac Toe stats", "\u200b")
 .addField("Wins", otherswins.toString(), true)
 .addField("Losses", otherslosses.toString(), true)
 .addField("Ties", othersties.toString())
-.setColor('#d90053')
+.addField("🧍 Hangman stats", "\u200b")
+.addField("Wins", otherhwins.toString(), true)
+.addField("Losses", otherhlosses.toString(), true)
+.setColor(config.themecolor)
     return message.channel.send({embeds: [mentionedavatar]})
 }
 let wins;
 let losses;
 let ties;
+let hwins;
+let hlosses;
 
 if (db.get(`games.tictactoe.${message.author.id}.wins`)) {
 	wins = db.get(`games.tictactoe.${message.author.id}.wins`)
@@ -129,13 +147,27 @@ if (db.get(`games.tictactoe.${message.author.id}.ties`)) {
 } else {
 	ties = '0'
 }
+if (db.get(`games.hangman.${message.author.id}.wins`)) {
+  hwins = db.get(`games.hangman.${message.author.id}.wins`)
+} else {
+	hwins = '0'
+}
+if (db.get(`games.hangman.${message.author.id}.losses`)) {
+  hlosses = db.get(`games.hangman.${message.author.id}.losses`)
+} else {
+	hlosses = '0'
+}
 let executeravatar = new Discord.MessageEmbed()
-.setTitle(`Your Tic Tac Toe stats`)
-.setThumbnail(`${message.author.displayAvatarURL({ dynamic: true, size: 1024 })}`)
+.setTitle(`Your Minigame stats`)
+.setThumbnail(`${message.member.displayAvatarURL({ dynamic: true, size: 1024 })}`)
+.addField("🅾️ Tic Tac Toe stats", "\u200b")
 .addField("Wins", wins.toString(), true)
 .addField("Losses", losses.toString(), true)
 .addField("Ties", ties.toString())
-.setColor('#d90053')
+.addField("🧍 Hangman stats", "\u200b")
+.addField("Wins", hwins.toString(), true)
+.addField("Losses", hlosses.toString(), true)
+.setColor(config.themecolor)
 return message.channel.send({embeds: [executeravatar]})
 }
 }

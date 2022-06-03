@@ -383,7 +383,13 @@ const slashcmds = [
   .addStringOption( option => option.setName('username').setDescription("Username of the account you'd like to view").setRequired(true)),
   new SlashCommandBuilder()
   .setName('calculator')
-  .setDescription('Calculator with clickable buttons.')
+  .setDescription('Calculator with clickable buttons.'),
+  new SlashCommandBuilder()
+  .setName('hangman')
+  .setDescription('Play a game of hangman')
+  .addUserOption(option => option.setName('player2').setDescription('Play with another user.'))
+  .addStringOption(option => option.setName('gamemode').setDescription("Custom gamemodes (Doesn't affect your stats)").addChoice("Party", 'party').addChoice("CustomWord", 'custom'))
+  .addStringOption(option => option.setName('devoptions').setDescription('Dev options, only usuable by Bot Owner.')),
 ].map(command => command.toJSON());
 
 (async () => {

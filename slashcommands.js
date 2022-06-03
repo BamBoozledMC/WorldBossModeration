@@ -397,4 +397,50 @@ module.exports = async (interaction, bot) => {
 			credit: false
 		});
   }
+  if (interaction.commandName === 'hangman') {
+    const hangman = require('discord-hangman');
+    let player2 = interaction.options.getUser('player2');
+    let devoptions = interaction.options.getString('devoptions')
+    let gamemode = interaction.options.getString('gamemode')
+    if (devoptions) if (interaction.user.id != config.ownerID) return interaction.reply("Dev options can only be used by the Bot Owner.");
+    if (player2) {
+      await hangman.create(interaction, 'random', { players: [interaction.user, player2] }).then(data => {
+      if(!data.game) return;
+      if (data.game.status === 'won') {
+        db.add(`games.hangman.${interaction.user.id}.wins`, 1)
+        db.add(`games.hangman.${player2.id}.wins`, 1)
+      }
+      else if (data.game.status === 'lost') {
+        db.add(`games.hangman.${interaction.user.id}.losses`, 1)
+        db.add(`games.hangman.${player2.id}.losses`, 1)
+      }
+    });
+  } else if (gamemode == "party") {
+    await hangman.create(interaction, 'random').then(data => {
+    if(!data.game) return;
+    if (data.game.status === 'won') {
+      db.add(`games.hangman.${interaction.user.id}.wins`, 1)
+    }
+    else if (data.game.status === 'lost') {
+      db.add(`games.hangman.${interaction.user.id}.losses`, 1)
+    }
+
+    });
+  } else if (gamemode == "custom") {
+    await hangman.create(interaction, 'custom').then(data => {
+    if(!data.game) return;
+    });
+  } else {
+    await hangman.create(interaction, 'random', { players: [interaction.user], word: devoptions }).then(data => {
+    if(!data.game) return;
+    if (data.game.status === 'won') {
+      db.add(`games.hangman.${interaction.user.id}.wins`, 1)
+    }
+    else if (data.game.status === 'lost') {
+      db.add(`games.hangman.${interaction.user.id}.losses`, 1)
+    }
+
+  });
+  }
+  }
 }
