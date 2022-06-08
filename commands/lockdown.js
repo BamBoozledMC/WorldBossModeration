@@ -8,7 +8,7 @@ module.exports = {
 	aliases: ['lock', 'addlockchannel', 'addlockch', 'addlockdownchannel', 'addlockdownch', 'removelockchannel', 'removelockch', 'removelockdownchannel', 'removelockdownch', 'rlockchannel', 'rlockch', 'rlockdownchannel', 'rlockdownch', 'lockchannels', 'lockdownchannels'],
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix, commandName) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		if (!message.member.permissions.has("MANAGE_GUILD") && message.author.id != config.ownerID) return;
 
 		let theargs = args[0]
@@ -180,7 +180,7 @@ module.exports = {
 			.setTitle("Server Lockdown channels")
 			.setFooter("Developed by BamBoozled#0882")
 			.setTimestamp()
-			.setColor("#d90053")
+			.setColor(themecolor)
 
 			let lockchannels = [];
 			let yes = db.get(`lockdownchannels.${message.guild.id}`)

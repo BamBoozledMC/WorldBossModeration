@@ -7,7 +7,7 @@ module.exports = {
 	aliases: ['clean', 'purge'],
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix, commandName) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 	try {
 
 	//if(message.author.id == "442702793002844170") return message.channel.send("Oh- Hey there <@442702793002844170>!\nI'ma have to deny you from using this command as you seem to be using it alot.")

@@ -9,7 +9,7 @@ module.exports = {
     descrption: 'Evaluates my code',
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
     if (message.author.id != config.ownerID && message.author.id != "624665686978986020") return;
     if (!args[0]) return message.channel.send("You didn't give me anything to evaluate! :sob:")
     try {
@@ -18,7 +18,7 @@ module.exports = {
         const evaluated = eval(toEval);
 
         let embed = new Discord.MessageEmbed()
-        .setColor("#d90053")
+        .setColor(themecolor)
         .setTimestamp()
         .setFooter(bot.user.username)
         .setTitle("Eval")

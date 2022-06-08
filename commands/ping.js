@@ -8,7 +8,7 @@ module.exports = {
 	cooldown: 5,
 	usage: '!ping',
 	args: false,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		const pingMsg =  await message.channel.send('<a:loading:939665977728176168> Pinging...');
 		let localping = await ping.promise.probe('127.0.0.1', {
            timeout: 5,
@@ -23,7 +23,7 @@ module.exports = {
 			.addField("📤 API:", `**${bot.ws.ping}ms**`)
 			.addField("<:server:948743195309768746> ISP/DNS:", `**${isp_dns.time}ms**`)
 			.addField("🖥️ INTERNAL:", `**${localping.time}ms**`)
-			.setColor("#d90053")
+			.setColor(themecolor)
 			.setTimestamp()
 		return pingMsg.edit({ content: ' ', embeds: [pingembed] });
 	}catch(e){}

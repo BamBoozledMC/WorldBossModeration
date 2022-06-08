@@ -9,7 +9,7 @@ module.exports = {
 	aliases: ['connect4', 'c4'],
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		        this.gameEmbed = null
 		        this.message = message
 		        this.player1 = '🔴'
@@ -45,7 +45,7 @@ module.exports = {
 		            .setTitle(`${this.player1} It's your turn, ${this.message.author.username}!`)
 		            .setDescription(initialState)
 		            .setFooter(`${challenger.username} vs ${oppenent.username}`)
-								.setColor(config.themecolor)
+								.setColor(themecolor)
 		        this.message.channel.send({ embeds: [initial] }).then(gameMessage => {
 
 		            gameMessage.react("1️⃣")
@@ -191,7 +191,7 @@ module.exports = {
 		                            .setTitle(`The game ended, it is a Tie!`)
 		                            .setDescription(renderBoard(board))
 		                            .setFooter(`${challenger.username} vs ${oppenent.username}`)
-																.setColor(config.themecolor)
+																.setColor(themecolor)
 		                        gameCollector.stop("Tie Game")
 														db.add(`games.connectfour.${challenger.id}.ties`, 1)
 														db.add(`games.connectfour.${oppenent.id}.ties`, 1)
@@ -208,7 +208,7 @@ module.exports = {
 		                                .setTitle(`${gameData[player].member.username} has won the game!`)
 		                                .setDescription(renderBoard(board))
 		                                .setFooter(`${challenger.username} vs ${oppenent.username}`)
-																		.setColor(config.themecolor)
+																		.setColor(themecolor)
 		                            gameCollector.stop(`${gameData[player].member.id} won`);
 																db.add(`games.connectfour.${gameData[player].member.id}.wins`, 1)
 																if (gameData[player].member.id == challenger.id) {
@@ -226,7 +226,7 @@ module.exports = {
 		                        .setTitle(`${gameData[player].playerColor} -  It's your turn, ${gameData[player].member.username}!`)
 		                        .setDescription(renderBoard(board))
 		                        .setFooter(`${challenger.username} vs ${oppenent.username}`)
-														.setColor(config.themecolor)
+														.setColor(themecolor)
 		                    gameMessage.edit({ embeds: [newEmbed] });
 		                }
 		            })

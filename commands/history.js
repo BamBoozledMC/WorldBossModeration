@@ -8,7 +8,7 @@ module.exports = {
   aliases: ['punishments', 'warns', 'offences', 'warnings', 'logs', 'modlogs'],
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
     if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
   let member;
   let memberID;
@@ -100,7 +100,7 @@ module.exports = {
     .setTitle(`Offence history | ${usertag}`)
     .setDescription(`This user has **${dbgetuser.offenceno}** recorded punishments/offences.`)
     .setFooter(`Page ${page}/${max} - Use ${config.prefix}history (user) <page number> to view other pages`)
-    .setColor("#d90053")
+    .setColor(themecolor)
 
     for(i = 1; i <= 5; i++) {
       const offnum = i + (5 * (page - 1));

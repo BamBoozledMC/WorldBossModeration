@@ -7,7 +7,7 @@ module.exports = {
 	usage: '<message>',
 	cooldown: 15,
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		if (message.author.bot) return;
 
 		message.reply({ content: "hehe"}).catch(error =>{

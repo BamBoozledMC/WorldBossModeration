@@ -6,7 +6,7 @@ module.exports = {
   descrption: 'Returns your message',
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		if (message.author.id != config.ownerID) return;
 		if (message.author.bot) return;
 		let member;

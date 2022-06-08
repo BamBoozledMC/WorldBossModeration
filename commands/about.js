@@ -9,7 +9,7 @@ module.exports = {
 	aliases: ['aboutme', 'aboutbot', 'info', 'botinfo'],
 	usage: 'about bot',
 	args: false,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
 			if(message.channel.id == config.generalID) return;
 		}
@@ -40,7 +40,7 @@ module.exports = {
 		.addField("📤 DISCORD API:", `${apiping}`)
 		.addField("<:online:934604352419684383> UPTIME:", `${uptime}`)
 		.setThumbnail('https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg')
-		.setColor('#d90053')
+		.setColor(themecolor)
     .setTimestamp()
 		aboutMsg.edit({content: " ", embeds: [about]})
 

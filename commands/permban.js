@@ -8,7 +8,7 @@ module.exports = {
 	aliases: ['pban'],
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
         if (!message.member.permissions.has("BAN_MEMBERS") && message.author.id != config.ownerID) return;
 		// if(!message.guild.me.permissions.has("SEND_MESSAGES")) return message.author.send(":x: I do not have permission to send messages in this channel!\nPlease make sure i have the \"SEND_MESSAGES\" permission in the channel overrides/permissions")
 	  let member;
@@ -63,7 +63,7 @@ module.exports = {
 		  .catch(error => message.reply(`Sorry, I couldn't ban because of : ${error}`));
 
 		  let bean = new Discord.MessageEmbed()
-		  .setColor("#d90053")
+		  .setColor(themecolor)
 		  .setTitle(`Permanent Ban | ${member.user.tag}`)
 		  .addField("User", member.toString(), true)
 		  .addField("Moderator", message.author.toString(), true)

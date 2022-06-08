@@ -7,7 +7,7 @@ module.exports = {
 	aliases: ['supporters', 'donaters', 'donators', 'donors'],
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
 			if(message.channel.id == config.generalID) return;
 		}
@@ -18,7 +18,7 @@ module.exports = {
 		let formatT2 = gettier2.join("\n")
 
 		const patrons = new Discord.MessageEmbed()
-		.setColor('#d90053')
+		.setColor(themecolor)
 		.setTitle("Patrons/Supporters")
 		.setDescription("A massive thank you to everyone who is supporting this project!")
 		.setFooter(`Wanna help support the bot too? Head to https://www.patreon.com/bamboozledlw`)

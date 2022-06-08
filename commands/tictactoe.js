@@ -10,7 +10,7 @@ module.exports = {
 	aliases: ['ttt'],
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		game.handleMessage(message);
     }
 }

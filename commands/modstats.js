@@ -8,7 +8,7 @@ module.exports = {
   aliases: [],
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
     if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
   let member;
   let memberID;
@@ -72,7 +72,7 @@ module.exports = {
 		.addField("Bans:", bans.toString())
 		.addField("Unbans:", unbans.toString())
 		.addField("Total:", `${warns + mutes + unmutes + kicks + bans + unbans}`)
-		.setColor("#d90053")
+		.setColor(themecolor)
 		.setTimestamp()
 
 	message.channel.send({embeds: [modstatsembed]})

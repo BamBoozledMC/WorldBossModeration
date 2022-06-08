@@ -7,7 +7,7 @@ module.exports = {
     descrption: 'warns mentioned user for the provided reason',
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
     if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
   let reason = args.slice(1).join(' ');
 
@@ -53,7 +53,7 @@ let loading = await message.channel.send("<a:loading:939665977728176168> Give me
 
 
   let warn = new Discord.MessageEmbed()
-  .setColor("#d90053")
+  .setColor(themecolor)
   .setTitle(`Warn | ${member.user.tag}`)
   .addField("User", member.toString(), true)
   .addField("Moderator", message.author.toString(), true)

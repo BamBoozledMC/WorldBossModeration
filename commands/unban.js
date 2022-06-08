@@ -7,7 +7,7 @@ module.exports = {
     descrption: 'unbans mentioned user from the server',
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
     try{
 if (!message.member.permissions.has("BAN_MEMBERS") && message.author.id != config.ownerID) return message.channel.send("Sorry, you don't have permissions to use this!");
 
@@ -33,7 +33,7 @@ if (!message.member.permissions.has("BAN_MEMBERS") && message.author.id != confi
 
             await message.guild.members.unban(bannedMember.user.id, { reason: reason })
                 let bean = new Discord.MessageEmbed()
-		  .setColor("#d90053")
+		  .setColor(themecolor)
 		  .setTitle(`Unban | ${bannedMember.user.tag}`)
 		  .addField("User", `<@${bannedMember.user.id}>`, true)
 		  .addField("Moderator", message.author.toString(), true)

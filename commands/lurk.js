@@ -9,7 +9,7 @@ module.exports = {
 	cooldown: 60,
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		let checkiflurk = db.get(`lurking.${message.author.id}`)
 
 		if(checkiflurk) return message.reply("You are already lurking!");

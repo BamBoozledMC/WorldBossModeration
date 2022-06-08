@@ -8,7 +8,7 @@ module.exports = {
     aliases: ['stat', 'statsai', 'aistats', 'aistat'],
     usage: '',
 	args: true,
-	async execute(bot, message, args, prefix, commandName) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
 			if(message.channel.id == config.generalID) return;
 		}
@@ -38,7 +38,7 @@ module.exports = {
 	.addField("Wins", otherswins.toString(), true)
 	.addField("Losses", otherslosses.toString(), true)
 	.addField("Ties", othersties.toString())
-	.setColor(config.themecolor)
+	.setColor(themecolor)
 	    return message.channel.send({embeds: [mentionedavatar]})
 	}
 		if(commandName == 'aistats' || commandName == 'aistat') return ai_stats();
@@ -106,7 +106,7 @@ module.exports = {
 .addField("Wins", otherc4wins.toString(), true)
 .addField("Losses", otherc4losses.toString(), true)
 .addField("Ties", otherc4ties.toString())
-.setColor(config.themecolor)
+.setColor(themecolor)
     return message.channel.send({embeds: [mentionedavatar]})
 }
 let wins = db.get(`games.tictactoe.${message.author.id}.wins`) ? db.get(`games.tictactoe.${message.author.id}.wins`) : '0'
@@ -132,7 +132,7 @@ let executeravatar = new Discord.MessageEmbed()
 .addField("Wins", c4wins.toString(), true)
 .addField("Losses", c4losses.toString(), true)
 .addField("Ties", c4ties.toString())
-.setColor(config.themecolor)
+.setColor(themecolor)
 return message.channel.send({embeds: [executeravatar]})
 }
 }

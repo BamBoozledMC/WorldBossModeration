@@ -9,7 +9,7 @@ module.exports = {
 	aliases: ['hangm', 'hm'],
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		message.reply("Hangman can only be played using slash commands.\nPlease use **/hangman** ").catch(error =>{
 		})
     }

@@ -214,7 +214,7 @@ app.get('/auth/steam/return',
       .setTitle("Successfully Linked!")
       .setThumbnail('https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg')
       .setDescription(`Your Steam (**${steamuser.displayName}**) & Discord (**${discorduser.username}#${discorduser.discriminator}**) account are now linked with **World Boss Moderation**\n\nTo unlink your accounts, use \`!unlink\`in <#932828142094123009> or use \`!link\` to check your linked account info.`)
-      .setColor('#d90053')
+      .setColor(themecolor)
   		.setFooter(`Developed by BamBoozled#0882`)
       .setTimestamp()
       user.send({embeds: [linkembed]}).catch(() => {
@@ -263,7 +263,7 @@ bot.on("ready", async () => {
 					clearInterval(timer);
 
 					let unmuteembed = new MessageEmbed()
-    				.setColor("#d90053")
+    				.setColor(themecolor)
 		  			.setTitle(`Unmute | ${member.user.tag}`)
 		  			.addField("User", member.toString(), true)
      				.addField("Moderator", bot.user.toString(), true)
@@ -425,7 +425,7 @@ bot.on('messageCreate', async message => {
         return;
       }
     let muteembed = new MessageEmbed()
-        .setColor("#d90053")
+        .setColor(themecolor)
         .setTitle(`Tempmute | ${message.author.tag}`)
         .addField("User", message.author.toString(), true)
         .addField("Moderator", bot.user.toString(), true)
@@ -472,7 +472,7 @@ bot.on('messageCreate', async message => {
           clearInterval(timer);
 
           let unmuteembed = new MessageEmbed()
-      .setColor("#d90053")
+      .setColor(themecolor)
         .setTitle(`Unmute | ${message.author.tag}`)
         .addField("User", message.author.toString(), true)
         .addField("Moderator", bot.user.toString(), true)
@@ -603,7 +603,7 @@ bot.on('messageCreate', async message => {
       .setTitle(`${message.mentions.members.first().user.tag} is Lurking!`)
       .setDescription(`They have been lurking since <t:${mentionlurk.startedAT}:F>`)
       .addField(`Reason`, mentionlurk.reason)
-      .setColor("#d90053")
+      .setColor(themecolor)
       .setTimestamp()
       message.channel.send({embeds: [userislurking]}).then(message => {
   			setTimeout(() => message.delete(), 10000);
@@ -622,15 +622,21 @@ bot.on('messageCreate', async message => {
   // } else if (message.content.includes("�")) {
   //   message.delete()
   // }
-
+  let defaultcolor = message.guild && db.get(`color.${message.guild.id}`)
 	let pref = message.guild && db.get(`prefix.${message.guild.id}`)
 	let prefix;
+  let themecolor;
 
 	if (!pref) {
 		prefix = `${config.prefix}`;
 	} else {
 		prefix = pref;
 	}
+  if (!defaultcolor) {
+    themecolor = `${config.themecolor}`;
+  } else {
+    themecolor = defaultcolor;
+  }
 
   //delete messages from suggestion channel that is not a suggestion
   if (message.channel.id == config.suggestionID) {
@@ -672,12 +678,36 @@ const [, matchedPrefix] = message.content.match(prefixRegex);
 		.addField("Description:", "Change the server's prefix", true)
 		.addField("Usage:", `${prefix}prefix [Your_custom_prefix_here]\n${prefix}prefix reset`, true)
 		.addField("Example:", `${prefix}prefix -`)
-		.setColor('#d90053')
+		.setColor(themecolor)
 		if (!symbol) return message.channel.send({embeds: [nonedefined]})
 
 		db.set(`prefix.${message.guild.id}`, symbol);
 		message.channel.send(`The server prefix for **${message.guild.name}** has been updated to: \`${symbol}\``)
 		return console.log(`The prefix for ${message.guild.name} was updated to: ${symbol}`);
+	}
+
+  if(commandName == "color" || commandName == "themecolor") {
+		if (!message.member.permissions.has("MANAGE_GUILD") && message.author.id != config.ownerID) return;
+		let data = db.get(`color.${message.guild.id}`);
+		if (args[0] === "reset") {
+			await db.delete(`color.${message.guild.id}`);
+			return message.channel.send(`The bot theme color for **${message.guild.name}** has been reset!`);
+		}
+		let HEXcolor = args[0];
+    let hexreg=/^#[0-9A-F]{6}$/i;
+		let nonedefined = new MessageEmbed()
+		.setTitle("Bot Theme Color")
+		.setDescription(`The bot theme color for ${message.guild.name} is \`${themecolor}\`\nUse ${prefix}themecolor reset to reset the bot's theme color to default.`)
+		.addField("Description:", "Change the bot's theme color", true)
+		.addField("Usage:", `${prefix}themecolor [HEXcolor]\n${prefix}prefix reset`, true)
+		.addField("Example:", `${prefix}themecolor #d90053`)
+    .setThumbnail(`https://singlecolorimage.com/get/${themecolor.replace('#', '')}/256x256`)
+		.setColor(themecolor)
+		if (!HEXcolor) return message.channel.send({embeds: [nonedefined]})
+    if (!hexreg.test(HEXcolor)) return message.channel.send({content: "Invalid HEX code.", embeds: [nonedefined]})
+
+		db.set(`color.${message.guild.id}`, HEXcolor);
+		return message.channel.send(`The bot theme color for **${message.guild.name}** has been updated to: \`${HEXcolor}\``)
 	}
 
 
@@ -713,7 +743,7 @@ const [, matchedPrefix] = message.content.match(prefixRegex);
 
 	if (message.channel.type == "DM") return;
   try {
-		command.execute(bot, message, args, prefix, commandName);
+		command.execute(bot, message, args, prefix, commandName, themecolor);
 	} catch (error) {
 		console.error(error);
 	}

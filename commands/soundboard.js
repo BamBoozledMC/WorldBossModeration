@@ -18,7 +18,7 @@ module.exports = {
 	aliases: ['sb', 'sfx'],
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) {
 			if(!message.member.roles.cache.some(role => role.id === '937561741334814810')) return message.reply(`This command is a supporter-only command. Check the \`${prefix}help\` command for more info.`);
 		}
@@ -46,7 +46,7 @@ module.exports = {
 			let invalidsfx = new Discord.MessageEmbed()
 			.setTitle(`Invalid Sound!`)
 			.setDescription(`The sound effect name you provided is **Invald** or does not **exist**\nUsage: ${prefix}soundboard sound_effect_name\nAliases: \`${prefix}sb | ${prefix}sfx\`\n**Available Sound Effects:**\n${allsfx}\n**Total: ${sfxs.size}**`)
-			.setColor('#d90053')
+			.setColor(themecolor)
 			.setFooter("Developed by BamBoozled#0882")
 			message.reply({embeds: [invalidsfx]})
 		}

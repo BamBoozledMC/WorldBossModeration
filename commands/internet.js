@@ -8,7 +8,7 @@ module.exports = {
 	description: 'Checks the bot\'s internet',
 	usage: '!internet',
 	args: false,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
 		const pingMsg =  await message.channel.send('<a:loading:939665977728176168> Gathering data...');
 
@@ -27,7 +27,7 @@ FastTest.runTest().then(result => {
 		.setDescription(`Internet statistics of the bot.`)
 		.addField("Info", `**ISP:** Telstra (Telecom Australia)\n**Located:** Queensland, Australia`)
 		.addField(`Internet Speeds`, `**Ping:** ${result.ping}ms\n**Download:** ${result.downloadSpeed}${result.downloadUnit} (${downloadMB}MB/s)\n**Upload:** ${result.uploadSpeed}${result.uploadUnit} (${uploadMB}MB/s)`)
-		.setColor('#d90053')
+		.setColor(themecolor)
     .setTimestamp()
 
 		pingMsg.delete()

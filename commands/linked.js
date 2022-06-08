@@ -9,7 +9,7 @@ module.exports = {
   descrption: 'Linked users',
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		if (!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
 		if (message.member.roles.cache.some(role => role.id === '947756109932937246')) return;
 		let dbget = db.get(`linked.users`)
@@ -22,7 +22,7 @@ module.exports = {
 		let linkedusers = new Discord.MessageEmbed()
 		.setTitle("All linked users")
 		.setDescription(userlist)
-		.setColor("#d90053")
+		.setColor(themecolor)
 		.setFooter("Developed by BamBoozled#0882")
 		.setTimestamp()
 

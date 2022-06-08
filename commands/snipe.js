@@ -6,12 +6,12 @@ module.exports = {
     descrption: 'Shows last deleted message',
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
         const msg = bot.snipes.get(message.channel.id)
         if(!msg) return message.channel.send("I couldn't find any messages to snipe!");
         const snipedmsg = new Discord.MessageEmbed()
-        .setColor('#d90053')
+        .setColor(themecolor)
         .setAuthor(`${msg.author} ==>`, msg.icon)
         .setDescription(msg.content)
         .setTimestamp()

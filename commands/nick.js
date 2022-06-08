@@ -8,7 +8,7 @@ module.exports = {
 	aliases: ['nickname'],
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
     if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
   let nick = args.slice(1).join(' ');
 
@@ -72,7 +72,7 @@ if(nick.length > 32) {
 	await member.setNickname(checknick)
 
 	let nickembed = new Discord.MessageEmbed()
-  .setColor("#d90053")
+  .setColor(themecolor)
   .setTitle(`Nickname changed | ${member.user.tag}`)
   .addField("User", member.toString(), true)
   .addField("Moderator", message.author.toString(), true)

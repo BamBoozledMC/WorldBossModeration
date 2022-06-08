@@ -9,7 +9,7 @@ module.exports = {
   aliases: ['tmute', 'tempmute'],
 	usage: '',
 	args: false,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
     //!mute @user 1s/m/h/d
   try {
   if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
@@ -109,7 +109,7 @@ module.exports = {
       return;
     }
   let muteembed = new Discord.MessageEmbed()
-		  .setColor("#d90053")
+		  .setColor(themecolor)
 		  .setTitle(`Tempmute | ${member.user.tag}`)
 		  .addField("User", member.toString(), true)
       .addField("Moderator", message.author.toString(), true)
@@ -160,7 +160,7 @@ let timer = setInterval(async function() {
         clearInterval(timer);
 
         let unmuteembed = new Discord.MessageEmbed()
-    .setColor("#d90053")
+    .setColor(themecolor)
 		  .setTitle(`Unmute | ${member.user.tag}`)
 		  .addField("User", member.toString(), true)
       .addField("Moderator", bot.user.toString(), true)

@@ -8,7 +8,7 @@ module.exports = {
   aliases: ['deletepunishments', 'deletewarns', 'removepunishments', 'removewarns', 'removehistory', 'deletepunishment', 'deletewarn', 'removepunishment', 'removewarn', 'rwarn', 'rwarns', 'rhistory', 'rpunishment', 'rpunishments', 'roffence', 'roffences', 'removeoffence', 'rlog', 'rlogs'],
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
     if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
   let member;
             if(args[0]) {

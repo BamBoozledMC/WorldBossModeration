@@ -7,7 +7,7 @@ module.exports = {
   descrption: 'Removes all upvotes and downvotes a user has made',
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
 		if (message.author.bot) return;
 		let member;

@@ -9,7 +9,7 @@ module.exports = {
   aliases: ['pmute', 'permanantmute'],
 	usage: '',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
     //!mute @user 1s/m/h/d
   try {
   if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
@@ -93,7 +93,7 @@ module.exports = {
       return;
     }
   let muteembed = new Discord.MessageEmbed()
-		  .setColor("#d90053")
+		  .setColor(themecolor)
 		  .setTitle(`Mute | ${member.user.tag}`)
 		  .addField("User", member.toString(), true)
       .addField("Moderator", message.author.toString(), true)

@@ -7,7 +7,7 @@ module.exports = {
 	usage: '<message>',
 	aliases: ['calc', 'calculate'],
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		const simplydjs = require("simply-djs");
 		simplydjs.calculator(message, {
   		embedColor: config.themecolor,

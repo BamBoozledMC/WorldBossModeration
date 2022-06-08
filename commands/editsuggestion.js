@@ -9,7 +9,7 @@ module.exports = {
   aliases: ["editlastsuggestion"],
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		if (message.author.bot) return;
 		if(message.channel.id == config.generalID) return;
 		if (message.guild.id != config.serverID) return

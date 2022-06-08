@@ -9,14 +9,14 @@ module.exports = {
   descrption: 'Unlinking',
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		let dbget = db.get(`linked.users.${message.author.id}`)
 
 		if (!dbget) {
 			let notlinked = new Discord.MessageEmbed()
 			.setTitle(`You're not linked!`)
 			.setDescription(`To link your **Steam** account with **World Boss Moderation** head to [wbmoderation.com](https://wbmoderation.com) and click the "Link your Discord & Steam account" button to start the linking proccess!\n\nLinking is completely safe and the only data stored is your Discord user ID and Steam user ID.`)
-			.setColor("#d90053")
+			.setColor(themecolor)
 			.setFooter("Developed by BamBoozled#0882")
 			.setTimestamp()
 
@@ -45,7 +45,7 @@ module.exports = {
 						.setTitle(`Successfully Unlinked!`)
 						.setDescription(`Your Steam (**[${getusersteam.nickname}](${getusersteam.url})**) account has been successfully unlinked and is no longer associated with **World Boss Moderation**\n\nTo re-link or link another account, use \`${prefix}link\``)
 						.setThumbnail(getusersteam.avatar.medium)
-						.setColor("#d90053")
+						.setColor(themecolor)
 						.setFooter("Developed by BamBoozled#0882")
 						.setTimestamp()
 
@@ -56,7 +56,7 @@ module.exports = {
 						let unlinked = new Discord.MessageEmbed()
 						.setTitle(`Cancelled`)
 						.setDescription(`You have cancelled the unlinking proccess and you will **not** be unlinked.`)
-						.setColor("#d90053")
+						.setColor(themecolor)
 						.setFooter("Developed by BamBoozled#0882")
 						.setTimestamp()
 						areyousuresend.edit({content: " ", embeds: [unlinked]})
@@ -67,7 +67,7 @@ module.exports = {
 					let unlinked = new Discord.MessageEmbed()
 					.setTitle(`Automatically Cancelled`)
 					.setDescription(`The unlinking proccess was automatically cancelled (user didn't respond in time) and you will **not** be unlinked.`)
-					.setColor("#d90053")
+					.setColor(themecolor)
 					.setFooter("Developed by BamBoozled#0882")
 					.setTimestamp()
 					areyousuresend.edit({content: " ", embeds: [unlinked]})

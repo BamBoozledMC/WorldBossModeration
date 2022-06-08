@@ -8,7 +8,7 @@ module.exports = {
 	usage: '!uptime',
     aliases: ['up'],
 	args: false,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 	let totalSeconds = (bot.uptime / 1000);
 let days = Math.floor(totalSeconds / 86400);
 totalSeconds %= 86400;

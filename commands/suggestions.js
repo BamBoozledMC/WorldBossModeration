@@ -8,7 +8,7 @@ module.exports = {
 //  aliases: [],
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
     if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
 	  let getsuggestions = db.get(`suggestions`)
 		let displaytype = args[0]
@@ -23,7 +23,7 @@ module.exports = {
     .setTitle(`Top 10 suggestions`)
 		.setDescription(`Showing result from last **30** days.\nThere are **${gettotalsuggestionsoffset(10)}** more suggestions not displayed in this table.\nThere is a __total__ of **${gettotalsuggestions()}** suggestions ever submitted.`)
     .setTimestamp()
-    .setColor("#d90053")
+    .setColor(themecolor)
 		.setFooter(`Developed by BamBoozled#0882`)
 
 		var last30days = [];
@@ -76,7 +76,7 @@ loading.edit({content: " ", embeds: [top10suggestions]})
 	.setTitle(`Top 10 suggestions`)
 	.setDescription(`Showing result from **all time**\nThere are **${gettotalsuggestionsoffset(10)}** more suggestions not displayed in this table.\nThere is a __total__ of **${gettotalsuggestions()}** suggestions ever submitted.`)
 	.setTimestamp()
-	.setColor("#d90053")
+	.setColor(themecolor)
 	.setFooter(`Developed by BamBoozled#0882`)
 
 	var getallsuggestions = [];

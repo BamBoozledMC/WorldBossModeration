@@ -8,7 +8,7 @@ module.exports = {
 	aliases: ['modnickname'],
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
     if(!message.member.permissions.has("MANAGE_MESSAGES") && message.author.id != config.ownerID) return;
   let member;
             if(args[0]) {
@@ -52,7 +52,7 @@ let nick = `Moderated Nickname #${generatecode}`
 	await member.setNickname(nick)
 
 	let nickembed = new Discord.MessageEmbed()
-  .setColor("#d90053")
+  .setColor(themecolor)
   .setTitle(`Nickname moderated | ${member.user.tag}`)
   .addField("User", member.toString(), true)
   .addField("Moderator", message.author.toString(), true)

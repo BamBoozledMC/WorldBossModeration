@@ -8,7 +8,7 @@ module.exports = {
 	aliases: ['rockpaperscissors', 'scissorspaperrock', 'spr'],
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		const simplydjs = require("simply-djs");
 		simplydjs.rps(message, {
   		embedColor: config.themecolor, // default: #075FFF

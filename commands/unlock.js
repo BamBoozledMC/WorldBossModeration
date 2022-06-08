@@ -8,7 +8,7 @@ module.exports = {
 	aliases: ['unlockdown'],
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix, commandName) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		if (!message.member.permissions.has("MANAGE_GUILD") && message.author.id != config.ownerID) return;
 
 		if (!args[0]) return unlocksinglechannel(message, message.channel.id);

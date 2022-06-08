@@ -11,6 +11,14 @@ const fetch = require('node-fetch');
 module.exports = async (interaction, bot) => {
   if (!interaction.isCommand()) return;
 
+  let defaultcolor = interaction.guild && db.get(`color.${interaction.guild.id}`)
+  let themecolor;
+  if (!defaultcolor) {
+    themecolor = `${config.themecolor}`;
+  } else {
+    themecolor = defaultcolor;
+  }
+
   if (interaction.commandName === 'ping') {
     await interaction.deferReply()
     let localping = await ping.promise.probe('127.0.0.1', {
@@ -24,7 +32,7 @@ module.exports = async (interaction, bot) => {
 			.addField("📤 API:", `**${bot.ws.ping}ms**`)
 			.addField("<:server:948743195309768746> ISP/DNS:", `**${isp_dns.time}ms**`)
 			.addField("🖥️ INTERNAL:", `**${localping.time}ms**`)
-			.setColor("#d90053")
+			.setColor(themecolor)
 			.setTimestamp()
 		return interaction.editReply({ embeds: [pingembed] });
 	}
@@ -198,7 +206,7 @@ module.exports = async (interaction, bot) => {
       .setTitle("Fortnite Stats | Menu")
       .setDescription(`<:epicgames:965863563468107846> **User:** [${stats.epicUserHandle}](https://fortnitetracker.com/profile/all/${usrname})\n**Platform:** ${stats.platformNameLong}`)
       .setThumbnail(stats.avatar)
-      .setColor("#d90053")
+      .setColor(themecolor)
     let displaystats = await interaction.editReply({embeds: [statembed], components: [row, row2]})
 
     const filter = i => i.user.id === interaction.user.id;
@@ -223,7 +231,7 @@ module.exports = async (interaction, bot) => {
       .setTitle("Fortnite Stats | Lifetime")
       .setDescription(`<:epicgames:965863563468107846> **User:** [${stats.epicUserHandle}](https://fortnitetracker.com/profile/all/${usrname})\n**Platform:** ${stats.platformNameLong}`)
       .setThumbnail(stats.avatar)
-      .setColor("#d90053")
+      .setColor(themecolor)
       stats.lifeTimeStats.forEach((item) => {
         lifetime.addField(`${item.key}`, `${item.value}`)
       });
@@ -235,7 +243,7 @@ module.exports = async (interaction, bot) => {
       .setTitle("Fortnite Stats | Solos")
       .setDescription(`<:epicgames:965863563468107846> **User:** [${stats.epicUserHandle}](https://fortnitetracker.com/profile/all/${usrname})\n**Platform:** ${stats.platformNameLong}`)
       .setThumbnail(stats.avatar)
-      .setColor("#d90053")
+      .setColor(themecolor)
       .addField(s.top1.label, s.top1.displayValue, true)
       .addField(s.kills.label, s.kills.displayValue, true)
       .addField('\u200b', '\u200b')
@@ -263,7 +271,7 @@ module.exports = async (interaction, bot) => {
       .setTitle("Fortnite Stats | Duos")
       .setDescription(`<:epicgames:965863563468107846> **User:** [${stats.epicUserHandle}](https://fortnitetracker.com/profile/all/${usrname})\n**Platform:** ${stats.platformNameLong}`)
       .setThumbnail(stats.avatar)
-      .setColor("#d90053")
+      .setColor(themecolor)
       .addField(s.top1.label, s.top1.displayValue, true)
       .addField(s.kills.label, s.kills.displayValue, true)
       .addField('\u200b', '\u200b')
@@ -291,7 +299,7 @@ module.exports = async (interaction, bot) => {
       .setTitle("Fortnite Stats | Trios")
       .setDescription(`<:epicgames:965863563468107846> **User:** [${stats.epicUserHandle}](https://fortnitetracker.com/profile/all/${usrname})\n**Platform:** ${stats.platformNameLong}`)
       .setThumbnail(stats.avatar)
-      .setColor("#d90053")
+      .setColor(themecolor)
       .addField(s.top1.label, s.top1.displayValue, true)
       .addField(s.kills.label, s.kills.displayValue, true)
       .addField('\u200b', '\u200b')
@@ -319,7 +327,7 @@ module.exports = async (interaction, bot) => {
       .setTitle("Fortnite Stats | Squads")
       .setDescription(`<:epicgames:965863563468107846> **User:** [${stats.epicUserHandle}](https://fortnitetracker.com/profile/all/${usrname})\n**Platform:** ${stats.platformNameLong}`)
       .setThumbnail(stats.avatar)
-      .setColor("#d90053")
+      .setColor(themecolor)
       .addField(s.top1.label, s.top1.displayValue, true)
       .addField(s.kills.label, s.kills.displayValue, true)
       .addField('\u200b', '\u200b')
@@ -347,7 +355,7 @@ module.exports = async (interaction, bot) => {
       .setTitle("Fortnite Stats | LTMs")
       .setDescription(`<:epicgames:965863563468107846> **User:** [${stats.epicUserHandle}](https://fortnitetracker.com/profile/all/${usrname})\n**Platform:** ${stats.platformNameLong}`)
       .setThumbnail(stats.avatar)
-      .setColor("#d90053")
+      .setColor(themecolor)
       .addField(s.top1.label, s.top1.displayValue, true)
       .addField(s.kills.label, s.kills.displayValue, true)
       .addField('\u200b', '\u200b')
@@ -371,7 +379,7 @@ module.exports = async (interaction, bot) => {
       .setTitle("Fortnite Stats | Recent Matches")
       .setDescription(`<:epicgames:965863563468107846> **User:** [${stats.epicUserHandle}](https://fortnitetracker.com/profile/all/${usrname})\n**Platform:** ${stats.platformNameLong}`)
       .setThumbnail(stats.avatar)
-      .setColor("#d90053")
+      .setColor(themecolor)
       stats.recentMatches.forEach((item, i) => {
         if (i > 4) return;
         let compliantdate = DateTime.fromISO(item.dateCollected, { zone: 'UTC' }).toSeconds()

@@ -7,7 +7,7 @@ module.exports = {
 	aliases: ['bigger', 'makebigger'],
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 		const emotes = (str) => str.match(/<a?:.+?:\d{18}>|\p{Extended_Pictographic}/gu);
 	  let getemojis = emotes(message.content)
 		if (!getemojis) return message.reply("Make sure to include an emoji for me to enlarge.")
@@ -27,7 +27,7 @@ module.exports = {
 		.setTitle(`Successfully enlarged ${info[2]}`)
 		.setURL(`${url}`)
 		.setImage(url)
-		.setColor("#d90053")
+		.setColor(themecolor)
 		message.reply({ embeds: [enlarged] })
 	} catch (e) {
 		console.log(e);

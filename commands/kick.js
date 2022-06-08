@@ -7,7 +7,7 @@ module.exports = {
     descrption: 'kicks mentioned user from the server',
 	usage: '<message>',
 	args: true,
-	async execute(bot, message, args, prefix) {
+	async execute(bot, message, args, prefix, commandName, themecolor) {
 
     if (!message.member.permissions.has("KICK_MEMBERS") && message.author.id != config.ownerID) return;
 
@@ -65,7 +65,7 @@ module.exports = {
       .catch(error => message.reply(`Sorry, I couldn't kick because of : ${error}`));
 
       let kick = new Discord.MessageEmbed()
-      .setColor("#d90053")
+      .setColor(themecolor)
       .setTitle(`Kick | ${member.user.tag}`)
       .addField("User", member.toString(), true)
       .addField("Moderator", message.author.toString(), true)
