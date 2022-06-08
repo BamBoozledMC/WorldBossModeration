@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=650px, initial-scale=1">
-  <title>World Boss Moderation | VLC Controller</title>
+  <meta name="viewport" content="width=700px, initial-scale=1">
+  <title>World Boss Moderation | Dashboard</title>
   <meta name="description" content="Official website of World Boss Moderation!
-  VLC Controller gives users the ability to control the Video Player in the World Boss Discord in their browser!" />
+  Manage and configure settings for World Boss Moderation." />
   <meta property="og:image" content="https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg">
   <meta name="theme-color" content="#d90053">
   <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Ubuntu" />
-  <link rel="icon" type="image/png" href="favicon.ico">
+  <link rel="icon" type="image/png" href="https://wbmoderation.com/favicon.ico">
   <link href="/media/bootstrap.css" rel="stylesheet">
 </head>
 <body onload="checkLogin()">
@@ -19,118 +19,64 @@
   <div class="topnav">
       <a href="/">Home</a>
       <a href="/projects">Other Projects</a>
-      <a href="/dashboard">Dashboard</a>
-      <a class="active">VLC Controller</a>
+      <a class="active">Dashboard</a>
       <a id="userinfo"> <img src=<%= discordpfp %> alt="pfp" style="width:48px; height:48px; float: left; border-radius: 30px; padding: 5px;"> <%= discordname %> </a>
-      <button id="loginbutton" onclick="window.location.href = 'https://wbmoderation.com/vlc/auth/discord'">Login</button>
+      <button id="loginbutton" onclick="window.location.href = 'https://wbmoderation.com/dashboard/auth/discord'">Login</button>
+      <button id="logoutbutton" onclick="window.location.href = 'https://wbmoderation.com/dashboard/auth/logout'">Logout</button>
     </div>
-<h1>VLC Controller</h1>
-<p class="subhead">Control the Video Player in the World Boss Discord here in your browser!</p>
-<p id="noaccess">You do not have access to this feature.</p>
+<h1>Dashboard</h1>
+<p class="subhead">Manage and configure settings for World Boss Moderation.</p>
+<p id="notinguild">You are not in the World Boss Discord server.</p>
+<p id="noaccess">You require the <code>MANAGE_GUILD</code> permission to access this feature.</p>
+<p id="loginrequired">Please <button id="textloginbutton" onclick="window.location.href = 'https://wbmoderation.com/dashboard/auth/discord'">Login</button> with Discord to access the dashboard.</p>
 <div id="hideifnoaccess" class="center">
-  <button onclick="stop()">⏹</button>
-  <button onclick="playpause()">⏯</button>
-  <button onclick="previous()">⏮</button>
-  <button onclick="next()">⏭</button>
-  <div>
-    <label for="url" style="font-size: 30px; color: black;">URL</label>
-    <input type="text" class="form-control" id="url" placeholder="Enter URL e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ">
-    <button onclick="playnow()" style="font-size: 30px; color: black;">▶ Play now</button>
-    <button onclick="add()" style="font-size: 30px; color: black;">➕ Add to queue</button>
+  <p class="subhead">Available Guilds</p>
+  <div class="wbguild" onclick="window.location.href = 'https://wbmoderation.com/dashboard/server/929941845004415046'">
+    <img style="border-radius: 64px;width: 128px; height: 128px;" src="<%= wbicon %>" alt="World Boss Discord Image">
+    <p style="color: black;"><%= wbname %></p>
   </div>
 </div>
 
-<div id="snackbar">Successfully did something</div>
 <script type="text/javascript">
   function checkLogin() {
     if (!<%= loggedin %>) {
       document.getElementById("loginbutton").style.display = "block";
       document.getElementById("userinfo").style.display = "none";
-      document.getElementById("noaccess").style.display = "block";
+      document.getElementById("noaccess").style.display = "none";
+      document.getElementById("notinguild").style.display = "none";
+      document.getElementById("loginrequired").style.display = "block";
       document.getElementById("hideifnoaccess").style.display = "none";
     } else {
       document.getElementById("userinfo").style.display = "block";
+      document.getElementById("logoutbutton").style.display = "block";
       document.getElementById("loginbutton").style.display = "none";
       if (!<%= inguild %>) {
-        document.getElementById("noaccess").style.display = "block";
+        document.getElementById("notinguild").style.display = "block";
         document.getElementById("hideifnoaccess").style.display = "none";
       } else {
-        document.getElementById("noaccess").style.display = "none";
-        document.getElementById("hideifnoaccess").style.display = "block";
+        if (!<%= hasaccess %>) {
+          document.getElementById("noaccess").style.display = "block";
+          document.getElementById("loginrequired").style.display = "none";
+          document.getElementById("hideifnoaccess").style.display = "none";
+        } else {
+          document.getElementById("noaccess").style.display = "none";
+          document.getElementById("hideifnoaccess").style.display = "block";
+        }
       }
     }
   }
 
-  function playnow() {
-    var url = document.getElementById("url").value;
-    document.getElementById('url').value = ''
-      fetch(`/vlc/actions/?action=add&url=${url}`, {method: 'POST'})
-        .then(async response => {
-          let e = await response.text()
-          if (e == 'success') {
-            var x = document.getElementById("snackbar");
+    function next() {
+      fetch('/vlc/actions/?action=next', {method: 'POST'})
+      .then(async response => {
+        let e = await response.text()
+        if (e == 'success') {
+          var x = document.getElementById("snackbar");
             x.className = "show";
             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
           }
         })
     }
-    function add() {
-      var url = document.getElementById("url").value;
-      document.getElementById('url').value = ''
-        fetch(`/vlc/actions/?action=enqueue&url=${url}`, {method: 'POST'})
-          .then(async response => {
-            let e = await response.text()
-            if (e == 'success') {
-              var x = document.getElementById("snackbar");
-              x.className = "show";
-              setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-            }
-          })
-      }
-      function stop() {
-          fetch('/vlc/actions/?action=stop', {method: 'POST'})
-            .then(async response => {
-              let e = await response.text()
-              if (e == 'success') {
-                var x = document.getElementById("snackbar");
-                x.className = "show";
-                setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-              }
-            })
-        }
-        function playpause() {
-            fetch('/vlc/actions/?action=playpause', {method: 'POST'})
-              .then(async response => {
-                let e = await response.text()
-                if (e == 'success') {
-                  var x = document.getElementById("snackbar");
-                  x.className = "show";
-                  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-                }
-              })
-          }
-          function previous() {
-              fetch('/vlc/actions/?action=previous', {method: 'POST'})
-                .then(async response => {
-                  let e = await response.text()
-                  if (e == 'success') {
-                    var x = document.getElementById("snackbar");
-                    x.className = "show";
-                    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-                  }
-                })
-            }
-            function next() {
-                fetch('/vlc/actions/?action=next', {method: 'POST'})
-                  .then(async response => {
-                    let e = await response.text()
-                    if (e == 'success') {
-                      var x = document.getElementById("snackbar");
-                      x.className = "show";
-                      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-                    }
-                  })
-              }
 </script>
 <style>
 h1 {
@@ -178,6 +124,38 @@ display: none;
 #loginbutton:hover {
   background-color: #2f7f5a;
 }
+#logoutbutton {
+  float: right;
+  color: white;
+  padding: 16px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 18px;
+  font-family: Ubuntu;
+  margin: 1px;
+  background-color: #e03c3c;
+  display: none;
+}
+#logoutbutton:hover {
+  background-color: #a82c2c;
+}
+#textloginbutton {
+  color: white;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 18px;
+  font-family: Ubuntu;
+  margin: 1px;
+  background-color: #43b581;
+}
+#textloginbutton:hover {
+  background-color: #2f7f5a;
+}
 #userinfo {
   text-align: center;
   line-height: 48px;
@@ -190,12 +168,37 @@ display: none;
   font-size: 30px;
   display: none;
 }
+#notinguild {
+  color: red;
+  font-family: calibri, sans-serif;;
+  font-weight: bold;
+  font-size: 30px;
+  display: none;
+}
+#loginrequired {
+  color: red;
+  font-family: calibri, sans-serif;;
+  font-weight: bold;
+  font-size: 30px;
+  display: none;
+}
 #hideifnoaccess {
   display: none;
 }
 a.external::after {
   content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
   margin: 0 3px 0 5px;
+}
+.wbguild {
+  text-align: center;
+  cursor: pointer;
+  width: 20%;
+  margin: auto;
+  padding: 5px;
+  border-color: grey;
+  border-radius: 10px;
+  border-style: ridge;
+  display: contents;
 }
 @keyframes updown {
   0% {

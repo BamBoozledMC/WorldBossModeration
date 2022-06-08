@@ -78,6 +78,7 @@ passport.use('steam', new SteamStrategy({
 
 var scopes = ['identify'];
 var vlcscopes = ['identify', 'guilds'];
+var dashboardscopes = ['identify', 'guilds'];
 
 passport.use('discord', new DiscordStrategy({
     clientID: config.botID,
@@ -95,6 +96,19 @@ passport.use('vlcdiscord', new DiscordStrategy({
     clientSecret: config.botSecret,
     callbackURL: `https://wbmoderation.com/vlc/auth/discord/callback`,
     scope: vlcscopes,
+    passReqToCallback: true,
+},
+function(req, accessToken, refreshToken, profile, done) {
+    process.nextTick(function() {
+    req.logout()
+    return done(null, profile);
+    });
+}));
+passport.use('discorddashboard', new DiscordStrategy({
+    clientID: config.botID,
+    clientSecret: config.botSecret,
+    callbackURL: `https://wbmoderation.com/dashboard/auth/discord/callback`,
+    scope: dashboardscopes,
     passReqToCallback: true,
 },
 function(req, accessToken, refreshToken, profile, done) {
@@ -140,6 +154,33 @@ app.get('/vlc/controller', async function(req,res) {
     } else inguild = false
   }
   res.render(__dirname+'/web/vlccontroller.ejs', { loggedin: loggedin, discordpfp: basicinfo ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, inguild: inguild, })
+});
+app.get('/dashboard', async function(req,res) {
+  let basicinfo = req.user ? req.user : null
+  let loggedin = req.user ? true : false
+  let userguilds = basicinfo ? basicinfo.guilds : null
+  let inguild = false
+  let wbicon = null
+  let wbname = null
+  let hasaccess = false
+  if (basicinfo) {
+    if (basicinfo.guilds.some(e => e.id == config.serverID)) {
+      inguild = true
+      wbicon = bot.guilds.cache.get(config.serverID).iconURL()
+      wbname = bot.guilds.cache.get(config.serverID).name
+      if (bot.guilds.cache.get(config.serverID).members.cache.get(basicinfo.id).permissions.has("MANAGE_GUILD")) hasaccess = true
+    } else inguild = false
+  }
+  res.render(__dirname+'/web/dashboard.ejs', { loggedin: loggedin, discordpfp: basicinfo ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, inguild: inguild, hasaccess: hasaccess, wbname: wbname, wbicon: wbicon, })
+});
+app.get('/dashboard/server/*', async function(req,res) {
+  if(!bot.guilds.cache.get(req.params[0])) return res.redirect("/dashboard");
+  if (!req.user) return res.redirect('/dashboard');
+  let basicinfo = req.user
+  if (!bot.guilds.cache.get(req.params[0]).members.cache.get(basicinfo.id).permissions.has("MANAGE_GUILD")) return res.redirect('/dashboard');
+  let guildname = bot.guilds.cache.get(req.params[0]).name
+
+  res.render(__dirname+'/web/manageguild.ejs', { discordpfp: basicinfo ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, guildname: guildname, })
 });
 app.post('/vlc/actions/*', function(request, response){
   if (request.headers.referer != 'https://wbmoderation.com/vlc/controller') return;
@@ -190,6 +231,16 @@ app.get('/auth/steam/return',
   app.get('/vlc/auth/discord/callback', passport.authenticate('vlcdiscord', { failureRedirect: '/' }),
    function(req, res) {
       res.redirect('/vlc/controller') // Successful auth
+  });
+
+  app.get('/dashboard/auth/discord', passport.authenticate('discorddashboard'));
+  app.get('/dashboard/auth/discord/callback', passport.authenticate('discorddashboard', { failureRedirect: '/dashboard' }),
+   function(req, res) {
+      res.redirect('/dashboard') // Successful auth
+  });
+  app.get('/dashboard/auth/logout', function(req,res) {
+    req.logout();
+    res.redirect('/dashboard')
   });
 
   app.get('/alreadylinked', async function(req,res) {
