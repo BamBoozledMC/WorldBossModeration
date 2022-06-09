@@ -11,10 +11,13 @@
   <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Ubuntu" />
   <script src="https://kit.fontawesome.com/14f6d50770.js" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" charset="utf-8"></script>
+  <link rel="stylesheet" href="/media/coloris.min.css"/>
+  <script src="/media/coloris.min.js"></script>
   <link rel="icon" type="image/png" href="https://wbmoderation.com/favicon.ico">
   <link href="/media/bootstrap.css" rel="stylesheet">
 </head>
 <body>
+  <script src="/media/socket.io.js"></script>
   <div class="topnav">
       <div class="menu-btn">
          <i class="fas fa-bars"></i>
@@ -31,8 +34,8 @@
            <i class="fas fa-times"></i>
          </div>
          <div class="menu">
-           <div class="item"><a class="active" href="#"><i class="fas fa-desktop"></i>Overview</a></div>
-          <div class="item"><a href="/dashboard/server/<%= guild.id %>/configuration"><i class="fa-solid fa-gear"></i>Configuration</a></div>
+           <div class="item"><a href="/dashboard/server/<%= guild.id %>"><i class="fas fa-desktop"></i>Overview</a></div>
+          <div class="item"><a class="active" href="#"><i class="fa-solid fa-gear"></i>Configuration</a></div>
            <div class="item">
              <a class="sub-btn"><i class="fa-solid fa-shield"></i>Moderation<i class="fas fa-angle-right dropdown"></i></a>
              <div class="sub-menu">
@@ -41,46 +44,64 @@
            </div>
          </div>
        </div>
-         <h1>Overview</h1>
+         <h1>Configuration</h1>
          <div style="margin: auto;padding: 20px;text-align: center;display: table;">
          <div class="infopanel">
-           <h4 style="color: #F6F6F6;">Server Statistics</h4>
-           <img style="width: 128px;height: 128px;border-radius: 64px;float: right;" src="<%= guild.iconURL() %>" alt="Server Icon">
-           <p class="infocontent">Server Name: <code><%= guild.name %></code><br>Server ID: <code><%= guild.id %></code><br>Members: <code><%= guild.memberCount - guild.members.cache.filter(member => member.user.bot).size %></code><br>Bots: <code><%= guild.members.cache.filter(member => member.user.bot).size %></code><br>Channels: <code><%= guild.channels.cache.size %></code>
-            <p class="infocontent" style="text-indent: 15px">Text: <code><%= guild.channels.cache.filter(c => c.type === 'GUILD_TEXT').size %></code></p>
-           <p class="infocontent" style="text-indent: 15px">Voice: <code><%= guild.channels.cache.filter(c => c.type === 'GUILD_VOICE').size %></code></p>
-           <p class="infocontent" style="text-indent: 15px">Announcement: <code><%= guild.channels.cache.filter(c => c.type === 'GUILD_NEWS').size %></code></p>
-         <p class="infocontent" style="text-indent: 15px">Category: <code><%= guild.channels.cache.filter(c => c.type === 'GUILD_CATEGORY').size %></code></p></p>
+           <h4 style="color: #F6F6F6;">Bot Theme Color <button id="savecolor" onclick="savecolor()" disabled>Save</button></h4>
+           <div class="color" style="position: relative;float:right;"></div>
+           <p class="infocontent">Change the bot's theme color.<br>The current bot theme color for <%= guild.name %> is <code id="hexcolor"><%= themecolor %></code></p>
+           <img id="heximg" src="https://singlecolorimage.com/get/<%= themecolor.replace('#', '') %>/256x256" alt="colorimg" style="width: 128px;height: 128px;margin: 10px;border-radius: 10px;border-style: inset;border-color: <%= themecolor %>;">
          </div>
          <div class="infopanel" style="float: right;">
-           <h4 style="color: #F6F6F6;">Bot Statistics</h4>
-           <img style="width: 128px;height: 128px;border-radius: 64px;float: right;" src="<%= bot.user.displayAvatarURL() %>" alt="Server Icon">
-           <p class="infocontent">Name: <code><%= bot.user.tag %></code><br>ID: <code><%= bot.user.id %></code><br>Ping: <code><%= bot.ws.ping %>ms</code><br>Uptime: <code id="uptime">Loading...</code></p>
+           <h4 style="color: #F6F6F6;">Server Prefix <button id="saveprefix" onclick="saveprefix()" disabled>Save</button></h4>
+           <p class="infocontent">Change the server's prefix</p>
          </div>
        </div>
 
+  <div style="text-align: center;display: flex;align-items: center;justify-content: center;">
+    <div id="snackbar">Successfull</div>
+  </div>
 <script type="text/javascript">
-  setInterval(uptime, 5000);
-  function uptime() {
-    $.get('/uptime', function(data, status){
-      let uptime = `${data.days} Days, ${data.hours} Hours, ${data.minutes} Minutes and ${data.seconds} Seconds`;
-      document.getElementById("uptime")
-        .innerHTML = uptime
-    })
-  }
-  uptime()
+  var socket = io();
 
-    function next() {
-      fetch('/vlc/actions/?action=next', {method: 'POST'})
-      .then(async response => {
-        let e = await response.text()
-        if (e == 'success') {
-          var x = document.getElementById("snackbar");
-            x.className = "show";
-            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-          }
-        })
+  Coloris({
+  parent: '.color',
+  theme: 'large',
+  themeMode: 'dark',
+  alpha: false,
+  swatches: [
+    '#d90053',
+],
+  inline: true,
+  defaultColor: '<%= themecolor %>'
+  });
+  document.addEventListener('coloris:pick', event => {
+  let btn = document.getElementById('savecolor')
+  btn.disabled = false
+  btn.style.backgroundColor = '#43b581'
+  btn.style.cursor = 'pointer'
+});
+
+    function savecolor() {
+      let newcolor = document.getElementById('clr-color-value').value
+      let btn = document.getElementById('savecolor')
+      let updatehex = document.getElementById('hexcolor')
+      let updateimage = document.getElementById('heximg')
+      btn.disabled = true
+      btn.style.backgroundColor = '#2f7f5a'
+      btn.style.cursor = 'not-allowed'
+      updatehex.innerHTML = newcolor
+      updateimage.style.borderColor = newcolor
+      updateimage.src = `https://singlecolorimage.com/get/${newcolor.replace('#', '')}/256x256`
+      socket.emit('themecolorchange', newcolor, '<%= guild.id %>')
     }
+
+    socket.on('success', function(successmsg) {
+      var x = document.getElementById("snackbar");
+      x.innerHTML = `${successmsg}`
+      x.className = "show";
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+    });
 
     $(document).ready(function(){
       $('.side-bar').addClass('active');
@@ -184,6 +205,32 @@ display: block;
   line-height: 48px;
   text-align: center;
 }
+#savecolor {
+  float: right;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: not-allowed;
+  transition: 0.3s;
+  font-size: 18px;
+  font-family: Ubuntu;
+  margin: 1px;
+  background-color: #2f7f5a;
+}
+#saveprefix {
+  float: right;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: not-allowed;
+  transition: 0.3s;
+  font-size: 18px;
+  font-family: Ubuntu;
+  margin: 1px;
+  background-color: #2f7f5a;
+}
 a.external::after {
   content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
   margin: 0 3px 0 5px;
@@ -256,15 +303,12 @@ p {
 #snackbar {
   visibility: hidden;
   min-width: 250px;
-  margin-left: -125px;
   background-color: #43b581;
   color: white;
   text-align: center;
   border-radius: 2px;
   padding: 16px;
   position: fixed;
-  z-index: 1;
-  left: 50%;
   bottom: 30px;
   font-size: 20px;
   font-family: Ubuntu;
@@ -272,8 +316,8 @@ p {
 
 #snackbar.show {
   visibility: visible;
-  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 4.5s;
+  animation: fadein 0.5s, fadeout 0.5s 4.5s;
 }
 
 @-webkit-keyframes fadein {

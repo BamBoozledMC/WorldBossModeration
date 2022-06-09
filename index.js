@@ -11,6 +11,8 @@ const ytdl = require('ytdl-core-discord');
 const ping = require('ping');
 const emojiRegex = require("emoji-regex");
 const express = require('express');
+const http = require('http');
+const { Server } = require("socket.io");
 const passport = require('passport');
 const session = require('express-session');
 const passportSteam = require('passport-steam');
@@ -119,6 +121,8 @@ function(req, accessToken, refreshToken, profile, done) {
 }));
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
 app.set('view engine', 'ejs')
 
 app.use(session({
@@ -174,13 +178,47 @@ app.get('/dashboard', async function(req,res) {
   res.render(__dirname+'/web/dashboard.ejs', { loggedin: loggedin, discordpfp: basicinfo ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, inguild: inguild, hasaccess: hasaccess, wbname: wbname, wbicon: wbicon, })
 });
 app.get('/dashboard/server/*', async function(req,res) {
-  if(!bot.guilds.cache.get(req.params[0])) return res.redirect("/dashboard");
+  let server;
+  let subpage;
+  if (req.params[0].includes("/")) {
+    let str = req.params[0]
+    let n = str.split('/')
+    subpage = n[1]
+    server = n[0]
+  } else {
+    server = req.params[0]
+    subpage = null
+  }
+  if(!bot.guilds.cache.get(server)) return res.redirect("/dashboard");
   if (!req.user) return res.redirect('/dashboard');
   let basicinfo = req.user
-  if (!bot.guilds.cache.get(req.params[0]).members.cache.get(basicinfo.id).permissions.has("MANAGE_GUILD")) return res.redirect('/dashboard');
-  let guildname = bot.guilds.cache.get(req.params[0]).name
+  if (!bot.guilds.cache.get(server).members.cache.get(basicinfo.id).permissions.has("MANAGE_GUILD")) return res.redirect('/dashboard');
+  let guild = bot.guilds.cache.get(server)
 
-  res.render(__dirname+'/web/manageguild.ejs', { discordpfp: basicinfo ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, guildname: guildname, })
+  if (!subpage) {
+  res.render(__dirname+'/web/manageguild.ejs', { discordpfp: basicinfo ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, guild: guild, bot: bot, })
+  } else if (subpage == 'configuration') {
+    let colortheme = db.get(`color.${guild.id}`) ? db.get(`color.${guild.id}`) : config.themecolor
+    res.render(__dirname+'/web/manageguild_config.ejs', { discordpfp: basicinfo ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, guild: guild, bot: bot, themecolor: colortheme, })
+  }
+});
+io.on('connection', (socket) => {
+  socket.on('themecolorchange', (color, guild) => {
+    db.set(`color.${guild}`, color)
+    console.log(`change ${guild} to ${color}`);
+    socket.emit('success', `Successfully changed the bot theme color to: <code>${color}</code>`)
+  });
+
+});
+app.get('/uptime', async function(req,res) {
+  let up = bot.uptime / 1000
+  let days = Math.floor(up / 86400);
+  up %= 86400;
+  let hours = Math.floor(up / 3600);
+  up %= 3600;
+  let minutes = Math.floor(up / 60);
+  let seconds = Math.floor(up % 60);
+  res.json({ days: days, hours: hours, minutes: minutes, seconds: seconds})
 });
 app.post('/vlc/actions/*', function(request, response){
   if (request.headers.referer != 'https://wbmoderation.com/vlc/controller') return;
@@ -293,7 +331,7 @@ app.get('/auth/steam/return',
     res.send('not logged in :(');
 }
 
-app.listen(config.port, () => console.log(`Web server listening at http://localhost:${config.port}`));
+server.listen(config.port, () => console.log(`Web server listening at http://localhost:${config.port}`));
 
 
 bot.on("ready", async () => {

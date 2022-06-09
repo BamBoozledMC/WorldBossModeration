@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=700px, initial-scale=1">
+  <meta name="viewport" content="width=990px, initial-scale=1">
   <title>World Boss Moderation | Dashboard</title>
   <meta name="description" content="Official website of World Boss Moderation!
   Manage and configure settings for World Boss Moderation." />
@@ -20,6 +20,10 @@
       <a href="/">Home</a>
       <a href="/projects">Other Projects</a>
       <a class="active">Dashboard</a>
+      <a href="/discord" rel="noopener noreferrer" target="_blank">World Boss Discord</a>
+      <a href="/appeal" rel="noopener noreferrer" target="_blank">Discord Ban Appeals</a>
+      <a href="/patreon" rel="noopener noreferrer" target="_blank">Patreon</a>
+      <a href="/github" rel="noopener noreferrer" target="_blank">GitHub</a>
       <a id="userinfo"> <img src=<%= discordpfp %> alt="pfp" style="width:48px; height:48px; float: left; border-radius: 30px; padding: 5px;"> <%= discordname %> </a>
       <button id="loginbutton" onclick="window.location.href = 'https://wbmoderation.com/dashboard/auth/discord'">Login</button>
       <button id="logoutbutton" onclick="window.location.href = 'https://wbmoderation.com/dashboard/auth/logout'">Logout</button>
@@ -31,7 +35,7 @@
 <p id="loginrequired">Please <button id="textloginbutton" onclick="window.location.href = 'https://wbmoderation.com/dashboard/auth/discord'">Login</button> with Discord to access the dashboard.</p>
 <div id="hideifnoaccess" class="center">
   <p class="subhead">Available Guilds</p>
-  <div class="wbguild" onclick="window.location.href = 'https://wbmoderation.com/dashboard/server/929941845004415046'">
+  <div class="wbguild" onclick="window.location.href = '/dashboard/server/929941845004415046'">
     <img style="border-radius: 64px;width: 128px; height: 128px;" src="<%= wbicon %>" alt="World Boss Discord Image">
     <p style="color: black;"><%= wbname %></p>
   </div>
