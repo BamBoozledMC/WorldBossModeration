@@ -199,14 +199,23 @@ app.get('/dashboard/server/*', async function(req,res) {
   res.render(__dirname+'/web/manageguild.ejs', { discordpfp: basicinfo ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, guild: guild, bot: bot, })
   } else if (subpage == 'configuration') {
     let colortheme = db.get(`color.${guild.id}`) ? db.get(`color.${guild.id}`) : config.themecolor
-    res.render(__dirname+'/web/manageguild_config.ejs', { discordpfp: basicinfo ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, guild: guild, bot: bot, themecolor: colortheme, })
+    let resetcolordisabled = db.get(`color.${guild.id}`) ? true : false
+    let prefix = db.get(`perfix.${guild.id}`) ? db.get(`prefix.${guild.id}`) : config.prefix
+    let resetprefixdisabled = db.get(`prefix.${guild.id}`) ? true : false
+    res.render(__dirname+'/web/manageguild_config.ejs', { discordpfp: basicinfo ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, guild: guild, bot: bot, prefix: prefix, themecolor: colortheme, resetprefixdisabled: resetprefixdisabled, resetcolordisabled: resetcolordisabled,  })
   }
 });
 io.on('connection', (socket) => {
   socket.on('themecolorchange', (color, guild) => {
     db.set(`color.${guild}`, color)
-    console.log(`change ${guild} to ${color}`);
-    socket.emit('success', `Successfully changed the bot theme color to: <code>${color}</code>`)
+    socket.emit('success', 'color', `Successfully changed the bot theme color to: <code>${color}</code>`)
+  });
+
+  socket.on('reset', (info, guild) => {
+    if (info == 'color') {
+      db.delete(`color.${guild}`)
+      socket.emit('success', 'resetcolor', `Successfully reset the bot theme color to default.`)
+    }
   });
 
 });

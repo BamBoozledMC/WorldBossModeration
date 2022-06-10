@@ -47,14 +47,14 @@
          <h1>Configuration</h1>
          <div style="margin: auto;padding: 20px;text-align: center;display: table;">
          <div class="infopanel">
-           <h4 style="color: #F6F6F6;">Bot Theme Color <button id="savecolor" onclick="savecolor()" disabled>Save</button></h4>
+           <h4 style="color: #F6F6F6;">Bot Theme Color <button id="resetcolor" onclick="resetcolor()">Reset</button> <button id="savecolor" onclick="savecolor()" disabled>Save</button></h4>
            <div class="color" style="position: relative;float:right;"></div>
            <p class="infocontent">Change the bot's theme color.<br>The current bot theme color for <%= guild.name %> is <code id="hexcolor"><%= themecolor %></code></p>
            <img id="heximg" src="https://singlecolorimage.com/get/<%= themecolor.replace('#', '') %>/256x256" alt="colorimg" style="width: 128px;height: 128px;margin: 10px;border-radius: 10px;border-style: inset;border-color: <%= themecolor %>;">
          </div>
          <div class="infopanel" style="float: right;">
-           <h4 style="color: #F6F6F6;">Server Prefix <button id="saveprefix" onclick="saveprefix()" disabled>Save</button></h4>
-           <p class="infocontent">Change the server's prefix</p>
+           <h4 style="color: #F6F6F6;">Server Prefix <button id="resetprefix" onclick="resetprefix()">Reset</button> <button id="saveprefix" onclick="saveprefix()" disabled>Save</button></h4>
+           <p class="infocontent">Change the server's prefix.<br>The current server prefix for <%= guild.name %> is <code id="textprefix"><%= prefix %></code></p>
          </div>
        </div>
 
@@ -95,16 +95,40 @@
       updateimage.src = `https://singlecolorimage.com/get/${newcolor.replace('#', '')}/256x256`
       socket.emit('themecolorchange', newcolor, '<%= guild.id %>')
     }
+    function resetcolor() {
+      if (confirm("Are you sure you want to reset the Bot Theme Color?\nThis will reset the color to it's default value") == true) {
+        socket.emit('reset', 'color', '<%= guild.id %>')
+        let btn = document.getElementById('resetcolor')
+        btn.disabled = true
+        btn.style.backgroundColor = '#a82c2c'
+        btn.style.cursor = 'not-allowed'
+      }
+    }
 
-    socket.on('success', function(successmsg) {
+
+    socket.on('success', function(info, successmsg) {
       var x = document.getElementById("snackbar");
       x.innerHTML = `${successmsg}`
       x.className = "show";
       setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+      if(info == 'color') {
+        let btn = document.getElementById('resetcolor')
+        btn.disabled = false
+        btn.style.backgroundColor = '#e03c3c'
+        btn.style.cursor = 'pointer'
+      } else if (info == 'resetcolor') {
+        setTimeout(function(){ location.reload() }, 5200);
+      }
     });
 
     $(document).ready(function(){
       $('.side-bar').addClass('active');
+      if (<%= resetcolordisabled %>) {
+        let btn = document.getElementById('resetcolor')
+        btn.disabled = false
+        btn.style.backgroundColor = '#e03c3c'
+        btn.style.cursor = 'pointer'
+      }
       //jquery for toggle sub menus
       $('.sub-btn').click(function(){
         $(this).next('.sub-menu').slideToggle();
@@ -218,6 +242,19 @@ display: block;
   margin: 1px;
   background-color: #2f7f5a;
 }
+#resetcolor {
+  float: right;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: not-allowed;
+  transition: 0.3s;
+  font-size: 18px;
+  font-family: Ubuntu;
+  margin: 1px;
+  background-color: #a82c2c;
+}
 #saveprefix {
   float: right;
   color: white;
@@ -230,6 +267,19 @@ display: block;
   font-family: Ubuntu;
   margin: 1px;
   background-color: #2f7f5a;
+}
+#resetprefix {
+  float: right;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: not-allowed;
+  transition: 0.3s;
+  font-size: 18px;
+  font-family: Ubuntu;
+  margin: 1px;
+  background-color: #a82c2c;
 }
 a.external::after {
   content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
