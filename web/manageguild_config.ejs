@@ -47,13 +47,13 @@
          <h1>Configuration</h1>
          <div style="margin: auto;padding: 20px;text-align: center;display: table;">
          <div class="infopanel">
-           <h4 style="color: #F6F6F6;">Bot Theme Color <button id="resetcolor" onclick="resetcolor()">Reset</button> <button id="savecolor" onclick="savecolor()" disabled>Save</button></h4>
+           <h4 style="color: #F6F6F6;">Bot Theme Color <button id="resetcolor" onclick="resetcolor()" disabled>Reset</button> <button id="savecolor" onclick="savecolor()" disabled>Save</button></h4>
            <div class="color" style="position: relative;float:right;"></div>
            <p class="infocontent">Change the bot's theme color.<br>The current bot theme color for <%= guild.name %> is <code id="hexcolor"><%= themecolor %></code></p>
            <img id="heximg" src="https://singlecolorimage.com/get/<%= themecolor.replace('#', '') %>/256x256" alt="colorimg" style="width: 128px;height: 128px;margin: 10px;border-radius: 10px;border-style: inset;border-color: <%= themecolor %>;">
          </div>
          <div class="infopanel" style="float: right;">
-           <h4 style="color: #F6F6F6;">Server Prefix <button id="resetprefix" onclick="resetprefix()">Reset</button> <button id="saveprefix" onclick="saveprefix()" disabled>Save</button></h4>
+           <h4 style="color: #F6F6F6;">Server Prefix <button id="resetprefix" onclick="resetprefix()" disabled>Reset</button> <button id="saveprefix" onclick="saveprefix()" disabled>Save</button></h4>
            <p class="infocontent">Change the server's prefix.<br>The current server prefix for <%= guild.name %> is <code id="textprefix"><%= prefix %></code></p>
          </div>
        </div>
