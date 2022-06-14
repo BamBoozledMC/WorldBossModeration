@@ -251,6 +251,9 @@ app.get('/bnftbot.png', function(req,res) {
 app.get('/secret', function(req,res) {
   res.sendFile(__dirname+'/web/secret.html');
 });
+app.get('/computer', function(req,res) {
+  res.sendFile(__dirname+'/web/computer.html');
+});
 
 app.get('/auth/steam',
   passport.authenticate('steam'),
