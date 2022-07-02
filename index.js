@@ -362,7 +362,13 @@ bot.on("ready", async () => {
         db.set(`tempmute.${guild.id}.${member.user.id}.time`, mutetime);
 				if(mutetime == 0) {
 					clearInterval(timer);
-
+          let defaultcolor = guild && db.get(`color.${guild.id}`)
+          let themecolor;
+          if (!defaultcolor) {
+            themecolor = `${config.themecolor}`;
+          } else {
+            themecolor = defaultcolor;
+          }
 					let unmuteembed = new MessageEmbed()
     				.setColor(themecolor)
 		  			.setTitle(`Unmute | ${member.user.tag}`)
@@ -515,6 +521,22 @@ bot.on('messageReactionRemove', (reaction, user) => reactionRemoveEvent(reaction
 
 bot.on('messageCreate', async message => {
   if (message.channel.type == "DM") return;
+
+  let defaultcolor = message.guild && db.get(`color.${message.guild.id}`)
+  let pref = message.guild && db.get(`prefix.${message.guild.id}`)
+  let prefix;
+  let themecolor;
+
+  if (!pref) {
+    prefix = `${config.prefix}`;
+  } else {
+    prefix = pref;
+  }
+  if (!defaultcolor) {
+    themecolor = `${config.themecolor}`;
+  } else {
+    themecolor = defaultcolor;
+  }
   const auto_mute = async (message) => {
 
       db.delete(`pingwarn.${message.author.id}`)
@@ -723,21 +745,6 @@ bot.on('messageCreate', async message => {
   // } else if (message.content.includes("�")) {
   //   message.delete()
   // }
-  let defaultcolor = message.guild && db.get(`color.${message.guild.id}`)
-	let pref = message.guild && db.get(`prefix.${message.guild.id}`)
-	let prefix;
-  let themecolor;
-
-	if (!pref) {
-		prefix = `${config.prefix}`;
-	} else {
-		prefix = pref;
-	}
-  if (!defaultcolor) {
-    themecolor = `${config.themecolor}`;
-  } else {
-    themecolor = defaultcolor;
-  }
 
   //delete messages from suggestion channel that is not a suggestion
   if (message.channel.id == config.suggestionID) {
