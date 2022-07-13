@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=770px, initial-scale=1">
-  <title>World Boss Moderation | Dashboard</title>
+  <title>World Boss Moderation | Dashboard - Configuration</title>
   <meta name="description" content="Official website of World Boss Moderation!
   Manage and configure settings for World Boss Moderation." />
   <meta property="og:image" content="https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg">
@@ -31,7 +31,7 @@
 
        <div class="side-bar">
          <div class="close-btn">
-           <i class="fas fa-times"></i>
+           <p style="text-align: left;font-size: 24px;font-family: Ubuntu;font-weight: bold;"><%= guild.name %> <i class="fas fa-times" style="float: right;"></i></p>
          </div>
          <div class="menu">
            <div class="item"><a href="/dashboard/server/<%= guild.id %>"><i class="fas fa-desktop"></i>Overview</a></div>
@@ -42,8 +42,15 @@
                <a href="#" class="sub-item">Sub Item 01</a>
              </div>
            </div>
+           <div class="item">
+             <a class="sub-btn"><i class="fa-solid fa-cogs"></i>Miscellaneous<i class="fas fa-angle-right dropdown"></i></a>
+             <div class="sub-menu">
+               <a href="/dashboard/server/<%= guild.id %>/embedmanager" class="sub-item"><i class="fa-solid fa-file-lines"></i>Embed Manager</a>
+             </div>
+           </div>
          </div>
        </div>
+       <div class="mainpage">
          <h1>Configuration</h1>
          <div style="margin: auto;padding: 20px;text-align: center;display: table;">
          <div class="infopanel">
@@ -57,11 +64,19 @@
            <p class="infocontent">Change the server's prefix.<br>The current server prefix for <%= guild.name %> is <code id="textprefix"><%= prefix %></code></p>
          </div>
        </div>
+     </div>
 
   <div style="text-align: center;display: flex;align-items: center;justify-content: center;">
     <div id="snackbar">Successfull</div>
   </div>
 <script type="text/javascript">
+$(document).keyup(function(e) {
+  if (e.key === "Escape") { // escape key maps to keycode `27`
+    if ($('.side-bar').hasClass('active')) {
+      $('.side-bar').removeClass('active');
+    }
+  }
+});
   var socket = io();
 
   Coloris({
@@ -133,6 +148,11 @@
       $('.sub-btn').click(function(){
         $(this).next('.sub-menu').slideToggle();
         $(this).find('.dropdown').toggleClass('rotate');
+      });
+      $('.mainpage').click(function(){
+        if ($('.side-bar').hasClass('active')) {
+          $('.side-bar').removeClass('active');
+        }
       });
 
       //jquery for expand and collapse the sidebar
@@ -580,7 +600,7 @@ background-color: rgba(255, 255, 255, 0.8);
 }
 
 .side-bar .menu .item .sub-menu a{
- padding-left: 80px;
+ padding-left: 60px;
 }
 
 .rotate{
@@ -588,7 +608,7 @@ background-color: rgba(255, 255, 255, 0.8);
 }
 
 .close-btn{
- position: absolute;
+ position: flex;
  color: #fff;
  font-size: 20px;
  right: 0;

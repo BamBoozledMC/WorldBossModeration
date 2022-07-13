@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=770px, initial-scale=1">
+  <title>World Boss Moderation | Dashboard - Embed Manager</title>
+  <meta name="description" content="Official website of World Boss Moderation!
+  Manage and configure settings for World Boss Moderation." />
+  <meta property="og:image" content="https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg">
+  <meta name="theme-color" content="#d90053">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Ubuntu" />
+  <script src="https://kit.fontawesome.com/14f6d50770.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" charset="utf-8"></script>
+  <link rel="stylesheet" href="/media/coloris.min.css"/>
+  <script src="/media/coloris.min.js"></script>
+  <link rel="icon" type="image/png" href="https://wbmoderation.com/favicon.ico">
+  <link href="/media/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+  <script src="/media/socket.io.js"></script>
+  <div class="topnav">
+      <div class="menu-btn">
+         <i class="fas fa-bars"></i>
+      </div>
+      <a href="/">Home</a>
+      <a href="/projects">Other Projects</a>
+      <a class="active" href="/dashboard">Dashboard</a>
+      <a id="userinfo"> <img src=<%= discordpfp %> alt="pfp" style="width:48px; height:48px; float: left; border-radius: 30px; padding: 5px;"> <%= discordname %> </a>
+      <button id="logoutbutton" onclick="window.location.href = 'https://wbmoderation.com/dashboard/auth/logout'">Logout</button>
+    </div>
+
+       <div class="side-bar">
+         <div class="close-btn">
+           <p style="text-align: left;font-size: 24px;font-family: Ubuntu;font-weight: bold;"><%= guild.name %> <i class="fas fa-times" style="float: right;"></i></p>
+         </div>
+         <div class="menu">
+           <div class="item"><a href="/dashboard/server/<%= guild.id %>"><i class="fas fa-desktop"></i>Overview</a></div>
+          <div class="item"><a href="/dashboard/server/<%= guild.id %>/configuration"><i class="fa-solid fa-gear"></i>Configuration</a></div>
+           <div class="item">
+             <a class="sub-btn"><i class="fa-solid fa-shield"></i>Moderation<i class="fas fa-angle-right dropdown"></i></a>
+             <div class="sub-menu">
+               <a href="#" class="sub-item">Sub Item 01</a>
+             </div>
+           </div>
+           <div class="item">
+             <a class="sub-btn active"><i class="fa-solid fa-cogs"></i>Miscellaneous<i class="fas fa-angle-right dropdown"></i></a>
+             <div class="sub-menu">
+               <a href="#" class="active"><i class="fa-solid fa-file-lines"></i>Embed Manager</a>
+             </div>
+           </div>
+         </div>
+       </div>
+       <div class="mainpage">
+         <h1>Embed Manager</h1>
+         <div style="margin: auto;padding: 20px;text-align: center;display: flex;width: 90%;align-items: center;">
+           <div class="createnew">
+             <h4 style="color: #F6F6F6;">Create new Embed </h4>
+             <iframe id="builder" src="https://wbmoderation.com/embedbuilder/" width="95%" height="800px"></iframe>
+             <p class="createem" style="color: #F6F6F6;">Channel where the Embed will be created: <select required name="channels" id="channels" style="color: black;cursor: pointer;">
+             <option value="choosechannel">Choose one...</option></select>  <button id="createembed" onclick="createembed()" disabled>Create Embed</button>
+           </p>
+          </div>
+         </div>
+         <div style="margin: auto;padding: 20px;text-align: center;display: flex;width: 90%;align-items: center;" id="editdiv">
+           <div class="editexisting">
+             <h4 style="color: #F6F6F6;">Edit an existing Embed </h4>
+             <p class="editem" id="editsubtitle" style="color: #F6F6F6;">Select an embed to edit: <select required name="existingems" id="existingems" style="color: black;margin-bottom: 10px;cursor: pointer;"> <option value="chooseexisting">Choose one...</option> </select></p>
+             <img src="/media/wbmtheme-loading.png" alt="loading" id="loader">
+             <div id="edithidden" style="display:none;">
+             <iframe id="editbuilder" src="https://wbmoderation.com/embedbuilder/" width="95%" height="800px"></iframe>
+             <p class="editem" style="color: #F6F6F6;"> <button id="deleteembed" onclick="deleteembed()" disabled>Delete</button> <button id="canceledit" onclick="canceledit()" disabled>Cancel</button> <button id="editembed" onclick="editembed()" disabled>Submit Changes</button>
+           </p>
+         </div>
+          </div>
+         </div>
+       </div>
+
+  <div style="text-align: center;display: flex;align-items: center;justify-content: center;">
+    <div id="snackbar">Successfull</div>
+  </div>
+  <div style="text-align: center;display: flex;align-items: center;justify-content: center;">
+    <div id="snackbarerr">Error</div>
+  </div>
+<script type="text/javascript">
+function isBlank(str) {
+    return (!str || /^\s*$/.test(str));
+}
+$(document).keyup(function(e) {
+  if (e.key === "Escape") { // escape key maps to keycode `27`
+    if ($('.side-bar').hasClass('active')) {
+      $('.side-bar').removeClass('active');
+    }
+  }
+});
+
+  var socket = io();
+
+
+
+  function createembed() {
+    let embedname = prompt("Please enter a name for this Embed (Required)", "My Cool Embed");
+    if (isBlank(embedname)) return alert("You must enter a name for this embed! Please try again.")
+    let selchannel = document.getElementById('channels').value
+    let raw = document.getElementById("builder").contentWindow.document.getElementById('rawjson').innerText;
+    raw = raw.replace('"fields":[{}]', '"fields":[]')
+    let json = JSON.parse(raw)
+
+    Object.keys(json.embeds[0]).forEach(key => {
+      if (json.embeds[0][key] == '') {
+        delete json.embeds[0][key];
+      }
+    });
+    Object.keys(json.embeds[0].author).forEach(key => {
+      if (json.embeds[0].author[key] == '') {
+        delete json.embeds[0].author[key];
+      }
+    });
+    if (isBlank(json.embeds[0].title) && isBlank(json.embeds[0].description)) {
+      var x = document.getElementById("snackbarerr");
+      x.innerHTML = `Your embed requires <strong>at least</strong> a Title or Description!`
+      x.className = "show";
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+      return;
+    }
+    if (isBlank(json.content)) delete json.content;
+
+    socket.emit('createembed', json, embedname, '<%= guild.id %>', selchannel)
+  }
+  function editembed() {
+    let selembed = document.getElementById('existingems').value
+    let raw = document.getElementById("editbuilder").contentWindow.document.getElementById('rawjson').innerText;
+    raw = raw.replace('"fields":[{}]', '"fields":[]')
+    let json = JSON.parse(raw)
+
+    Object.keys(json.embeds[0]).forEach(key => {
+      if (json.embeds[0][key] == '') {
+        delete json.embeds[0][key];
+      }
+    });
+    Object.keys(json.embeds[0].author).forEach(key => {
+      if (json.embeds[0].author[key] == '') {
+        delete json.embeds[0].author[key];
+      }
+    });
+    if (isBlank(json.embeds[0].title) && isBlank(json.embeds[0].description)) {
+      var x = document.getElementById("snackbarerr");
+      x.innerHTML = `Your embed requires <strong>at least</strong> a Title or Description!`
+      x.className = "show";
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+      return;
+    }
+    if (isBlank(json.content)) delete json.content;
+    $('#loader').show()
+    let selector = document.getElementById('existingems')
+    selector.disabled = true
+    selector.style.cursor = 'not-allowed'
+    document.getElementById('editdiv').scrollIntoView();
+
+    socket.emit('editembed', json, '<%= guild.id %>', selembed)
+  }
+  function deleteembed() {
+    let selembed = document.getElementById('existingems').value
+    if (confirm(`Are you sure you want to delete "${$("#existingems option:selected").text()}"?\nThis will delete the message and remove it from the database.`) == true) {
+      $('#loader').show()
+      $('#edithidden').css( "display", "none" )
+      let selector = document.getElementById('existingems')
+      selector.disabled = true
+      selector.style.cursor = 'not-allowed'
+      document.getElementById('editdiv').scrollIntoView();
+      socket.emit('deleteembed', '<%= guild.id %>', selembed)
+    }
+  }
+  function canceledit() {
+    $('#existingems').prop('selectedIndex',0);
+    $('#existingems').trigger('change')
+  }
+
+    socket.on('success', function(info, successmsg) {
+      var x = document.getElementById("snackbar");
+      x.innerHTML = `${successmsg}`
+      x.className = "show";
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+      if(info == 'createembed') {
+        document.getElementById("builder").contentWindow.location.reload();
+        $('#channels').prop('selectedIndex',0);
+        $('#channels').trigger('change')
+      } else if (info == 'editembed') {
+        $('#loader').hide()
+        $('#existingems').prop('selectedIndex',0);
+        $('#existingems').trigger('change')
+        let selector = document.getElementById('existingems')
+        selector.disabled = false
+        selector.style.cursor = 'pointer'
+        document.getElementById('editdiv').scrollIntoView();
+      } else if (info == 'deleteembed') {
+        $('#loader').hide()
+        setTimeout(function(){ location.reload() }, 5200);
+
+      }
+    });
+    socket.on('error', function(info, errmsg) {
+      var x = document.getElementById("snackbarerr");
+      x.innerHTML = `${errmsg}`
+      x.className = "show";
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+      if(info == 'createembed') {
+
+      } else if (info == 'editembed') {
+        $('#loader').hide()
+        let selector = document.getElementById('existingems')
+        selector.disabled = false
+        selector.style.cursor = 'pointer'
+        document.getElementById('editdiv').scrollIntoView();
+      } else if (info == 'deleteembed') {
+        $('#loader').hide()
+        $('#edithidden').css( "display", "block" )
+        let selector = document.getElementById('existingems')
+        selector.disabled = false
+        selector.style.cursor = 'pointer'
+        document.getElementById('editdiv').scrollIntoView();
+      }
+    });
+
+    socket.on('embeddata', function(data) {
+      msgdata = data.json
+      emdata = data.json.embeds[0]
+      let selector = document.getElementById('existingems')
+      selector.disabled = false
+      selector.style.cursor = 'pointer'
+      let btn = document.getElementById('editembed')
+      let cclbtn = document.getElementById('canceledit')
+      let delbtn = document.getElementById('deleteembed')
+      btn.disabled = false
+      btn.style.backgroundColor = '#43b581'
+      btn.style.cursor = 'pointer'
+      cclbtn.disabled = false
+      cclbtn.style.cursor = 'pointer'
+      delbtn.disabled = false
+      delbtn.style.backgroundColor = '#e03c3c'
+      delbtn.style.cursor = 'pointer'
+      $('#edithidden').css( "display", "block" )
+      let idocument = document.getElementById("editbuilder").contentWindow.document
+      idocument.getElementById("msgcontent").value = msgdata.content ? msgdata.content : ''
+      idocument.getElementById("title").value = emdata.title ? emdata.title : ''
+      idocument.getElementById("description").value = emdata.description ? emdata.description : ''
+      idocument.getElementById("url").value = emdata.url ? emdata.url : ''
+      idocument.getElementById("color").value = emdata.color ? emdata.color : ''
+      idocument.getElementById("icon").value = emdata.thumbnail.url ? emdata.thumbnail.url : ''
+      idocument.getElementById("image").value = emdata.image.url ? emdata.image.url : ''
+      idocument.getElementById("author_name").value = emdata.author.name ? emdata.author.name : ''
+      idocument.getElementById("author_url").value = emdata.author.url ? emdata.author.url : ''
+      idocument.getElementById("author_icon").value = emdata.author.icon_url ? emdata.author.icon_url : ''
+      if (!emdata.fields) {
+          for (var ndi = $("#editbuilder").contents().find(`.form-group.row`).length; ndi >= 0; ndi--) {
+            $("#editbuilder").contents().find(`#field-${ndi}-delete`).click()
+          }
+
+      } else {
+        let availablefields = $("#editbuilder").contents().find(`.form-group.row`).length ? $("#editbuilder").contents().find(`.form-group.row`).length : 0
+        let neededfields = 0
+        let todelete = null
+        if (availablefields < emdata.fields.length) {
+          neededfields = emdata.fields.length - availablefields
+        } else if (availablefields > emdata.fields.length) {
+          todelete = { todel: availablefields - emdata.fields.length, total: availablefields}
+        }
+        for (var ei = 0; ei < neededfields; ei++) {
+          $("#editbuilder").contents().find('#add-field').click()
+        }
+        if (todelete) {
+          for (var di = todelete.total; di >= todelete.total - todelete.todel; di--) {
+            $("#editbuilder").contents().find(`#field-${di}-delete`).click()
+          }
+        }
+          emdata.fields.forEach((item, i) => {
+            console.log(i);
+            console.log(item);
+            idocument.getElementById(`field-${i}-name`).value = item.name ? item.name : ''
+            idocument.getElementById(`field-${i}-value`).value = item.value ? item.value : ''
+            $("#editbuilder").contents().find(`#field-${i}-inline`).prop( "checked", item.inline ? item.inline : false )
+          });
+
+      }
+      idocument.getElementById("footer").value = emdata.footer ? emdata.footer : ''
+
+      $("#editbuilder").contents().find('#refreshembed').click()
+      $('#loader').hide();
+      document.getElementById('editdiv').scrollIntoView();
+    });
+
+    $(document).ready(function(){
+      $('.side-bar').addClass('active');
+      $('#loader').hide();
+      $('.active').next('.sub-menu').slideToggle();
+      $('.active').find('.dropdown').toggleClass('rotate');
+      $('.mainpage').click(function(){
+        if ($('.side-bar').hasClass('active')) {
+          $('.side-bar').removeClass('active');
+        }
+      });
+      <% for (const property in channels) { %>
+        $('#channels').append($('<option>', {
+          value: '<%= property %>',
+          text: '# <%= channels[property] %>'
+        }));
+      <% } %>
+      <% if (existingembeds) {
+      Object.keys(existingembeds).forEach( function (key){
+        let each = existingembeds[key]
+        %>
+        $('#existingems').append($('<option>', {
+          value: '<%= key %>',
+          text: '<%= each.name %> ➤ # <%= bot.channels.cache.get(each.channel).name %>'
+        }));
+      <% })
+    } else { %>
+      $('#existingems').css( "display", "none" )
+      $('#editsubtitle').html("Looks like there are no created Embeds!<br>Create one first to edit it!")
+    <% } %>
+
+      $('#channels').on('change', function() {
+        if (this.value == 'choosechannel') {
+          let btn = document.getElementById('createembed')
+          btn.disabled = true
+          btn.style.backgroundColor = '#2f7f5a'
+          btn.style.cursor = 'not-allowed'
+        } else {
+          let btn = document.getElementById('createembed')
+          btn.disabled = false
+          btn.style.backgroundColor = '#43b581'
+          btn.style.cursor = 'pointer'
+        }
+      });
+      $('#existingems').on('change', function() {
+        if (this.value == 'chooseexisting') {
+          let btn = document.getElementById('editembed')
+          let cclbtn = document.getElementById('canceledit')
+          let delbtn = document.getElementById('deleteembed')
+          btn.disabled = true
+          btn.style.backgroundColor = '#2f7f5a'
+          btn.style.cursor = 'not-allowed'
+          cclbtn.disabled = true
+          cclbtn.style.cursor = 'not-allowed'
+          delbtn.disabled = true
+          delbtn.style.backgroundColor = '#a82c2c'
+          delbtn.style.cursor = 'not-allowed'
+          $('#edithidden').css( "display", "none" )
+        } else {
+          socket.emit('getembeddata', '<%= guild.id %>', this.value)
+          $('#loader').show()
+          let selector = document.getElementById('existingems')
+          selector.disabled = true
+          selector.style.cursor = 'not-allowed'
+          document.getElementById('editdiv').scrollIntoView();
+        }
+      });
+      $('select option:even').css({'background-color': 'lightgrey'});
+      //jquery for toggle sub menus
+      $('.sub-btn').click(function(){
+        $(this).next('.sub-menu').slideToggle();
+        $(this).find('.dropdown').toggleClass('rotate');
+      });
+
+      //jquery for expand and collapse the sidebar
+      $('.menu-btn').click(function(){
+        $('.side-bar').addClass('active');
+      });
+
+      $('.close-btn').click(function(){
+        $('.side-bar').removeClass('active');
+      });
+
+      $('.side-bar .menu .item a').click(function(){
+        $('.side-bar .menu .item a').removeClass('active');
+        $(this).addClass('active');
+        $('.side-bar .menu .item a.sub-btn').removeClass('active')
+      });
+    });
+
+</script>
+<style>
+html {
+  scroll-behavior: smooth;
+}
+h1 {
+  font-family: calibri, sans-serif;
+  color: #d90053;
+  padding: 5px;
+  text-align: center;
+  font-size: 55px;
+}
+.subhead {
+  font-family: calibri, sans-serif;
+  font-weight: bold;
+  color: black;
+  text-align: center;
+  font-size: 40px;
+}
+h4 {
+  font-family: calibri, sans-serif;
+  text-align: center;
+  font-size: 36px;
+}
+body {
+  background-color: #2C2F33;
+}
+.createnew {
+  border-radius: 20px;
+  width: 100%;
+  background-color: #56595c;
+  text-align: center;
+  margin: 5px;
+  border-style: outset;
+  border-width: 3px;
+  border-color: #414447;
+  padding: 10px;
+  display: table;
+}
+.editexisting {
+  border-radius: 20px;
+  width: 100%;
+  background-color: #56595c;
+  text-align: center;
+  margin: 5px;
+  border-style: outset;
+  border-width: 3px;
+  border-color: #414447;
+  padding: 10px;
+  display: table;
+}
+#builder {
+  border: none;
+  border-radius: 10px;
+}
+#editbuilder {
+  border: none;
+  border-radius: 10px;
+}
+.infocontent {
+  font-size: 20px;
+  color: #F6F6F6;
+  font-family: Ubuntu;
+  text-align: left;
+}
+.createem {
+  font-family: calibri, sans-serif;
+  text-align: center;
+  font-size: 30px;
+}
+.editem {
+  font-family: calibri, sans-serif;
+  text-align: center;
+  font-size: 30px;
+}
+indent {
+  text-indent: 10px;
+}
+code {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+#userinfo {
+float: right;
+pointer-events: none !important;
+color: white;
+padding: 5px;
+border: none;
+background-color: #171717;
+display: block;
+}
+#logoutbutton {
+  float: right;
+  color: white;
+  padding: 16px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 18px;
+  font-family: Ubuntu;
+  margin: 1px;
+  background-color: #e03c3c;
+  display: block;
+}
+#logoutbutton:hover {
+  background-color: #a82c2c;
+}
+#userinfo {
+  text-align: center;
+  line-height: 48px;
+  text-align: center;
+}
+#createembed {
+  float: right;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: not-allowed;
+  transition: 0.3s;
+  font-size: 18px;
+  font-family: Ubuntu;
+  margin: 1px;
+  background-color: #2f7f5a;
+}
+#editembed {
+  float: right;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: not-allowed;
+  transition: 0.3s;
+  font-size: 18px;
+  font-family: Ubuntu;
+  margin: 1px;
+  background-color: #2f7f5a;
+}
+#canceledit {
+  float: right;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: not-allowed;
+  transition: 0.3s;
+  font-size: 18px;
+  font-family: Ubuntu;
+  margin: 1px;
+  background-color: #6c757d;
+}
+#deleteembed {
+  float: left;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: not-allowed;
+  transition: 0.3s;
+  font-size: 18px;
+  font-family: Ubuntu;
+  margin: 1px;
+  background-color: #a82c2c;
+}
+#resetcolor {
+  float: right;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: not-allowed;
+  transition: 0.3s;
+  font-size: 18px;
+  font-family: Ubuntu;
+  margin: 1px;
+  background-color: #a82c2c;
+}
+#saveprefix {
+  float: right;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: not-allowed;
+  transition: 0.3s;
+  font-size: 18px;
+  font-family: Ubuntu;
+  margin: 1px;
+  background-color: #2f7f5a;
+}
+#resetprefix {
+  float: right;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: not-allowed;
+  transition: 0.3s;
+  font-size: 18px;
+  font-family: Ubuntu;
+  margin: 1px;
+  background-color: #a82c2c;
+}
+a.external::after {
+  content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
+  margin: 0 3px 0 5px;
+}
+.wbguild {
+  text-align: center;
+  cursor: pointer;
+  width: 20%;
+  margin: auto;
+  padding: 5px;
+  border-color: grey;
+  border-radius: 10px;
+  border-style: ridge;
+}
+@keyframes updown {
+  0% {
+    transform: translateY(-3%);
+  }
+
+  50% {
+    transform: translateY(3%);
+  }
+
+  100% {
+    transform: translateY(-3%);
+  }
+}
+c {
+  color: #d90053;
+}
+p {
+  font-family: calibri, sans-serif;
+  font-size: 30px;
+  text-align: center;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #00008B;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #d90053;
+  border-radius: 15px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #b30045;
+}
+
+.totop {
+  float: right;
+  margin: 20px;
+  padding: 10px;
+  border: none;
+  border-radius: 50px;
+  font-size: 50px;
+  display: inline-block;
+  background-color: blue;
+  cursor: pointer;
+}
+
+
+#snackbar {
+  visibility: hidden;
+  min-width: 250px;
+  background-color: #43b581;
+  color: white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  bottom: 30px;
+  font-size: 20px;
+  font-family: Ubuntu;
+}
+#snackbarerr {
+  visibility: hidden;
+  min-width: 250px;
+  background-color: #e03c3c;
+  color: white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  bottom: 30px;
+  font-size: 20px;
+  font-family: Ubuntu;
+}
+
+#snackbar.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 4.5s;
+  animation: fadein 0.5s, fadeout 0.5s 4.5s;
+}
+#snackbarerr.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 4.5s;
+  animation: fadein 0.5s, fadeout 0.5s 4.5s;
+}
+
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+.center {
+margin: auto;
+width: 80%;
+padding: 10px;
+display: table;
+text-align: center;
+border-radius: 25px;
+border-color: black;
+border-style: groove;
+background-color: rgba(255, 255, 255, 0.8);
+}
+.center button {
+  background-color: #ff8800;
+  border-style: ridge;
+  border-radius: 50px;
+  border-color: black;
+  font-size: 50px;
+  cursor: pointer;
+  margin: 20px;
+  padding: 10px;
+  transition: 0.1s;
+  box-shadow: 0 9px #999;
+}
+.center button:hover {
+  background-color: #cc6d00;
+  transition: 0.3s;
+}
+.center button:active {
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+  transition: 0.1s;
+}
+
+.left {
+  float: left;
+  width: 45%;
+  padding: 5px;
+}
+.right {
+  float: right;
+  width: 45%;
+  padding: 5px;
+}
+.pfps {
+  border-radius: 15px;
+}
+
+.topnav {
+  margin: 5px;
+  overflow: hidden;
+  background-color: #333;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.topnav a, a:visited {
+  margin-left: 5px;
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  font-family: Ubuntu;
+  transition: 0.3s;
+  border-radius: 10px;
+  border-style: groove;
+  border-color: #242424;
+  background-color: #242424;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+  border-radius: 10px;
+}
+
+.topnav a.active {
+  margin-left: 5px;
+  background-color: #7289DA;
+  border-color: #7289DA;
+  color: white;
+  border-radius: 10px;
+}
+
+.button-63 {
+  align-items: center;
+  background-image: linear-gradient(144deg,#AF40FF, #5B42F3 50%,#00DDEB);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  font-family: Phantomsans, sans-serif;
+  font-size: 20px;
+  justify-content: center;
+  line-height: 1em;
+  max-width: 100%;
+  min-width: 140px;
+  padding: 19px 24px;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.button-63:active,
+.button-63:hover {
+  outline: 0;
+}
+
+@media (min-width: 768px) {
+  .button-63 {
+    font-size: 34px;
+    min-width: 196px;
+  }
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+*{
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+ font-family: "Poppins", sans-serif;
+}
+
+.side-bar{
+ background: rgba(153, 170, 181, 0.1);
+ backdrop-filter: blur(15px);
+ width: 290px;
+ height: 100vh;
+ position: fixed;
+ top: 0;
+ left: -100%;
+ overflow-y: auto;
+ transition: 0.6s ease;
+ transition-property: left;
+}
+
+.side-bar.active{
+ left: 0;
+}
+
+.side-bar .menu{
+ width: 100%;
+ margin-top: 80px;
+}
+
+.side-bar .menu .item{
+ position: relative;
+ cursor: pointer;
+}
+
+.side-bar .menu .item a{
+ color: #fff;
+ font-size: 16px;
+ text-decoration: none;
+ display: block;
+ padding: 5px 30px;
+ line-height: 60px;
+}
+
+.side-bar .menu .item a:hover{
+ background: #8621F8;
+ transition: 0.3s ease;
+}
+.side-bar .menu .item a.active{
+ background: #7289DA;
+}
+
+.side-bar .menu .item i{
+ margin-right: 15px;
+}
+
+.side-bar .menu .item a .dropdown{
+ position: absolute;
+ right: 0;
+ margin: 20px;
+ transition: 0.3s ease;
+}
+
+.side-bar .menu .item .sub-menu{
+ background: rgba(255, 255, 255, 0.1);
+ display: none;
+}
+
+.side-bar .menu .item .sub-menu a{
+ padding-left: 60px;
+}
+
+.rotate{
+ transform: rotate(90deg);
+}
+
+.close-btn{
+ position: flex;
+ color: #fff;
+ font-size: 20px;
+ right: 0;
+ margin: 25px;
+ cursor: pointer;
+}
+
+.menu-btn{
+ float: left;
+ color: #fff;
+ font-size: 25px;
+ margin: 5px;
+ padding: 8px;
+ height: 50px;
+ width: 60px;
+ text-align: center;
+ border-radius: 10px;
+ background-color: black;
+ cursor: pointer;
+}
+
+
+
+@media (max-width: 900px){
+ .main h1{
+   font-size: 40px;
+   line-height: 60px;
+ }
+}
+</style>
+</body>
+</html>

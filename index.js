@@ -120,6 +120,11 @@ function(req, accessToken, refreshToken, profile, done) {
     });
 }));
 
+function saveOriginalUrl(req, res, next) {
+    req.session.returnTo = req.originalUrl;
+    return next();
+}
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
@@ -133,6 +138,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/media', express.static(__dirname + '/web/media'));
+app.use('/embedbuilder', express.static(__dirname + '/web/embedbuilder'));
 app.use('/dumpy', express.static(__dirname + '/dumpys'));
 
 
@@ -157,9 +163,9 @@ app.get('/vlc/controller', async function(req,res) {
       inguild = true
     } else inguild = false
   }
-  res.render(__dirname+'/web/vlccontroller.ejs', { loggedin: loggedin, discordpfp: basicinfo ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, inguild: inguild, })
+  res.render(__dirname+'/web/vlccontroller.ejs', { loggedin: loggedin, discordpfp: basicinfo ? basicinfo.avatar ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : `https://wbmoderation.com/media/defaultpfp.jpg` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, inguild: inguild, })
 });
-app.get('/dashboard', async function(req,res) {
+app.get('/dashboard', saveOriginalUrl, async function(req,res) {
   let basicinfo = req.user ? req.user : null
   let loggedin = req.user ? true : false
   let userguilds = basicinfo ? basicinfo.guilds : null
@@ -167,6 +173,7 @@ app.get('/dashboard', async function(req,res) {
   let wbicon = null
   let wbname = null
   let hasaccess = false
+  let redirectlogin = req.query.r ? req.query.r : null
   if (basicinfo) {
     if (basicinfo.guilds.some(e => e.id == config.serverID)) {
       inguild = true
@@ -175,7 +182,8 @@ app.get('/dashboard', async function(req,res) {
       if (bot.guilds.cache.get(config.serverID).members.cache.get(basicinfo.id).permissions.has("MANAGE_GUILD")) hasaccess = true
     } else inguild = false
   }
-  res.render(__dirname+'/web/dashboard.ejs', { loggedin: loggedin, discordpfp: basicinfo ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, inguild: inguild, hasaccess: hasaccess, wbname: wbname, wbicon: wbicon, })
+  if (hasaccess && redirectlogin) return res.redirect(`${redirectlogin}`)
+  res.render(__dirname+'/web/dashboard.ejs', { loggedin: loggedin, discordpfp: basicinfo ? basicinfo.avatar ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : `https://wbmoderation.com/media/defaultpfp.jpg` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, inguild: inguild, hasaccess: hasaccess, wbname: wbname, wbicon: wbicon, })
 });
 app.get('/dashboard/server/*', async function(req,res) {
   let server;
@@ -190,19 +198,35 @@ app.get('/dashboard/server/*', async function(req,res) {
     subpage = null
   }
   if(!bot.guilds.cache.get(server)) return res.redirect("/dashboard");
-  if (!req.user) return res.redirect('/dashboard');
+  if (!req.user) return res.redirect(`/dashboard?r=${req.originalUrl}`);
   let basicinfo = req.user
   if (!bot.guilds.cache.get(server).members.cache.get(basicinfo.id).permissions.has("MANAGE_GUILD")) return res.redirect('/dashboard');
   let guild = bot.guilds.cache.get(server)
 
   if (!subpage) {
-  res.render(__dirname+'/web/manageguild.ejs', { discordpfp: basicinfo ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, guild: guild, bot: bot, })
+  res.render(__dirname+'/web/manageguild.ejs', { discordpfp: basicinfo ? basicinfo.avatar ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : `https://wbmoderation.com/media/defaultpfp.jpg` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, guild: guild, bot: bot, })
   } else if (subpage == 'configuration') {
     let colortheme = db.get(`color.${guild.id}`) ? db.get(`color.${guild.id}`) : config.themecolor
     let resetcolordisabled = db.get(`color.${guild.id}`) ? true : false
     let prefix = db.get(`perfix.${guild.id}`) ? db.get(`prefix.${guild.id}`) : config.prefix
     let resetprefixdisabled = db.get(`prefix.${guild.id}`) ? true : false
-    res.render(__dirname+'/web/manageguild_config.ejs', { discordpfp: basicinfo ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, guild: guild, bot: bot, prefix: prefix, themecolor: colortheme, resetprefixdisabled: resetprefixdisabled, resetcolordisabled: resetcolordisabled,  })
+    res.render(__dirname+'/web/manageguild_config.ejs', { discordpfp: basicinfo ? basicinfo.avatar ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : `https://wbmoderation.com/media/defaultpfp.jpg` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, guild: guild, bot: bot, prefix: prefix, themecolor: colortheme, resetprefixdisabled: resetprefixdisabled, resetcolordisabled: resetcolordisabled,  })
+  } else if (subpage == 'embedmanager') {
+    let existingembeds = db.get(`embeds.${guild.id}`) ? db.get(`embeds.${guild.id}`) : null
+    let guildchannels = [];
+    guild.channels.cache.forEach((channel)=>{
+      if (guild.me.permissionsIn(channel).has("VIEW_CHANNEL") && guild.me.permissionsIn(channel).has("SEND_MESSAGES")) {
+        if (channel.type == "GUILD_TEXT") {
+          guildchannels.push({ channelID: channel.id, channelNAME: channel.name })
+        }
+      }
+    })
+    guildchannels = guildchannels.reduce(
+      (obj, item) => Object.assign(obj, { [item.channelID]: item.channelNAME }), {});
+
+    res.render(__dirname+'/web/manageguild_misc-embedmanager.ejs', { discordpfp: basicinfo ? basicinfo.avatar ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : `https://wbmoderation.com/media/defaultpfp.jpg` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, guild: guild, bot: bot, channels: guildchannels, existingembeds: existingembeds, })
+  } else {
+    res.redirect(`/dashboard/server/${guild.id}`)
   }
 });
 io.on('connection', (socket) => {
@@ -218,6 +242,54 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('createembed', (json, embedname, guild, selchannel) => {
+    let theEmbed = json
+    let channel = bot.channels.cache.get(selchannel)
+      channel.send(theEmbed).then((msg) => {
+        db.set(`embeds.${guild}.${msg.id}`, { name: embedname, channel: selchannel, json: theEmbed })
+        socket.emit('success', 'createembed', `Successfully created an embed in <code># ${channel.name}</code> named <code>${embedname}</code>!`)
+      }).catch(error =>{
+        console.log(error);
+        return socket.emit('error', 'createembed', `An error occurred whilst creating or sending your Embed.<br>Try again or check with Bam for more info.`)
+      });
+  });
+  socket.on('editembed', (json, guild, selembed) => {
+    let theEmbed = json
+    let embeddb = db.get(`embeds.${guild}.${selembed}`)
+
+    bot.guilds.cache.get(guild).channels.cache.get(embeddb.channel).messages.fetch(selembed).then((msg) => {
+        msg.edit(theEmbed).catch(error =>{
+          console.log(error);
+          return socket.emit('error', 'editembed', `An error occurred whilst submitting your changes to <code>${embeddb.name}</code><br>Try again or check with Bam for more info.`)
+        });
+
+        db.set(`embeds.${guild}.${selembed}`, { name: embeddb.name, channel: embeddb.channel, json: theEmbed })
+        socket.emit('success', 'editembed', `Successfully submit your changes to <code>${embeddb.name}</code> located in <code># ${bot.channels.cache.get(embeddb.channel).name}</code>!`)
+      }).catch(error =>{
+        console.log(error);
+        return socket.emit('error', 'editembed', `An error occurred whilst submitting your changes to <code>${embeddb.name}</code><br>Try again or check with Bam for more info.`)
+      });
+  });
+  socket.on('deleteembed', (guild, selembed) => {
+    let embeddb = db.get(`embeds.${guild}.${selembed}`)
+
+    bot.guilds.cache.get(guild).channels.cache.get(embeddb.channel).messages.fetch(selembed).then((msg) => {
+        msg.delete().catch(error =>{
+          console.log(error);
+          return socket.emit('error', 'deleteembed', `An error occurred whilst deleting <code>${embeddb.name}</code><br>Try again or check with Bam for more info.`)
+        });
+
+        db.delete(`embeds.${guild}.${selembed}`)
+        socket.emit('success', 'deleteembed', `Successfully deleted <code>${embeddb.name}</code>!`)
+      }).catch(error =>{
+        console.log(error);
+        return socket.emit('error', 'deleteembed', `An error occurred whilst removing <code>${embeddb.name}</code> from the database.<br>Try again or check with Bam for more info.`)
+      });
+  });
+  socket.on('getembeddata', (guild, selected) => {
+    let embeddata = db.get(`embeds.${guild}.${selected}`)
+    socket.emit('embeddata', embeddata)
+  });
 });
 app.get('/uptime', async function(req,res) {
   let up = bot.uptime / 1000
@@ -286,7 +358,8 @@ app.get('/auth/steam/return',
   app.get('/dashboard/auth/discord', passport.authenticate('discorddashboard'));
   app.get('/dashboard/auth/discord/callback', passport.authenticate('discorddashboard', { failureRedirect: '/dashboard' }),
    function(req, res) {
-      res.redirect('/dashboard') // Successful auth
+     res.redirect(req.session.returnTo || '/');
+     delete req.session.returnTo;
   });
   app.get('/dashboard/auth/logout', function(req,res) {
     req.logout();
@@ -306,7 +379,7 @@ app.get('/auth/steam/return',
     let checkforreload = db.get(`linked.users.${discorduser.id}`)
     if (checkforreload) return res.redirect('/');
     db.set(`linked.users.${discorduser.id}`, { discord: discorduser.id, steam: steamuser.id })
-    res.render(__dirname+'/web/complete.ejs', { discordpfp: `https://cdn.discordapp.com/avatars/${discorduser.id}/${discorduser.avatar}?size=2048`, steampfp: `${steamuser._json.avatarfull}`, discordname: `${discorduser.username}#${discorduser.discriminator}`, steamname: `${steamuser.displayName}` });
+    res.render(__dirname+'/web/complete.ejs', { discordpfp: discorduser ? discorduser.avatar ? `https://cdn.discordapp.com/avatars/${discorduser.id}/${discorduser.avatar}?size=2048` : `https://wbmoderation.com/media/defaultpfp.jpg` : null, steampfp: `${steamuser._json.avatarfull}`, discordname: `${discorduser.username}#${discorduser.discriminator}`, steamname: `${steamuser.displayName}` });
     let user = await bot.users.fetch(discorduser.id).catch(() => null);
     if (!user) {
       console.log(`${discorduser.username}#${discorduser.discriminator} was not found.`);
@@ -937,6 +1010,10 @@ bot.on('messageDelete', function(message, channel) {
   if (checkifsuggestion) {
     db.delete(`suggestions.${message.id}`)
     console.log(message.id);
+  }
+  let checkifembed = db.get(`embeds.${message.guild.id}.${message.id}`)
+  if (checkifembed) {
+    db.delete(`embeds.${message.guild.id}.${message.id}`)
   }
 
 	if(!message.author || !message.content && !message.attachments.size > 0 ) return;
