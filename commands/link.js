@@ -17,7 +17,7 @@ module.exports = {
 			.setTitle(`You're not linked!`)
 			.setDescription(`To link your **Steam** account with **World Boss Moderation** head to [wbmoderation.com](https://wbmoderation.com) and click the "Link your Discord & Steam account" button to start the linking proccess!\n\nLinking is completely safe and the only data stored is your Discord user ID and Steam user ID.`)
 			.setColor(themecolor)
-			.setFooter("Developed by BamBoozled#0882")
+			.setFooter(`Developed by ${bot.users.cache.get(config.ownerID).tag}`, bot.users.cache.get(config.ownerID).displayAvatarURL({ dynamic: true }))
 			.setTimestamp()
 
 			message.reply({embeds: [notlinked]})
@@ -28,7 +28,7 @@ module.exports = {
 			.setDescription(`Your Steam (**[${getusersteam.nickname}](${getusersteam.url})**) & Discord (**${message.author.tag}**) accounts are linked with **World Boss Moderation**!\n\nIf this is wrong or you'd like to unlink your accounts, use \`${prefix}unlink\``)
 			.setThumbnail(getusersteam.avatar.medium)
 			.setColor(themecolor)
-			.setFooter("Developed by BamBoozled#0882")
+			.setFooter(`Developed by ${bot.users.cache.get(config.ownerID).tag}`, bot.users.cache.get(config.ownerID).displayAvatarURL({ dynamic: true }))
 			.setTimestamp()
 
 			message.reply({embeds: [linked]})

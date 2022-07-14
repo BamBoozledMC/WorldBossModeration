@@ -17,7 +17,7 @@ module.exports = {
 			.setTitle(`You're not linked!`)
 			.setDescription(`To link your **Steam** account with **World Boss Moderation** head to [wbmoderation.com](https://wbmoderation.com) and click the "Link your Discord & Steam account" button to start the linking proccess!\n\nLinking is completely safe and the only data stored is your Discord user ID and Steam user ID.`)
 			.setColor(themecolor)
-			.setFooter("Developed by BamBoozled#0882")
+			.setFooter(`Developed by ${bot.users.cache.get(config.ownerID).tag}`, bot.users.cache.get(config.ownerID).displayAvatarURL({ dynamic: true }))
 			.setTimestamp()
 
 			message.reply({embeds: [notlinked]})
@@ -46,7 +46,7 @@ module.exports = {
 						.setDescription(`Your Steam (**[${getusersteam.nickname}](${getusersteam.url})**) account has been successfully unlinked and is no longer associated with **World Boss Moderation**\n\nTo re-link or link another account, use \`${prefix}link\``)
 						.setThumbnail(getusersteam.avatar.medium)
 						.setColor(themecolor)
-						.setFooter("Developed by BamBoozled#0882")
+						.setFooter(`Developed by ${bot.users.cache.get(config.ownerID).tag}`, bot.users.cache.get(config.ownerID).displayAvatarURL({ dynamic: true }))
 						.setTimestamp()
 
 						db.delete(`linked.users.${message.author.id}`)
@@ -57,7 +57,7 @@ module.exports = {
 						.setTitle(`Cancelled`)
 						.setDescription(`You have cancelled the unlinking proccess and you will **not** be unlinked.`)
 						.setColor(themecolor)
-						.setFooter("Developed by BamBoozled#0882")
+						.setFooter(`Developed by ${bot.users.cache.get(config.ownerID).tag}`, bot.users.cache.get(config.ownerID).displayAvatarURL({ dynamic: true }))
 						.setTimestamp()
 						areyousuresend.edit({content: " ", embeds: [unlinked]})
 					}
@@ -68,7 +68,7 @@ module.exports = {
 					.setTitle(`Automatically Cancelled`)
 					.setDescription(`The unlinking proccess was automatically cancelled (user didn't respond in time) and you will **not** be unlinked.`)
 					.setColor(themecolor)
-					.setFooter("Developed by BamBoozled#0882")
+					.setFooter(`Developed by ${bot.users.cache.get(config.ownerID).tag}`, bot.users.cache.get(config.ownerID).displayAvatarURL({ dynamic: true }))
 					.setTimestamp()
 					areyousuresend.edit({content: " ", embeds: [unlinked]})
 			    });

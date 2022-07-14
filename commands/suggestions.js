@@ -24,7 +24,7 @@ module.exports = {
 		.setDescription(`Showing result from last **30** days.\nThere are **${gettotalsuggestionsoffset(10)}** more suggestions not displayed in this table.\nThere is a __total__ of **${gettotalsuggestions()}** suggestions ever submitted.`)
     .setTimestamp()
     .setColor(themecolor)
-		.setFooter(`Developed by BamBoozled#0882`)
+		.setFooter(`Developed by ${bot.users.cache.get(config.ownerID).tag}`, bot.users.cache.get(config.ownerID).displayAvatarURL({ dynamic: true }))
 
 		var last30days = [];
 		Object.keys(getsuggestions).forEach( function (key){
@@ -77,7 +77,7 @@ loading.edit({content: " ", embeds: [top10suggestions]})
 	.setDescription(`Showing result from **all time**\nThere are **${gettotalsuggestionsoffset(10)}** more suggestions not displayed in this table.\nThere is a __total__ of **${gettotalsuggestions()}** suggestions ever submitted.`)
 	.setTimestamp()
 	.setColor(themecolor)
-	.setFooter(`Developed by BamBoozled#0882`)
+	.setFooter(`Developed by ${bot.users.cache.get(config.ownerID).tag}`, bot.users.cache.get(config.ownerID).displayAvatarURL({ dynamic: true }))
 
 	var getallsuggestions = [];
 	Object.keys(getsuggestions).forEach( function (key){

@@ -389,7 +389,7 @@ app.get('/auth/steam/return',
       .setThumbnail('https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg')
       .setDescription(`Your Steam (**${steamuser.displayName}**) & Discord (**${discorduser.username}#${discorduser.discriminator}**) account are now linked with **World Boss Moderation**\n\nTo unlink your accounts, use \`!unlink\`in <#932828142094123009> or use \`!link\` to check your linked account info.`)
       .setColor(themecolor)
-  		.setFooter(`Developed by BamBoozled#0882`)
+  		.setFooter(`Developed by ${bot.users.cache.get(config.ownerID).tag}`, bot.users.cache.get(config.ownerID).displayAvatarURL({ dynamic: true }))
       .setTimestamp()
       user.send({embeds: [linkembed]}).catch(() => {
         console.log(`${discorduser.username}#${discorduser.discriminator} was found but could not be DMed.`);

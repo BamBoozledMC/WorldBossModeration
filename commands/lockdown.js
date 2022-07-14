@@ -178,7 +178,7 @@ module.exports = {
 		async function lockdownchannels(message) {
 			let embed = new Discord.MessageEmbed()
 			.setTitle("Server Lockdown channels")
-			.setFooter("Developed by BamBoozled#0882")
+			.setFooter(`Developed by ${bot.users.cache.get(config.ownerID).tag}`, bot.users.cache.get(config.ownerID).displayAvatarURL({ dynamic: true }))
 			.setTimestamp()
 			.setColor(themecolor)
 

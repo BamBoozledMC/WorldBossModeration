@@ -23,7 +23,7 @@ module.exports = {
 		.setTitle("All linked users")
 		.setDescription(userlist)
 		.setColor(themecolor)
-		.setFooter("Developed by BamBoozled#0882")
+		.setFooter(`Developed by ${bot.users.cache.get(config.ownerID).tag}`, bot.users.cache.get(config.ownerID).displayAvatarURL({ dynamic: true }))
 		.setTimestamp()
 
 		message.channel.send({embeds: [linkedusers]})

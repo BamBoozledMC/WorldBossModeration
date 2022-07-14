@@ -47,7 +47,7 @@ module.exports = {
 			.setTitle(`Invalid Sound!`)
 			.setDescription(`The sound effect name you provided is **Invald** or does not **exist**\nUsage: ${prefix}soundboard sound_effect_name\nAliases: \`${prefix}sb | ${prefix}sfx\`\n**Available Sound Effects:**\n${allsfx}\n**Total: ${sfxs.size}**`)
 			.setColor(themecolor)
-			.setFooter("Developed by BamBoozled#0882")
+			.setFooter(`Developed by ${bot.users.cache.get(config.ownerID).tag}`, bot.users.cache.get(config.ownerID).displayAvatarURL({ dynamic: true }))
 			message.reply({embeds: [invalidsfx]})
 		}
 
