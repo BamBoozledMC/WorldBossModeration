@@ -224,6 +224,7 @@ $(document).keyup(function(e) {
     socket.on('embeddata', function(data) {
       msgdata = data.json
       emdata = data.json.embeds[0]
+      console.log(emdata);
       let selector = document.getElementById('existingems')
       selector.disabled = false
       selector.style.cursor = 'pointer'
@@ -240,16 +241,16 @@ $(document).keyup(function(e) {
       delbtn.style.cursor = 'pointer'
       $('#edithidden').css( "display", "block" )
       let idocument = document.getElementById("editbuilder").contentWindow.document
-      idocument.getElementById("msgcontent").value = msgdata.content ? msgdata.content : ''
-      idocument.getElementById("title").value = emdata.title ? emdata.title : ''
-      idocument.getElementById("description").value = emdata.description ? emdata.description : ''
-      idocument.getElementById("url").value = emdata.url ? emdata.url : ''
+      idocument.getElementById("msgcontent").value = msgdata.content ? msgdata.content.replaceAll('\n', '\\n') : ''
+      idocument.getElementById("title").value = emdata.title ? emdata.title.replaceAll('\n', '\\n') : ''
+      idocument.getElementById("description").value = emdata.description ? emdata.description.replaceAll('\n', '\\n') : ''
+      idocument.getElementById("url").value = emdata.url ? emdata.url.replaceAll('\n', '\\n') : ''
       idocument.getElementById("color").value = emdata.color ? emdata.color : ''
-      idocument.getElementById("icon").value = emdata.thumbnail.url ? emdata.thumbnail.url : ''
-      idocument.getElementById("image").value = emdata.image.url ? emdata.image.url : ''
-      idocument.getElementById("author_name").value = emdata.author.name ? emdata.author.name : ''
-      idocument.getElementById("author_url").value = emdata.author.url ? emdata.author.url : ''
-      idocument.getElementById("author_icon").value = emdata.author.icon_url ? emdata.author.icon_url : ''
+      idocument.getElementById("icon").value = emdata.thumbnail.url ? emdata.thumbnail.url.replaceAll('\n', '\\n') : ''
+      idocument.getElementById("image").value = emdata.image.url ? emdata.image.url.replaceAll('\n', '\\n') : ''
+      idocument.getElementById("author_name").value = emdata.author.name ? emdata.author.name.replaceAll('\n', '\\n') : ''
+      idocument.getElementById("author_url").value = emdata.author.url ? emdata.author.url.replaceAll('\n', '\\n') : ''
+      idocument.getElementById("author_icon").value = emdata.author.icon_url ? emdata.author.icon_url.replaceAll('\n', '\\n') : ''
       if (!emdata.fields) {
           for (var ndi = $("#editbuilder").contents().find(`.form-group.row`).length; ndi >= 0; ndi--) {
             $("#editbuilder").contents().find(`#field-${ndi}-delete`).click()
@@ -275,13 +276,13 @@ $(document).keyup(function(e) {
           emdata.fields.forEach((item, i) => {
             console.log(i);
             console.log(item);
-            idocument.getElementById(`field-${i}-name`).value = item.name ? item.name : ''
-            idocument.getElementById(`field-${i}-value`).value = item.value ? item.value : ''
+            idocument.getElementById(`field-${i}-name`).value = item.name ? item.name.replaceAll('\n', '\\n') : ''
+            idocument.getElementById(`field-${i}-value`).value = item.value ? item.value.replaceAll('\n', '\\n') : ''
             $("#editbuilder").contents().find(`#field-${i}-inline`).prop( "checked", item.inline ? item.inline : false )
           });
 
       }
-      idocument.getElementById("footer").value = emdata.footer ? emdata.footer : ''
+      idocument.getElementById("footer").value = emdata.footer.text ? emdata.footer.text.replaceAll('\n', '\\n') : ''
 
       $("#editbuilder").contents().find('#refreshembed').click()
       $('#loader').hide();

@@ -12,35 +12,37 @@ $(document).ready(function () {
 
   var fields = 1;
 
-  var source = '';
+  var source = "";
 
   var embed = {
-    title: '',
+    title: "",
     author: {
-      name: '',
-      url: '',
-      icon_url: ''
+      name: "",
+      url: "",
+      icon_url: ""
     },
-    description: '',
-    url: '',
+    description: "",
+    url: "",
     thumbnail: {
-      url: ''
+      url: ""
     },
     image: {
-      url: ''
+      url: ""
     },
-    color: '',
+    color: "",
     fields: [{}],
-    footer: ''
+    footer: {
+      text: ""
+    },
   };
-  var msgcontent = '';
+  var msgcontent = "";
 
   function resetEmbed() {
-    $('.embed-inner').html('');
+    $('.embed-inner').html("");
     $('.embed-footer').remove();
     $('.embed-thumb').remove();
     $('.embed-image').remove();
-    $('.msgbox').html('');
+    $('.msgbox').html("");
   }
 
   function updateEmbed(embed) {
@@ -230,16 +232,16 @@ $(document).ready(function () {
       }
     }
 
-    if (embed.footer) {
-      embed.footer = escapeS(embed.footer);
+    if (embed.footer.text) {
+      embed.footer.text = escapeS(embed.footer.text);
 
-      $('.card.embed').append('<div class="embed-footer"><span>' + embed.footer + '</span></div>');
+      $('.card.embed').append('<div class="embed-footer"><span>' + embed.footer.text + '</span></div>');
 
       // add footer
       if (switches.useVars) {
-        source += 'embed.set_footer(text=' + embed.footer + ')\n';
+        source += 'embed.set_footer(text=' + embed.footer.text + ')\n';
       } else {
-        source += 'embed.set_footer(text="' + embed.footer + '")\n';
+        source += 'embed.set_footer(text="' + embed.footer.text + '")\n';
       }
     }
 
@@ -263,10 +265,10 @@ $(document).ready(function () {
 
   function generateInputFields(fields) {
     // generate inputs for fields
-    $('.input-fields').html('');
+    $('.input-fields').html("");
 
     var _loop = function _loop(i) {
-      $('.input-fields').append('<div class="form-group row">\n        <div class="col-sm-4">\n          <input class="form-control" id="field-' + i + '-name" type="text" placeholder="name" value="' + (embed.fields[i].name !== undefined ? embed.fields[i].name : '') + '" />\n        </div>\n        <div class="col-sm-4">\n          <input class="form-control" id="field-' + i + '-value" type="text" placeholder="value" value="' + (embed.fields[i].value !== undefined ? embed.fields[i].value : '') + '" />\n        </div>\n        <div class="col-sm-2">\n          <div class="form-check">\n            <label class="form-check-label">\n              <input class="form-check-input" id="field-' + i + '-inline" type="checkbox" ' + (embed.fields[i].inline !== undefined ? `${embed.fields[i].inline ? 'checked' : ''}` : '') + '> Inline\n            </label>\n          </div>\n        </div>\n        <div class="col-sm-2">\n          <button id="field-' + i + '-delete" class="btn btn-danger">Delete</button>\n        </div>\n      </div>');
+      $('.input-fields').append('<div class="form-group row">\n        <div class="col-sm-4">\n          <input class="form-control" id="field-' + i + '-name" type="text" placeholder="name" value="' + (embed.fields[i].name !== undefined ? embed.fields[i].name : "") + '" />\n        </div>\n        <div class="col-sm-4">\n          <input class="form-control" id="field-' + i + '-value" type="text" placeholder="value" value="' + (embed.fields[i].value !== undefined ? embed.fields[i].value : "") + '" />\n        </div>\n        <div class="col-sm-2">\n          <div class="form-check">\n            <label class="form-check-label">\n              <input class="form-check-input" id="field-' + i + '-inline" type="checkbox" ' + (embed.fields[i].inline !== undefined ? `${embed.fields[i].inline ? 'checked' : ""}` : "") + '> Inline\n            </label>\n          </div>\n        </div>\n        <div class="col-sm-2">\n          <button id="field-' + i + '-delete" class="btn btn-danger">Delete</button>\n        </div>\n      </div>');
       $('#field-' + i + '-name').on('input', function () {
         updateFieldName(i, $('#field-' + i + '-name').val());
       });
@@ -298,17 +300,17 @@ $(document).ready(function () {
   generateInputFields(fields);
 
   function updateFieldName(index, value) {
-    embed.fields[index].name = value;
+    embed.fields[index].name = value.replace(/"/g, "'");
     updateEmbed(embed);
   }
 
   function updateFieldValue(index, value) {
-    embed.fields[index].value = value;
+    embed.fields[index].value = value.replace(/"/g, "'");
     updateEmbed(embed);
   }
 
   function updateFieldInline(index, value) {
-    embed.fields[index].inline = value;
+    embed.fields[index].inline = value.replace(/"/g, "'");
     updateEmbed(embed);
   }
 
@@ -326,56 +328,56 @@ $(document).ready(function () {
   }
 
   function updateTitle(value) {
-    embed.title = value || '';
+    embed.title = value.replace(/"/g, "'") || "";
     updateEmbed(embed);
   }
 
   function updateUrl(value) {
-    embed.url = value || '';
+    embed.url = value.replace(/"/g, "'") || "";
     updateEmbed(embed);
   }
 
   function updateThumb(value) {
-    embed.thumbnail.url = value || '';
+    embed.thumbnail.url = value.replace(/"/g, "'") || "";
     updateEmbed(embed);
   }
   function updateImage(value) {
-    embed.image.url = value || '';
+    embed.image.url = value.replace(/"/g, "'") || "";
     updateEmbed(embed);
   }
 
   function updateDescription(value) {
-    embed.description = value || '';
+    embed.description = value.replace(/"/g, "'") || "";
     updateEmbed(embed);
   }
 
   function updateContent(value) {
-    msgcontent = value || '';
+    msgcontent = value.replace(/"/g, "'") || "";
     updateEmbed(embed);
   }
 
   function updateColor(value) {
-    embed.color = value || false;
+    embed.color = value.replace(/"/g, "'") || false;
     updateEmbed(embed);
   }
 
   function updateAuthorName(value) {
-    embed.author.name = value || '';
+    embed.author.name = value.replace(/"/g, "'") || "";
     updateEmbed(embed);
   }
 
   function updateAuthorUrl(value) {
-    embed.author.url = value || '';
+    embed.author.url = value.replace(/"/g, "'") || "";
     updateEmbed(embed);
   }
 
   function updateAuthorIcon(value) {
-    embed.author.icon_url = value || '';
+    embed.author.icon_url = value.replace(/"/g, "'") || "";
     updateEmbed(embed);
   }
 
   function updateFooter(value) {
-    embed.footer = value || '';
+    embed.footer.text = value.replace(/"/g, "'") || "";
     updateEmbed(embed);
   }
 
