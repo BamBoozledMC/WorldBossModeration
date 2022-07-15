@@ -224,7 +224,6 @@ $(document).keyup(function(e) {
     socket.on('embeddata', function(data) {
       msgdata = data.json
       emdata = data.json.embeds[0]
-      console.log(emdata);
       let selector = document.getElementById('existingems')
       selector.disabled = false
       selector.style.cursor = 'pointer'
@@ -274,8 +273,6 @@ $(document).keyup(function(e) {
           }
         }
           emdata.fields.forEach((item, i) => {
-            console.log(i);
-            console.log(item);
             idocument.getElementById(`field-${i}-name`).value = item.name ? item.name.replaceAll('\n', '\\n') : ''
             idocument.getElementById(`field-${i}-value`).value = item.value ? item.value.replaceAll('\n', '\\n') : ''
             $("#editbuilder").contents().find(`#field-${i}-inline`).prop( "checked", item.inline ? item.inline : false )
