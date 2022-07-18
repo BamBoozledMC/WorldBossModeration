@@ -22,7 +22,7 @@ module.exports = {
 		message.delete().catch(error =>{
 		})
 		let factembed = new Discord.MessageEmbed()
-		.setTitle("Fact of the Day <t:1657764000:d>")
+		.setTitle(`Fact of the Day <t:${Math.round(Date.now() / 1000)}:d>`)
 		.setColor('RANDOM')
 		.setDescription(`${thefact}`)
 		.setThumbnail(`https://wbmoderation.com/media/dyk.png`)
