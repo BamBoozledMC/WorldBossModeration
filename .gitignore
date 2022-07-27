@@ -2,6 +2,9 @@ config.json
 json.sqlite
 web/media/attachments
 dumpys
+beansnft/cfg.json
+beansnft/db.json
+web/media/download
 
 # Logs
 logs
