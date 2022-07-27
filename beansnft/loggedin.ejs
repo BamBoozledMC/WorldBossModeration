@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=600px, initial-scale=1">
+  <title>BeansNFT | Data compiler</title>
+  <meta name="description" content="Gather data about all Beans and compile them into a CSV." />
+  <meta property="og:image" content="https://pbs.twimg.com/profile_images/1510399223304720384/qZkeXEZy_400x400.jpg">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Ubuntu" />
+  <link rel="preload prefetch" href="/media/fonts/CascadiaMono.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="icon"  href="https://pbs.twimg.com/profile_images/1510399223304720384/qZkeXEZy_400x400.jpg">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+  <script src="/media/socket.io.js"></script>
+  <div style="float: right;margin-top: 5px;margin-right: 5px;">
+    <a id="userinfo"> <img src=<%= discordpfp %> alt="" style="width:48px; height:48px; float: left; border-radius: 30px; padding: 5px;"> <%= discordname %> </a>
+    <button id="logoutbutton" onclick="window.location.href = 'https://wbmoderation.com/beansnft/auth/logout'">Logout</button>
+  </div>
+<h1>BeansNFT Data Compiler</h1>
+
+<div class="center" id="proginfo">
+  <h3>Progress</h3>
+  <p id="stat"><span class="c2">Status:</span> <span id="task" class="loading">Please wait</span> <span id="taskoutof">(0/0)</span></p>
+  <p style="display: none;" id="finstat"><span class="c2">Status:</span> Finished</p>
+  <p style="text-align: left;margin-bottom: -5px;">Task progress:</p>
+  <div class="progress" style="height: 30px;">
+  <div id="taskprog" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">0%</div>
+</div>
+  <p style="text-align: left;margin-bottom: -5px;">Overall progress:</p>
+  <div class="progress" style="height: 30px;">
+  <div id="allprog" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">0%</div>
+</div>
+</div>
+<div class="center">
+  <div class="connection">
+    <h3 style="margin-bottom: -20px;">Connecting to backend...</h3>
+    <img src="/media/wbmtheme-loading-w.png" alt="loading" id="loader">
+  </div>
+  <div class="aconnection" style="display: none;">
+    <h3>Connected with backend.</h3>
+    <p>This tool allows those with access to gather data about all Beans and compile them into a CSV.</p>
+    <button type="button" class="btn btn-primary btn-lg" id="gather" onclick="gather()">Compile Data <img src="/media/start.png" style="height: 32px;"></button>
+    <a id="downlink" style="display: none;" download>
+    <button type="button" class="btn btn-success btn-lg" id="down" disabled>Download CSV <img src="/media/down.png" style="height: 32px;"></button>
+  </a>
+  </div>
+</div>
+
+<script type="text/javascript">
+var socket = io("/", {
+  closeOnBeforeunload: false // defaults to true
+})
+socket.on("connect", () => {
+  $('.connection').hide()
+  $('.aconnection').show()
+});
+
+socket.on('progress', function(currenttask, totaltasks, currenttaskname, currenttaskcompletion, overallcompletion) {
+  overallcompletion = Math.round(overallcompletion)
+  $('#taskoutof').text(`(${currenttask}/${totaltasks})`)
+  $('#task').text(`${currenttaskname}`)
+  $('#taskprog').css('width', `${currenttaskcompletion}%`).attr('aria-valuenow', currenttaskcompletion).text(`${currenttaskcompletion}%`)
+  $('#allprog').css('width', `${overallcompletion}%`).attr('aria-valuenow', overallcompletion).text(`${overallcompletion}%`)
+})
+socket.on('finished', function(link) {
+  window.onbeforeunload = null;
+  let gbtn = document.getElementById('gather')
+  gbtn.disabled = false
+  $('#finstat').show()
+  $('#stat').hide()
+  $('#downlink').attr('href', link)
+  let dbtn = document.getElementById('down')
+  dbtn.disabled = false
+  $('#downlink').show()
+  document.getElementById('downlink').scrollIntoView();
+})
+
+
+function gather() {
+  socket.emit('gatherbeans')
+  let btn = document.getElementById('gather')
+  btn.disabled = true
+  $('#downlink').removeAttr('href')
+  let dbtn = document.getElementById('down')
+  dbtn.disabled = true
+  $('#downlink').hide()
+  $('#finstat').hide()
+  $('#stat').show()
+  $('#proginfo').show()
+  window.onbeforeunload = function() {
+    return true;
+  };
+}
+
+</script>
+<style>
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background-color: rgb(43, 42, 51);
+}
+h1 {
+  font-family: Cascadia Mono, sans-serif;
+  color: rgb(251, 251, 254);
+  padding: 5px;
+  text-align: center;
+  font-size: 55px;
+  margin: 10px;
+}
+h3 {
+  font-family: Cascadia Mono, sans-serif;
+  color: rgb(251, 251, 254);
+  text-align: center;
+  font-size: 40px;
+}
+c {
+  color: #d90053;
+}
+.c2 {
+  color: limegreen;
+  font-weight: bold;
+}
+p {
+  font-family: calibri, sans-serif;
+  color: rgb(251, 251, 254);
+  font-size: 35px;
+  text-align: center;
+}
+#logoutbutton {
+  float: right;
+  color: white;
+  padding: 16px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 18px;
+  font-family: Ubuntu;
+  margin: 1px;
+  background-color: #e03c3c;
+}
+#logoutbutton:hover {
+  background-color: #a82c2c;
+}
+#userinfo {
+float: right;
+pointer-events: none !important;
+color: white;
+font-size: 17px;
+padding: 5px;
+border: none;
+background-color: #171717;
+font-family: Ubuntu;
+border-radius: 10px;
+border-style: groove;
+border-color: #242424;
+margin-left: 5px;
+}
+#loginrequired {
+  color: red;
+  font-family: calibri, sans-serif;;
+  font-weight: bold;
+  font-size: 30px;
+}
+.center {
+margin: auto;
+width: 80%;
+padding: 10px;
+display: table;
+text-align: center;
+}
+#proginfo {
+margin: auto;
+width: 80%;
+padding: 10px;
+display: none;
+text-align: center;
+background-color: rgba(251, 251, 254, 0.3);
+border-radius: 10px;
+}
+#textloginbutton {
+  color: white;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 18px;
+  font-family: Ubuntu;
+  margin: 1px;
+  background-color: #43b581;
+}
+#textloginbutton:hover {
+  background-color: #2f7f5a;
+}
+.left {
+  float: left;
+  width: 45%;
+  padding: 5px;
+}
+.right {
+  float: right;
+  width: 45%;
+  padding: 5px;
+}
+.pfps {
+  border-radius: 15px;
+}
+.loading {
+  text-align: left;
+}
+.loading:after {
+  content: "...";
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  animation: ellipsis-dot 2s infinite .3s;
+  animation-fill-mode: forwards;
+  width: 1.25em;
+}
+
+@keyframes ellipsis-dot {
+  25% {
+    content: "";
+  }
+  50% {
+    content: ".";
+  }
+  75% {
+    content: "..";
+  }
+  100% {
+    content: "...";
+  }
+}
+.progress-bar {
+  -webkit-transition: width 0.5s ease !important;
+     -moz-transition: width 0.5s ease !important;
+       -o-transition: width 0.5s ease !important;
+          transition: width 0.5s ease !important;
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+</body>
+</html>

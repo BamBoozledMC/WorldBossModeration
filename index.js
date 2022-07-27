@@ -19,7 +19,7 @@ const passportSteam = require('passport-steam');
 var SteamStrategy = passportSteam.Strategy;
 var DiscordStrategy = require('passport-discord').Strategy;
 const SteamAPI = require('steamapi');
-const { DateTime } = require("luxon");
+const { DateTime, Interval } = require("luxon");
 const talkedRecently = new Set();
 const TicTacToe = require('discord-tictactoe');
 const game = new TicTacToe({ language: 'en' });
@@ -29,6 +29,8 @@ const reactionAddEvent = require("./messagereaction-add.js");
 const reactionRemoveEvent = require("./messagereaction-remove.js");
 const slashCommands = require("./slashcommands.js");
 const vlc = require('./vlc');
+const Moralis = require('moralis/node');
+const ObjectsToCsv = require('objects-to-csv');
 const https = require('https')
 const fs = require('fs');
 bot.commands = new Collection();
@@ -90,6 +92,19 @@ passport.use('discord', new DiscordStrategy({
 },
 function(accessToken, refreshToken, profile, done) {
     process.nextTick(function() {
+    return done(null, profile);
+    });
+}));
+passport.use('beansdiscord', new DiscordStrategy({
+    clientID: config.botID,
+    clientSecret: config.botSecret,
+    callbackURL: `https://wbmoderation.com/beansnft/auth/discord/callback`,
+    scope: scopes,
+    passReqToCallback: true,
+},
+function(req, accessToken, refreshToken, profile, done) {
+    process.nextTick(function() {
+    req.logout()
     return done(null, profile);
     });
 }));
@@ -229,6 +244,16 @@ app.get('/dashboard/server/*', async function(req,res) {
     res.redirect(`/dashboard/server/${guild.id}`)
   }
 });
+app.get('/beansnft', async function(req,res) {
+  let access = [
+    `${config.ownerID}`,
+    `123697101078003712`
+  ]
+  if (!req.user) return res.render(__dirname+'/beansnft/notloggedin.ejs', {  });
+  let basicinfo = req.user
+  if (access.includes(`${req.user.id}`)) return res.render(__dirname+'/beansnft/loggedin.ejs', { discordpfp: basicinfo ? basicinfo.avatar ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : `https://wbmoderation.com/media/defaultpfp.jpg` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null });
+  else return res.render(__dirname+'/beansnft/noaccess.ejs', {  });
+})
 io.on('connection', (socket) => {
   socket.on('themecolorchange', (color, guild) => {
     db.set(`color.${guild}`, color)
@@ -289,6 +314,117 @@ io.on('connection', (socket) => {
   socket.on('getembeddata', (guild, selected) => {
     let embeddata = db.get(`embeds.${guild}.${selected}`)
     socket.emit('embeddata', embeddata)
+  });
+
+  socket.on('gatherbeans', async () => {
+    const cfg = require('./beansnft/cfg.json')
+    const serverUrl = cfg.serverURL;
+    const appId = cfg.appID;
+    const contractAddress = cfg.contractAddress;
+
+    await Moralis.start({ serverUrl: serverUrl, appId: appId });
+
+    let cursor = null;
+    let beans = {};
+    let overallprogress = 0
+    do {
+      const response = await Moralis.Web3API.token.getNFTOwners({
+        address: contractAddress,
+        chain: "eth",
+        limit: 100,
+        cursor: cursor,
+      });
+      overallprogress = overallprogress + 1 / 3
+      socket.emit('progress', '1', '3', 'Gathering all Beans', response.page - 1, overallprogress)
+        for (const owner of response.result) {
+          beans[owner.token_id] = {
+          amount: owner.amount,
+          owner: owner.owner_of,
+          tokenId: owner.token_id,
+          tokenAddress: owner.token_address,
+          metadata: owner.metadata,
+        };
+      }
+      cursor = response.cursor;
+    } while (cursor != "" && cursor != null);
+
+    let mdb = fs.readFileSync('./beansnft/db.json', 'utf8')
+    mdb = JSON.parse(mdb);
+    let allBeansData = mdb
+    for (const transaction of Object.keys(beans)) {
+        let trinfo = beans[transaction]
+        if (trinfo.owner != (mdb[trinfo.tokenId] ? mdb[trinfo.tokenId].owner : null)) {
+      const response2 = await Moralis.Web3API.token.getWalletTokenIdTransfers({
+          address: contractAddress,
+          token_id: trinfo.tokenId,
+          chain: "eth",
+          limit: 100,
+        });
+        for (const trdata of response2.result) {
+          if (trdata.to_address == trinfo.owner) {
+          allBeansData[trinfo.tokenId] = {
+              amount: trinfo.amount,
+              owner: trinfo.owner,
+              tokenId: trinfo.tokenId,
+              tokenAddress: trinfo.tokenAddress,
+              metadata: trinfo.metadata,
+              timestamp: trdata.block_timestamp,
+              price: trdata.value,
+          }
+          }
+      }
+      const updatedata = JSON.stringify(allBeansData, null, 4);
+      fs.writeFile('./beansnft/db.json', updatedata, (err) => {
+       if (err) throw err;
+   });
+      let tnum = (parseInt(trinfo.tokenId) + 1) / 100
+      if (tnum % 1 == 0) overallprogress = overallprogress + 1 / 3
+      console.log(`Got Bean ${trinfo.tokenId} of ${Object.keys(beans).length}`);
+      socket.emit('progress', '2', '3', 'Comparing Bean data with DB', tnum, overallprogress)
+    } else {
+      let tnum = (parseInt(trinfo.tokenId) + 1) / 100
+      if (tnum % 1 == 0) {
+        overallprogress = overallprogress + 1 / 3
+        console.log(`Bean ${trinfo.tokenId} is stored in the db and has not changed, skipping. ${tnum}`);
+        socket.emit('progress', '2', '3', 'Comparing Bean data with DB', tnum, overallprogress)
+      }
+    }
+    }
+    const data = JSON.stringify(allBeansData, null, 4);
+      fs.writeFile('./beansnft/db.json', data, (err) => {
+       if (err) throw err;
+     });
+
+      let getetherusd = await fetch(`https://api.etherscan.io/api?module=stats&action=ethprice&apikey=${cfg.etherscanAPIKEY}`, {
+        method: 'GET',
+      })
+      let etherusdprice = await getetherusd.json()
+      etherusdprice = etherusdprice.result.ethusd
+      let csvdata = []
+      let mydt = DateTime.now()
+      mydt = `${mydt.year}-${mydt.month}-${mydt.day}_${mydt.hour}-${mydt.minute}-${mydt.second}`
+      for (const getbean of Object.keys(allBeansData)) {
+        const thebean = allBeansData[getbean]
+        let dateacquired = DateTime.fromISO(thebean.timestamp).setZone('UTC')
+        let datenow = DateTime.utc()
+        let timeheld = Interval.fromDateTimes(dateacquired, datenow).toDuration(['days', 'hours', 'minutes', 'seconds']).toObject()
+        let timeheldseconds = Interval.fromDateTimes(dateacquired, datenow).toDuration('seconds').toObject()
+        let ethprice = thebean.price / 1000000000000000000
+        let usdprice = (ethprice / 1) * etherusdprice
+
+        csvdata.push({ "Bean (token) ID": thebean.tokenId, "Bean token address": thebean.tokenAddress, "Holder / Owner": thebean.owner, "Price purchased (ETH)": ethprice, "Approx. current USD value": `$${usdprice}`, "Date acquired (UTC / GMT+0)": dateacquired.toLocaleString(DateTime.DATETIME_MED), "Date acquired in unix seconds (UTC / GMT+0)": dateacquired.toFormat('X'), "Time held / owned": `${timeheld.days} days, ${timeheld.hours} hours, ${timeheld.minutes} minutes`, "Time held / owned in seconds": timeheldseconds.seconds })
+
+        let tnum = (parseInt(thebean.tokenId) + 1) / 100
+        if (tnum % 1 == 0) {
+          overallprogress = overallprogress + 1 / 3
+          socket.emit('progress', '3', '3', 'Compiling data into CSV', tnum, overallprogress)
+        }
+      }
+      socket.emit('progress', '3', '3', 'Finishing up', 100, 100)
+      const csv = new ObjectsToCsv(csvdata);
+      await csv.toDisk(`./web/media/download/BeansNFT.${mydt}.csv`)
+      console.log('Data Saved to CSV');
+      socket.emit('finished', `https://wbmoderation.com/media/download/BeansNFT.${mydt}.csv`)
   });
 });
 app.get('/uptime', async function(req,res) {
@@ -353,6 +489,16 @@ app.get('/auth/steam/return',
   app.get('/vlc/auth/discord/callback', passport.authenticate('vlcdiscord', { failureRedirect: '/' }),
    function(req, res) {
       res.redirect('/vlc/controller') // Successful auth
+  });
+
+  app.get('/beansnft/auth/discord', passport.authenticate('beansdiscord'));
+  app.get('/beansnft/auth/discord/callback', passport.authenticate('beansdiscord', { failureRedirect: '/beansnft' }),
+   function(req, res) {
+      res.redirect('/beansnft') // Successful auth
+  });
+  app.get('/beansnft/auth/logout', function(req,res) {
+    req.logout();
+    res.redirect('/beansnft')
   });
 
   app.get('/dashboard/auth/discord', passport.authenticate('discorddashboard'));
