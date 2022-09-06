@@ -5,7 +5,7 @@ const db = require('quick.db');
 module.exports = {
 	name: 'avatar',
     descrption: 'gets users avatar',
-    aliases: ['pfp'],
+    aliases: ['pfp', 'av'],
     usage: '',
 	args: true,
 	async execute(bot, message, args, prefix, commandName, themecolor) {

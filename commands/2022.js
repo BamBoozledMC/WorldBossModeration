@@ -11,6 +11,7 @@ module.exports = {
 			if(!message.member.roles.cache.some(role => role.id === '937561741334814810')) return;
 		}
 		message.channel.send({files: ['./2022.jpg']}).catch(error =>{
+			console.log(error);
 		})
     }
 }
