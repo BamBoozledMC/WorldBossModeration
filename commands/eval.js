@@ -10,6 +10,7 @@ module.exports = {
 	usage: '<message>',
 	args: true,
 	async execute(bot, message, args, prefix, commandName, themecolor) {
+		if (db.get(`commands.${message.guild.id}.${commandName}.disabled`)) return message.reply("⛔ This command has been disabled in this server.").then(message => {setTimeout(() => message.delete().catch(error => {}), 10000);});
     if (message.author.id != config.ownerID && message.author.id != "624665686978986020") return;
     if (!args[0]) return message.channel.send("You didn't give me anything to evaluate! :sob:")
     try {

@@ -9,6 +9,7 @@ module.exports = {
     aliases: ['up'],
 	args: false,
 	async execute(bot, message, args, prefix, commandName, themecolor) {
+		if (db.get(`commands.${message.guild.id}.${commandName}.disabled`)) return message.reply("⛔ This command has been disabled in this server.").then(message => {setTimeout(() => message.delete().catch(error => {}), 10000);});
 	let totalSeconds = (bot.uptime / 1000);
 let days = Math.floor(totalSeconds / 86400);
 totalSeconds %= 86400;

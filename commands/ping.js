@@ -1,6 +1,7 @@
 const Discord = require ("discord.js");
 const config = require('../config.json');
 const ping = require('ping');
+const db = require('quick.db');
 
 module.exports = {
 	name: 'ping',
@@ -9,6 +10,7 @@ module.exports = {
 	usage: '!ping',
 	args: false,
 	async execute(bot, message, args, prefix, commandName, themecolor) {
+		if (db.get(`commands.${message.guild.id}.${commandName}.disabled`)) return message.reply("⛔ This command has been disabled in this server.").then(message => {setTimeout(() => message.delete().catch(error => {}), 10000);});
 		const pingMsg =  await message.channel.send('<a:loading:939665977728176168> Pinging...');
 		let localping = await ping.promise.probe('127.0.0.1', {
            timeout: 5,

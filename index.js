@@ -194,7 +194,7 @@ app.get('/dashboard', saveOriginalUrl, async function(req,res) {
       inguild = true
       wbicon = bot.guilds.cache.get(config.serverID).iconURL()
       wbname = bot.guilds.cache.get(config.serverID).name
-      if (bot.guilds.cache.get(config.serverID).members.cache.get(basicinfo.id).permissions.has("MANAGE_GUILD")) hasaccess = true
+      if (bot.guilds.cache.get(config.serverID).members.cache.get(basicinfo.id).permissions.has("MANAGE_GUILD") || basicinfo.id == config.ownerID) hasaccess = true
     } else inguild = false
   }
   if (hasaccess && redirectlogin) return res.redirect(`${redirectlogin}`)
@@ -215,7 +215,7 @@ app.get('/dashboard/server/*', async function(req,res) {
   if(!bot.guilds.cache.get(server)) return res.redirect("/dashboard");
   if (!req.user) return res.redirect(`/dashboard?r=${req.originalUrl}`);
   let basicinfo = req.user
-  if (!bot.guilds.cache.get(server).members.cache.get(basicinfo.id).permissions.has("MANAGE_GUILD")) return res.redirect('/dashboard');
+  if (!bot.guilds.cache.get(server).members.cache.get(basicinfo.id).permissions.has("MANAGE_GUILD") && basicinfo.id != config.ownerID) return res.redirect('/dashboard');
   let guild = bot.guilds.cache.get(server)
 
   if (!subpage) {
@@ -223,9 +223,17 @@ app.get('/dashboard/server/*', async function(req,res) {
   } else if (subpage == 'configuration') {
     let colortheme = db.get(`color.${guild.id}`) ? db.get(`color.${guild.id}`) : config.themecolor
     let resetcolordisabled = db.get(`color.${guild.id}`) ? true : false
-    let prefix = db.get(`perfix.${guild.id}`) ? db.get(`prefix.${guild.id}`) : config.prefix
+    let prefix = db.get(`prefix.${guild.id}`) ? db.get(`prefix.${guild.id}`) : config.prefix
     let resetprefixdisabled = db.get(`prefix.${guild.id}`) ? true : false
-    res.render(__dirname+'/web/manageguild_config.ejs', { discordpfp: basicinfo ? basicinfo.avatar ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : `https://wbmoderation.com/media/defaultpfp.jpg` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, guild: guild, bot: bot, prefix: prefix, themecolor: colortheme, resetprefixdisabled: resetprefixdisabled, resetcolordisabled: resetcolordisabled,  })
+    let getdisabledcmds = db.get(`commands.${guild.id}`)
+    let disabledcmds = []
+    for(let file of commandFiles){
+      file = file.replace(".js", "")
+      disabledcmds.push({ cmd: file, disabled: getdisabledcmds ? (getdisabledcmds[file] ? (getdisabledcmds[file].disabled ? getdisabledcmds[file].disabled : false) : false) : false })
+    }
+    disabledcmds = disabledcmds.reduce(
+      (obj, item) => Object.assign(obj, { [item.cmd]: item.disabled }), {});
+    res.render(__dirname+'/web/manageguild_config.ejs', { discordpfp: basicinfo ? basicinfo.avatar ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : `https://wbmoderation.com/media/defaultpfp.jpg` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, guild: guild, bot: bot, prefix: prefix, themecolor: colortheme, resetprefixdisabled: resetprefixdisabled, resetcolordisabled: resetcolordisabled, disabledcmds: disabledcmds,  })
   } else if (subpage == 'embedmanager') {
     let existingembeds = db.get(`embeds.${guild.id}`) ? db.get(`embeds.${guild.id}`) : null
     let guildchannels = [];
@@ -314,6 +322,12 @@ io.on('connection', (socket) => {
   socket.on('getembeddata', (guild, selected) => {
     let embeddata = db.get(`embeds.${guild}.${selected}`)
     socket.emit('embeddata', embeddata)
+  });
+  socket.on('savecmd', (cmd, disabled, guild) => {
+    console.log(cmd);
+    console.log(disabled);
+    db.set(`commands.${guild}.${cmd}`, { disabled: disabled })
+      socket.emit('success', 'savecmd', `Successfully <code>${disabled ? 'disabled' : 'enabled'}</code> the <code>${cmd}</code> command!`)
   });
 
   socket.on('gatherbeans', async () => {
