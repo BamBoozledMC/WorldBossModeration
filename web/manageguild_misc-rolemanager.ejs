@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=770px, initial-scale=1">
-  <title>World Boss Moderation | Dashboard - Configuration</title>
+  <title>World Boss Moderation | Dashboard - Role Manager</title>
   <meta name="description" content="Official website of World Boss Moderation!
   Manage and configure settings for World Boss Moderation." />
   <meta property="og:image" content="https://media.discordapp.net/attachments/933574813849632848/934606101847109652/worldboss_bot.jpg">
@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="/media/coloris.min.css"/>
   <script src="/media/coloris.min.js"></script>
   <link rel="icon" type="image/png" href="https://wbmoderation.com/favicon.ico">
-  <link href="/media/bootstrap.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
 </head>
 <body>
   <script src="/media/socket.io.js"></script>
@@ -35,50 +35,64 @@
          </div>
          <div class="menu">
            <div class="item"><a href="/dashboard/server/<%= guild.id %>"><i class="fas fa-desktop"></i>Overview</a></div>
-          <div class="item"><a class="active" href="#"><i class="fa-solid fa-gear"></i>Configuration</a></div>
+          <div class="item"><a href="/dashboard/server/<%= guild.id %>/configuration"><i class="fa-solid fa-gear"></i>Configuration</a></div>
            <div class="item">
              <a class="sub-btn"><i class="fa-solid fa-shield"></i>Moderation<i class="fas fa-angle-right dropdown"></i></a>
              <div class="sub-menu">
-               <a href="#" class="sub-item">Sub Item 01</a>
+               <a href="#" class="sub-item"><i class="fa-solid fa-list-check"></i>Sub Item 01</a>
              </div>
            </div>
            <div class="item">
-             <a class="sub-btn"><i class="fa-solid fa-cogs"></i>Miscellaneous<i class="fas fa-angle-right dropdown"></i></a>
+             <a class="sub-btn active"><i class="fa-solid fa-cogs"></i>Miscellaneous<i class="fas fa-angle-right dropdown"></i></a>
              <div class="sub-menu">
                <a href="/dashboard/server/<%= guild.id %>/embedmanager" class="sub-item"><i class="fa-solid fa-file-lines"></i>Embed Manager</a>
-               <a href="/dashboard/server/<%= guild.id %>/rolemanager" class="sub-item"><i class="fa-solid fa-list-check"></i>Role Manager</a>
+               <a href="#" class="active"><i class="fa-solid fa-list-check"></i>Role Manager</a>
              </div>
            </div>
          </div>
        </div>
        <div class="mainpage">
-         <h1>Configuration</h1>
-         <div style="margin: auto;padding: 20px;text-align: center;display: table;">
-         <div class="infopanel">
-           <h4 style="color: #F6F6F6;">Bot Theme Color <button id="resetcolor" onclick="resetcolor()" disabled>Reset</button> <button id="savecolor" onclick="savecolor()" disabled>Save</button></h4>
-           <div class="color" style="position: relative;float:right;"></div>
-           <p class="infocontent">Change the bot's theme color.<br>The current bot theme color for <%= guild.name %> is <code id="hexcolor"><%= themecolor %></code></p>
-           <img id="heximg" src="https://singlecolorimage.com/get/<%= themecolor.replace('#', '') %>/256x256" alt="colorimg" style="width: 128px;height: 128px;margin: 10px;border-radius: 10px;border-style: inset;border-color: <%= themecolor %>;">
-         </div>
-         <div class="infopanel" style="float: right;">
-           <h4 style="color: #F6F6F6;">Server Prefix <button id="resetprefix" onclick="resetprefix()" disabled>Reset</button> <button id="saveprefix" onclick="saveprefix()" disabled>Save</button></h4>
-           <p class="infocontent">Change the server's prefix.<br>The current server prefix for <%= guild.name %> is <code id="textprefix"><%= prefix %></code></p>
+         <h1>Role Manager</h1>
+         <div class="center" style="width: 80%;text-align: center;">
+           <label class="infocontent" for="roleid">Role ID (ID of role you wish to mass assign)</label>
+           <input type="text" class="form-control" id="roleid" placeholder="Enter Role ID e.g. 932108051924783104">
+           <br>
+           <br>
+           <label class="infocontent" for="userids">User IDs (List of user IDs you wish to assign the role seperated by newline)</label>
+           <textarea class="form-control" id="userids" rows="20" placeholder="Enter User IDs e.g.
+562382703190867972
+294618687510413313
+123697101078003712
+821653316878598145
+250824078636613632
+and so on..."></textarea>
+
+          <button id="assignroles" onclick="assignroles()" disabled>Assign Roles <img src="/media/start.png" style="height: 32px;"></button>
+
+          <div class="prog">
+          <p class="infocontent"> <span id="task" class="loading">Assigning Roles</span></p>
+          <div class="progress" style="height: 30px;">
+          <div id="taskprog" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">0%</div>
+        </div>
+      </div>
          </div>
          <br>
-         <div class="infopanel" id="srvcmds" style="width: 100%;">
-           <h4 style="color: #F6F6F6;">Server Commands</h4>
-           <p class="infocontent">Manage what commands are enabled or disabled in the server.</p>
-           <table class="cmds" id="cmds" style=";width: 100%;">
+         <br>
+         <br>
+         <br>
 
-           </table>
-         </div>
        </div>
-     </div>
 
+       <div style="text-align: center;display: flex;align-items: center;justify-content: center;">
+         <div id="snackbarerr">Error</div>
+       </div>
   <div style="text-align: center;display: flex;align-items: center;justify-content: center;">
     <div id="snackbar">Successfull</div>
   </div>
 <script type="text/javascript">
+function isBlank(str) {
+    return (!str || /^\s*$/.test(str));
+}
 $(document).keyup(function(e) {
   if (e.key === "Escape") { // escape key maps to keycode `27`
     if ($('.side-bar').hasClass('active')) {
@@ -86,91 +100,107 @@ $(document).keyup(function(e) {
     }
   }
 });
-  var socket = io();
 
-  Coloris({
-  parent: '.color',
-  theme: 'large',
-  themeMode: 'dark',
-  alpha: false,
-  swatches: [
-    '#d90053',
-],
-  inline: true,
-  defaultColor: '<%= themecolor %>'
-  });
-  document.addEventListener('coloris:pick', event => {
-  let btn = document.getElementById('savecolor')
-  btn.disabled = false
-  btn.style.backgroundColor = '#43b581'
-  btn.style.cursor = 'pointer'
-});
+  var socket = io("/", {
+    closeOnBeforeunload: false // defaults to true
+  })
 
-    function savecolor() {
-      let newcolor = document.getElementById('clr-color-value').value
-      let btn = document.getElementById('savecolor')
-      let updatehex = document.getElementById('hexcolor')
-      let updateimage = document.getElementById('heximg')
+
+    function assignroles() {
+      let role = $("#roleid").val()
+      let users = $("#userids").val()
+      users = users.split("\n")
+      let btn = document.getElementById('assignroles')
       btn.disabled = true
       btn.style.backgroundColor = '#2f7f5a'
       btn.style.cursor = 'not-allowed'
-      updatehex.innerHTML = newcolor
-      updateimage.style.borderColor = newcolor
-      updateimage.src = `https://singlecolorimage.com/get/${newcolor.replace('#', '')}/256x256`
-      socket.emit('themecolorchange', newcolor, '<%= guild.id %>')
-    }
-    function resetcolor() {
-      if (confirm("Are you sure you want to reset the Bot Theme Color?\nThis will reset the color to it's default value") == true) {
-        socket.emit('reset', 'color', '<%= guild.id %>')
-        let btn = document.getElementById('resetcolor')
-        btn.disabled = true
-        btn.style.backgroundColor = '#a82c2c'
-        btn.style.cursor = 'not-allowed'
-      }
+      $(".prog").show()
+      socket.emit('assignroles', role, users, '<%= guild.id %>')
+      window.onbeforeunload = function() {
+        return true;
+      };
+
     }
 
 
+    socket.on('progroles', function(completion, max) {
+      let percentage = completion/max * 100
+      $('#taskprog').css('width', `${percentage}%`).attr('aria-valuenow', completion).attr('aria-valuemax', max).text(`${completion} of ${max} users`)
+    })
     socket.on('success', function(info, successmsg) {
       var x = document.getElementById("snackbar");
       x.innerHTML = `${successmsg}`
       x.className = "show";
       setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
-      if(info == 'color') {
-        let btn = document.getElementById('resetcolor')
+      if(info == 'assignroles') {
+        let btn = document.getElementById('assignroles')
         btn.disabled = false
-        btn.style.backgroundColor = '#e03c3c'
+        btn.style.backgroundColor = '#43b581'
         btn.style.cursor = 'pointer'
-      } else if (info == 'resetcolor') {
-        setTimeout(function(){ location.reload() }, 5200);
+        $(".prog").hide()
+        window.onbeforeunload = null;
+      }
+    });
+    socket.on('error', function(info, errmsg) {
+      var x = document.getElementById("snackbarerr");
+      x.innerHTML = `${errmsg}`
+      x.className = "show";
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+      if(info == 'usernotmanagable') {
+
+      } else if (info == 'nosuchuser') {
+
+      } else {
+        let btn = document.getElementById('assignroles')
+        btn.disabled = false
+        btn.style.backgroundColor = '#43b581'
+        btn.style.cursor = 'pointer'
+        $(".prog").hide()
+        window.onbeforeunload = null;
       }
     });
 
-    function updatecmds(id) {
-      var cb = document.getElementById(id);
-      socket.emit('savecmd', id, cb.checked ? false : true, '<%= guild.id %>')
-    }
-
     $(document).ready(function(){
       $('.side-bar').addClass('active');
-      <% for (const property in disabledcmds) { %>
-
-        $('#cmds').append('<tr><td class="infocontent" style="padding-left: 10px;"><%= property %></td><td style="text-align: right;padding-top: 10px;padding-right: 10px;"><label class="switch"><input id="<%= property %>" type="checkbox" onclick="updatecmds(\'<%= property %>\')"<%= disabledcmds[property] ? "" : "checked" %>><span class="slider round"></span></label></td></tr>')
-      <% } %>
-      if (<%= resetcolordisabled %>) {
-        let btn = document.getElementById('resetcolor')
-        btn.disabled = false
-        btn.style.backgroundColor = '#e03c3c'
-        btn.style.cursor = 'pointer'
-      }
-      //jquery for toggle sub menus
-      $('.sub-btn').click(function(){
-        $(this).next('.sub-menu').slideToggle();
-        $(this).find('.dropdown').toggleClass('rotate');
-      });
+      $('.active').next('.sub-menu').slideToggle();
+      $('.active').find('.dropdown').toggleClass('rotate');
       $('.mainpage').click(function(){
         if ($('.side-bar').hasClass('active')) {
           $('.side-bar').removeClass('active');
         }
+      });
+      $('.prog').hide()
+      $('#userids').change(function () {
+        if ($("#userids").val() && $("#roleid").val()) {
+          let btn = document.getElementById('assignroles')
+          btn.disabled = false
+          btn.style.backgroundColor = '#43b581'
+          btn.style.cursor = 'pointer'
+        } else {
+          let btn = document.getElementById('assignroles')
+          btn.disabled = true
+          btn.style.backgroundColor = '#2f7f5a'
+          btn.style.cursor = 'not-allowed'
+        }
+      })
+      $('#roleid').change(function () {
+        if ($("#userids").val() && $("#roleid").val()) {
+          let btn = document.getElementById('assignroles')
+          btn.disabled = false
+          btn.style.backgroundColor = '#43b581'
+          btn.style.cursor = 'pointer'
+        } else {
+          let btn = document.getElementById('assignroles')
+          btn.disabled = true
+          btn.style.backgroundColor = '#2f7f5a'
+          btn.style.cursor = 'not-allowed'
+        }
+      })
+
+      //jquery for toggle sub menus
+      $('.sub-btn').click(function(){
+        $(this).next('.sub-menu').slideToggle();
+        $(this).find('.dropdown').toggleClass('rotate');
       });
 
       //jquery for expand and collapse the sidebar
@@ -188,14 +218,19 @@ $(document).keyup(function(e) {
         $('.side-bar .menu .item a.sub-btn').removeClass('active')
       });
     });
+
 </script>
 <style>
+html {
+  scroll-behavior: smooth;
+}
 h1 {
   font-family: calibri, sans-serif;
   color: #d90053;
   padding: 5px;
   text-align: center;
   font-size: 55px;
+  font-weight: bold;
 }
 .subhead {
   font-family: calibri, sans-serif;
@@ -211,18 +246,6 @@ h4 {
 }
 body {
   background-color: #2C2F33;
-}
-.infopanel {
-  border-radius: 20px;
-  width: 550px;
-  background-color: #56595c;
-  text-align: center;
-  margin: 5px;
-  border-style: outset;
-  border-width: 3px;
-  border-color: #414447;
-  padding: 10px;
-  float: left;
 }
 .infocontent {
   font-size: 20px;
@@ -267,8 +290,7 @@ display: block;
   line-height: 48px;
   text-align: center;
 }
-#savecolor {
-  float: right;
+#assignroles {
   color: white;
   padding: 10px 16px;
   border: none;
@@ -277,47 +299,8 @@ display: block;
   transition: 0.3s;
   font-size: 18px;
   font-family: Ubuntu;
-  margin: 1px;
+  margin: 10px;
   background-color: #2f7f5a;
-}
-#resetcolor {
-  float: right;
-  color: white;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 10px;
-  cursor: not-allowed;
-  transition: 0.3s;
-  font-size: 18px;
-  font-family: Ubuntu;
-  margin: 1px;
-  background-color: #a82c2c;
-}
-#saveprefix {
-  float: right;
-  color: white;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 10px;
-  cursor: not-allowed;
-  transition: 0.3s;
-  font-size: 18px;
-  font-family: Ubuntu;
-  margin: 1px;
-  background-color: #2f7f5a;
-}
-#resetprefix {
-  float: right;
-  color: white;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 10px;
-  cursor: not-allowed;
-  transition: 0.3s;
-  font-size: 18px;
-  font-family: Ubuntu;
-  margin: 1px;
-  background-color: #a82c2c;
 }
 a.external::after {
   content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
@@ -374,7 +357,39 @@ p {
 ::-webkit-scrollbar-thumb:hover {
   background: #b30045;
 }
+.loading {
+  text-align: left;
+}
+.loading:after {
+  content: "...";
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  animation: ellipsis-dot 2s infinite .3s;
+  animation-fill-mode: forwards;
+  width: 1.25em;
+}
 
+@keyframes ellipsis-dot {
+  25% {
+    content: "";
+  }
+  50% {
+    content: ".";
+  }
+  75% {
+    content: "..";
+  }
+  100% {
+    content: "...";
+  }
+}
+.progress-bar {
+  -webkit-transition: width 0.5s ease !important;
+     -moz-transition: width 0.5s ease !important;
+       -o-transition: width 0.5s ease !important;
+          transition: width 0.5s ease !important;
+}
 .totop {
   float: right;
   margin: 20px;
@@ -401,8 +416,26 @@ p {
   font-size: 20px;
   font-family: Ubuntu;
 }
+#snackbarerr {
+  visibility: hidden;
+  min-width: 250px;
+  background-color: #e03c3c;
+  color: white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  bottom: 30px;
+  font-size: 20px;
+  font-family: Ubuntu;
+}
 
 #snackbar.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 4.5s;
+  animation: fadein 0.5s, fadeout 0.5s 4.5s;
+}
+#snackbarerr.show {
   visibility: visible;
   -webkit-animation: fadein 0.5s, fadeout 0.5s 4.5s;
   animation: fadein 0.5s, fadeout 0.5s 4.5s;
@@ -433,32 +466,12 @@ margin: auto;
 width: 80%;
 padding: 10px;
 display: table;
+border-radius: 20px;
+background-color: #56595c;
 text-align: center;
-border-radius: 25px;
-border-color: black;
-border-style: groove;
-background-color: rgba(255, 255, 255, 0.8);
-}
-.center button {
-  background-color: #ff8800;
-  border-style: ridge;
-  border-radius: 50px;
-  border-color: black;
-  font-size: 50px;
-  cursor: pointer;
-  margin: 20px;
-  padding: 10px;
-  transition: 0.1s;
-  box-shadow: 0 9px #999;
-}
-.center button:hover {
-  background-color: #cc6d00;
-  transition: 0.3s;
-}
-.center button:active {
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
-  transition: 0.1s;
+border-style: outset;
+border-width: 3px;
+border-color: #414447;
 }
 
 .left {
@@ -648,74 +661,8 @@ background-color: rgba(255, 255, 255, 0.8);
  cursor: pointer;
 }
 
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
 
-/* Hide default HTML checkbox */
-.switch input {
-  display: none;
-}
 
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: <%= themecolor %>;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px <%= themecolor %>;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
-tr:nth-child(even) {
-  background-color: #333333;
-  border-color: black;
-  border-style: solid;
-}
-tr {
-  border-color: black;
-  border-style: solid;
-}
 @media (max-width: 900px){
  .main h1{
    font-size: 40px;

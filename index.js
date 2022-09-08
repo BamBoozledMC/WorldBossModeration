@@ -248,6 +248,14 @@ app.get('/dashboard/server/*', async function(req,res) {
       (obj, item) => Object.assign(obj, { [item.channelID]: item.channelNAME }), {});
 
     res.render(__dirname+'/web/manageguild_misc-embedmanager.ejs', { discordpfp: basicinfo ? basicinfo.avatar ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : `https://wbmoderation.com/media/defaultpfp.jpg` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, guild: guild, bot: bot, channels: guildchannels, existingembeds: existingembeds, })
+  } else if (subpage == 'rolemanager') {
+    let access = [
+      `${config.ownerID}`,
+      `123697101078003712`
+    ]
+    if (!access.includes(`${basicinfo.id}`)) return res.redirect(`/dashboard/server/${guild.id}`)
+
+    res.render(__dirname+'/web/manageguild_misc-rolemanager.ejs', { discordpfp: basicinfo ? basicinfo.avatar ? `https://cdn.discordapp.com/avatars/${basicinfo.id}/${basicinfo.avatar}?size=2048` : `https://wbmoderation.com/media/defaultpfp.jpg` : null, discordname: basicinfo ? `${basicinfo.username}#${basicinfo.discriminator}` : null, guild: guild, bot: bot,  })
   } else {
     res.redirect(`/dashboard/server/${guild.id}`)
   }
@@ -266,6 +274,37 @@ io.on('connection', (socket) => {
   socket.on('themecolorchange', (color, guild) => {
     db.set(`color.${guild}`, color)
     socket.emit('success', 'color', `Successfully changed the bot theme color to: <code>${color}</code>`)
+  });
+
+  socket.on('assignroles', async (role, users, guild) => {
+    const timer = ms => new Promise(res => setTimeout(res, ms))
+    guild = bot.guilds.cache.get(guild)
+    role = guild.roles.cache.get(role);
+    let failedusers = 0
+    let curruser = 0
+    if (!guild.me.permissions.has("MANAGE_ROLES")) return socket.emit('error', 'nopermission', `The bot does not have the MANAGE_ROLES permission.<br>Make sure the bot has sufficient permissions and try again.`);
+    if (!role) return socket.emit('error', 'invalidrole', `The Role ID you provided is invalid or doesn't exist!`);
+    if (!role.editable) return socket.emit('error', 'norolepermission', `The role provided can not be managed by the bot!<br>Please make sure the bot role is higher than the role you wish to assign.`);
+
+    for (const user of users) {
+      curruser++
+      let member = guild.members.cache.get(user)
+      if (!member) {
+        failedusers++
+        socket.emit('error', 'nosuchuser', `The role was not assigned to <code>${user}</code> because this user does not exist`);
+     } else if (!member.manageable) {
+       failedusers++
+       socket.emit('error', 'usernotmanagable', `The role was not assigned to <code>${user}</code> (<code>${member.user.tag}</code>) because the bot role is below the target user`);
+      } else {
+        await member.roles.add(role.id)
+        console.log(user + ` | ${curruser}`);
+      }
+      socket.emit('progroles', curruser, users.length)
+      await timer(1000)
+    }
+
+    socket.emit('success', 'assignroles', `Successfully assigned <code>@${role.name}</code> to <code>${users.length - failedusers}</code> out of <code>${users.length}</code> users!`)
+
   });
 
   socket.on('reset', (info, guild) => {
