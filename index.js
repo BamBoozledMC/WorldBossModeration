@@ -288,7 +288,12 @@ io.on('connection', (socket) => {
 
     for (const user of users) {
       curruser++
-      let member = guild.members.cache.get(user)
+      let member;
+      if (!isNaN(user)) {
+        member = await guild.members.fetch({user, cache: false})
+      } else {
+        member = await guild.members.fetch({cache : false}).then(members=>members.find(member=>member.user.tag === user))
+      }
       if (!member) {
         failedusers++
         socket.emit('error', 'nosuchuser', `The role was not assigned to <code>${user}</code> because this user does not exist`);
