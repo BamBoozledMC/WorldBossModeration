@@ -253,7 +253,8 @@ app.get('/dashboard/server/*', async function(req,res) {
   } else if (subpage == 'rolemanager') {
     let access = [
       `${config.ownerID}`,
-      `123697101078003712`
+      `123697101078003712`,
+      `250824078636613632`
     ]
     if (!access.includes(`${basicinfo.id}`)) return res.redirect(`/dashboard/server/${guild.id}`)
 
