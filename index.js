@@ -4,7 +4,8 @@ const bot = new Client({ failIfNotExists: false, intents: [Intents.FLAGS.GUILDS,
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const rest = new REST({ version: '9' }).setToken(config.token);
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder, ContextMenuCommandBuilder  } = require('@discordjs/builders');
+const { ApplicationCommandType } = require('discord-api-types/v9');
 const db = require('quick.db');
 const fetch = require('node-fetch');
 const ytdl = require('ytdl-core-discord');
@@ -28,6 +29,7 @@ const cooldowns = new Map();
 const reactionAddEvent = require("./messagereaction-add.js");
 const reactionRemoveEvent = require("./messagereaction-remove.js");
 const slashCommands = require("./slashcommands.js");
+const contextCommands = require("./contextcommands.js");
 const vlc = require('./vlc');
 const Moralis = require('moralis/node');
 const ObjectsToCsv = require('objects-to-csv');
@@ -774,6 +776,12 @@ const slashcmds = [
   .addUserOption(option => option.setName('player2').setDescription('Play with another user.'))
   .addStringOption(option => option.setName('gamemode').setDescription("Custom gamemodes (Doesn't affect your stats)").addChoice("Party", 'party').addChoice("CustomWord", 'custom'))
   .addStringOption(option => option.setName('devoptions').setDescription('Dev options, only usuable by Bot Owner.')),
+  new ContextMenuCommandBuilder()
+  .setName('Avatar')
+	.setType(ApplicationCommandType.User),
+  new ContextMenuCommandBuilder()
+  .setName('Translate to English')
+	.setType(ApplicationCommandType.Message),
 ].map(command => command.toJSON());
 
 (async () => {
@@ -792,7 +800,10 @@ const slashcmds = [
 	}
 })();
 
-bot.on('interactionCreate', interaction => slashCommands(interaction, bot));
+bot.on('interactionCreate', interaction => {
+  if (interaction.isCommand()) slashCommands(interaction, bot);
+  if (interaction.isContextMenu()) contextCommands(interaction, bot);
+})
 bot.on('messageReactionAdd', (reaction, user) => reactionAddEvent(reaction, user, bot));
 bot.on('messageReactionRemove', (reaction, user) => reactionRemoveEvent(reaction, user, bot));
 

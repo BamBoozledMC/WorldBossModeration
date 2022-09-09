@@ -9,7 +9,6 @@ const fetch = require('node-fetch');
 
 
 module.exports = async (interaction, bot) => {
-  if (!interaction.isCommand()) return;
 
   let defaultcolor = interaction.guild && db.get(`color.${interaction.guild.id}`)
   let themecolor;
