@@ -2,6 +2,8 @@ config.json
 json.sqlite
 web/media/attachments
 dumpys
+upscaler/todo
+upscaler/upscaled
 beansnft/cfg.json
 beansnft/db.json
 web/media/download
