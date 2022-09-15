@@ -157,6 +157,7 @@ app.use(passport.session());
 app.use('/media', express.static(__dirname + '/web/media'));
 app.use('/embedbuilder', express.static(__dirname + '/web/embedbuilder'));
 app.use('/dumpy', express.static(__dirname + '/dumpys'));
+app.use('/media/upscale', express.static(__dirname + '/upscaler/upscaled'));
 
 
 app.get('/', function(req,res) {
