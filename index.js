@@ -752,7 +752,8 @@ const slashcmds = [
   new SlashCommandBuilder()
   .setName('say')
   .setDescription('Returns your message')
-  .addStringOption(option => option.setName('message').setDescription('Message to send.').setRequired(true)),
+  .addStringOption(option => option.setName('message').setDescription('Message to send.').setRequired(true))
+  .addStringOption(option => option.setName('replytomessageid').setDescription('ID of the message you want the bot to reply to.')),
   new SlashCommandBuilder()
   .setName('fortnitestats')
   .setDescription("Get the stats of someone's Fortnite account")

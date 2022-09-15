@@ -91,12 +91,25 @@ module.exports = async (interaction, bot) => {
   if (interaction.commandName === 'say') {
     if(!interaction.member.permissions.has("MANAGE_MESSAGES") && interaction.user.id != config.ownerID) return;
     let msg = interaction.options.getString('message');
-    if (msg.includes("@everyone")) return interaction.reply({content: "Your suggestion contains a blacklisted phrase/word", ephemeral: true});
-    if (msg.includes("@here")) return interaction.reply({content: "Your suggestion contains a blacklisted phrase/word", ephemeral: true});
+    let replyid = interaction.options.getString('replytomessageid');
+    if (msg.includes("@everyone")) return interaction.reply({content: "Your message contains a blacklisted phrase/word", ephemeral: true});
+    if (msg.includes("@here")) return interaction.reply({content: "Your message contains a blacklisted phrase/word", ephemeral: true});
 
-    await interaction.deferReply({ephemeral: true})
-    await interaction.channel.send({content: `${msg}`})
-    interaction.editReply({content: ":thumbsup:", ephemeral: true })
+    if (replyid) {
+      let replymsg;
+      try {
+        replymsg = await interaction.channel.messages.fetch(replyid)
+      } catch (e) {
+        return interaction.reply({content: "The message ID specified is invalid.", ephemeral: true});
+      }
+      await interaction.deferReply({ephemeral: true})
+      await replymsg.reply({content: `${msg}`})
+      interaction.editReply({content: ":thumbsup:", ephemeral: true })
+    } else {
+      await interaction.deferReply({ephemeral: true})
+      await interaction.channel.send({content: `${msg}`})
+      interaction.editReply({content: ":thumbsup:", ephemeral: true })
+    }
   }
 
   if (interaction.commandName === 'fortnitestats') {
